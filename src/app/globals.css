@@ -35,3 +35,14 @@ body {
     transition: none !important;
   }
 }
+
+/* Reel-style words that pop in one by one. */
+@keyframes pop-word {
+  0% { transform: scale(0.4); opacity: 0; }
+  70% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.pop-word {
+  display: inline-block;
+  animation: pop-word 0.18s ease-out both;
+}
