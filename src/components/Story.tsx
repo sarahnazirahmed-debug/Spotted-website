@@ -44,7 +44,12 @@ const subscribe = () => () => {};
 export default function Story() {
   const detected = useSyncExternalStore<"3d" | "lite" | "pending">(subscribe, decide, () => "pending");
   const [forced, setForced] = useState<"3d" | "lite" | null>(null);
-  const [which, setWhich] = useState<StoryId>("you");
+  // Open a story straight from the link: ?story=influencer (or restaurant).
+  const [which, setWhich] = useState<StoryId>(() => {
+    if (typeof window === "undefined") return "you";
+    const q = new URLSearchParams(window.location.search).get("story");
+    return q === "influencer" || q === "restaurant" ? q : "you";
+  });
   const mode = forced ?? detected;
 
   const pick = (id: StoryId) => {
@@ -118,7 +123,13 @@ function Scroller({
     <div ref={box} style={{ height: `${meta.heightVh}vh` }} className="relative">
       <h1 className="sr-only">Spotted. Launching 1 January in the UAE.</h1>
       <div className="fixed inset-0 bg-deep" aria-hidden="true">
-        <World id={id} onSlow={onLite} />
+        <World
+          id={id}
+          onSlow={() => {
+            // ?force3d keeps the 3D version even on a slow screen (for testing).
+            if (!new URLSearchParams(window.location.search).has("force3d")) onLite();
+          }}
+        />
       </div>
 
       <div className="pointer-events-none fixed inset-0 z-10">

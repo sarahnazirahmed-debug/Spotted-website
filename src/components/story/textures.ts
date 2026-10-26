@@ -226,3 +226,95 @@ export function questionTexture() {
     spec,
   );
 }
+
+// ---- Realism helpers (all drawn with code, no image files) ----
+
+// A soft round glow. Used for street-lamp halos and for soft shadows under things.
+let glowCache: THREE.CanvasTexture | null = null;
+export function glowTexture() {
+  if (!glowCache) {
+    const c = document.createElement("canvas");
+    c.width = c.height = 128;
+    const ctx = c.getContext("2d")!;
+    const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    g.addColorStop(0, "rgba(255,255,255,1)");
+    g.addColorStop(0.5, "rgba(255,255,255,0.45)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 128, 128);
+    glowCache = new THREE.CanvasTexture(c);
+  }
+  return glowCache;
+}
+
+// Light grey panels, floor lines and a little dirt. It multiplies the building colour.
+let facadeMatCache: THREE.MeshLambertMaterial | null = null;
+export function facadeMat() {
+  if (!facadeMatCache) {
+    const c = document.createElement("canvas");
+    c.width = 256;
+    c.height = 512;
+    const ctx = c.getContext("2d")!;
+    const g = ctx.createLinearGradient(0, 0, 0, 512);
+    g.addColorStop(0, "#ffffff");
+    g.addColorStop(1, "#c9c9c9");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 256, 512);
+    ctx.fillStyle = "rgba(0,0,0,0.16)";
+    for (let y = 0; y < 512; y += 64) ctx.fillRect(0, y, 256, 3);
+    ctx.fillStyle = "rgba(0,0,0,0.08)";
+    for (let x = 0; x < 256; x += 64) ctx.fillRect(x, 0, 2, 512);
+    for (let i = 0; i < 900; i++) {
+      ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.07})`;
+      ctx.fillRect(Math.random() * 256, Math.random() * 512, 2 + Math.random() * 4, 2 + Math.random() * 4);
+    }
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    facadeMatCache = new THREE.MeshLambertMaterial({ color: "#6A1FB0", map: tex });
+  }
+  return facadeMatCache;
+}
+
+// Rough asphalt: tiny speckles. rx, ry = how many times the pattern repeats.
+export function roadMat(rx: number, ry: number) {
+  const c = document.createElement("canvas");
+  c.width = c.height = 256;
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = "#e9e9e9";
+  ctx.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 2600; i++) {
+    const v = 150 + Math.random() * 105;
+    ctx.fillStyle = `rgba(${v},${v},${v},0.55)`;
+    ctx.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 2, 1 + Math.random() * 2);
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(rx, ry);
+  return new THREE.MeshLambertMaterial({ color: "#6A1FB0", map: tex });
+}
+
+// The advert on the billboard.
+export function adTexture() {
+  const spec = `800 70px ${fontFamily()}`;
+  return makeTexture(
+    320,
+    200,
+    (ctx, w, h) => {
+      ctx.fillStyle = "#FFD23F";
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "#E5383B";
+      ctx.fillRect(0, h - 56, w, 56);
+      ctx.fillStyle = "#3C096C";
+      ctx.font = `800 78px ${fontFamily()}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("SALE", w / 2, 78);
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = `800 34px ${fontFamily()}`;
+      ctx.fillText("50% OFF TODAY", w / 2, h - 28);
+    },
+    spec,
+  );
+}

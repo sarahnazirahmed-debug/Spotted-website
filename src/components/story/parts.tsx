@@ -4,6 +4,7 @@
 import { RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 import type { V3 } from "@/lib/story";
+import { facadeMat, glowTexture } from "./textures";
 
 export const C = {
   brand: "#6A1FB0",
@@ -54,6 +55,26 @@ export function starGeo() {
     starCache.center();
   }
   return starCache;
+}
+
+// A soft dark patch on the ground under an object, so it does not look like it floats.
+export function ContactShadow({
+  w,
+  d,
+  opacity = 0.5,
+  y = 0.03,
+}: {
+  w: number;
+  d: number;
+  opacity?: number;
+  y?: number;
+}) {
+  return (
+    <mesh position={[0, y, 0]} rotation-x={-Math.PI / 2}>
+      <planeGeometry args={[w, d]} />
+      <meshBasicMaterial map={glowTexture()} color={C.deep} transparent opacity={opacity} depthWrite={false} />
+    </mesh>
+  );
 }
 
 // A rounded stick between two points (used for arms and legs).
@@ -137,11 +158,16 @@ export function HomeBuilding({
       {/* lower and upper blocks */}
       <mesh position={[-3.5, 3.7, 0]}>
         <boxGeometry args={[7, 7.4, dz]} />
-        <meshLambertMaterial color={wall} />
+        <primitive object={facadeMat()} attach="material" />
       </mesh>
       <mesh position={[-3.5, (10.6 + height) / 2, 0]}>
         <boxGeometry args={[7, height - 10.6, dz]} />
-        <meshLambertMaterial color={wall} />
+        <primitive object={facadeMat()} attach="material" />
+      </mesh>
+      {/* roof ledge */}
+      <mesh position={[-3.5, height + 0.15, 0]}>
+        <boxGeometry args={[7.4, 0.3, dz + 0.4]} />
+        <meshLambertMaterial color={C.deep} />
       </mesh>
       {/* front wall around the window opening (2.6 wide, 2 tall) */}
       {[-1, 1].map((sd) => (
@@ -207,40 +233,57 @@ export function PhoneBody({
 }
 
 // A friendly open-top car. It drives toward -z. Pass a driver if you want one.
-export function Car({ driver = true }: { driver?: boolean }) {
+// `driverRef` lets the page hide the driver once the car has stopped.
+export function Car({
+  driver = true,
+  color = C.red,
+  driverRef,
+}: {
+  driver?: boolean;
+  color?: string;
+  driverRef?: React.RefObject<THREE.Group | null>;
+}) {
   return (
     <group>
-      <mesh position={[0, 0.55, 0]}>
-        <boxGeometry args={[1.9, 0.5, 4]} />
-        <meshLambertMaterial color={C.red} />
-      </mesh>
-      <mesh position={[0, 0.98, -1.55]}>
-        <boxGeometry args={[1.8, 0.3, 1.1]} />
-        <meshLambertMaterial color={C.red} />
-      </mesh>
-      {/* seat and back */}
-      <mesh position={[-0.45, 0.92, 0.4]}>
-        <boxGeometry args={[0.8, 0.3, 0.8]} />
+      <ContactShadow w={3.2} d={5.2} opacity={0.55} />
+      <RoundedBox args={[1.9, 0.5, 4]} radius={0.14} smoothness={3} position={[0, 0.55, 0]}>
+        <meshLambertMaterial color={color} />
+      </RoundedBox>
+      <RoundedBox args={[1.8, 0.3, 1.1]} radius={0.1} smoothness={2} position={[0, 0.98, -1.55]}>
+        <meshLambertMaterial color={color} />
+      </RoundedBox>
+      {/* bumpers */}
+      <mesh position={[0, 0.38, -2.05]}>
+        <boxGeometry args={[1.8, 0.14, 0.12]} />
         <meshLambertMaterial color={C.lilac} />
       </mesh>
-      <mesh position={[-0.45, 1.25, 0.82]}>
-        <boxGeometry args={[0.8, 0.5, 0.15]} />
+      <mesh position={[0, 0.38, 2.05]}>
+        <boxGeometry args={[1.8, 0.14, 0.12]} />
         <meshLambertMaterial color={C.lilac} />
       </mesh>
-      <mesh position={[0.45, 0.92, 0.4]}>
-        <boxGeometry args={[0.8, 0.3, 0.8]} />
-        <meshLambertMaterial color={C.lilac} />
-      </mesh>
-      <mesh position={[0.45, 1.25, 0.82]}>
-        <boxGeometry args={[0.8, 0.5, 0.15]} />
-        <meshLambertMaterial color={C.lilac} />
-      </mesh>
-      {/* windscreen */}
+      {/* seats and backs */}
+      {[-0.45, 0.45].map((x) => (
+        <group key={x}>
+          <mesh position={[x, 0.92, 0.4]}>
+            <boxGeometry args={[0.8, 0.3, 0.8]} />
+            <meshLambertMaterial color={C.lilac} />
+          </mesh>
+          <mesh position={[x, 1.25, 0.82]}>
+            <boxGeometry args={[0.8, 0.5, 0.15]} />
+            <meshLambertMaterial color={C.lilac} />
+          </mesh>
+        </group>
+      ))}
+      {/* windscreen with a frame */}
       <mesh position={[0, 1.3, -0.75]} rotation-x={-0.5}>
         <planeGeometry args={[1.7, 0.6]} />
         <meshBasicMaterial color={C.lilac} transparent opacity={0.45} side={THREE.DoubleSide} />
       </mesh>
-      {/* one wide light bar at the front, a red one at the back */}
+      <mesh position={[0, 1.02, -0.62]} rotation-x={-0.5}>
+        <boxGeometry args={[1.8, 0.05, 0.05]} />
+        <meshLambertMaterial color={C.deep} />
+      </mesh>
+      {/* one wide light bar at the front, a lilac one at the back, and a plate */}
       <mesh position={[0, 0.62, -2.01]}>
         <boxGeometry args={[1.4, 0.12, 0.04]} />
         <meshBasicMaterial color={C.yellow} />
@@ -249,16 +292,27 @@ export function Car({ driver = true }: { driver?: boolean }) {
         <boxGeometry args={[1.4, 0.12, 0.04]} />
         <meshBasicMaterial color={C.lilac} />
       </mesh>
+      <mesh position={[0, 0.5, 2.03]}>
+        <boxGeometry args={[0.6, 0.16, 0.02]} />
+        <meshLambertMaterial color={C.white} />
+      </mesh>
+      {/* wheels with rims */}
       {[
         [-0.98, -1.3],
         [0.98, -1.3],
         [-0.98, 1.3],
         [0.98, 1.3],
       ].map(([x, zz]) => (
-        <mesh key={`${x}${zz}`} position={[x, 0.38, zz]} rotation-z={Math.PI / 2}>
-          <cylinderGeometry args={[0.38, 0.38, 0.28, 14]} />
-          <meshLambertMaterial color={C.deep} />
-        </mesh>
+        <group key={`${x}${zz}`} position={[x, 0.38, zz]} rotation-z={Math.PI / 2}>
+          <mesh>
+            <cylinderGeometry args={[0.38, 0.38, 0.28, 16]} />
+            <meshLambertMaterial color={C.deep} />
+          </mesh>
+          <mesh position={[0, x > 0 ? 0.15 : -0.15, 0]}>
+            <cylinderGeometry args={[0.2, 0.2, 0.02, 12]} />
+            <meshLambertMaterial color={C.lilac} />
+          </mesh>
+        </group>
       ))}
       {/* steering wheel */}
       <mesh position={[-0.45, 1.25, -0.35]} rotation-x={-0.9}>
@@ -266,7 +320,7 @@ export function Car({ driver = true }: { driver?: boolean }) {
         <meshLambertMaterial color={C.deep} />
       </mesh>
       {driver && (
-        <group position={[-0.45, 1.05, 0.4]} rotation-y={Math.PI}>
+        <group ref={driverRef} position={[-0.45, 1.05, 0.4]} rotation-y={Math.PI}>
           <Figure sit body={C.yellow} hands={{ l: [-0.22, 0.75, 0.6], r: [0.22, 0.75, 0.6] }} />
         </group>
       )}

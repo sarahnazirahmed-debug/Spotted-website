@@ -8,9 +8,17 @@ import { PerformanceMonitor, RoundedBox } from "@react-three/drei";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { story, range, smooth, lerp, easeOutBack, dayFactor, type StoryId } from "@/lib/story";
-import { cameraFor, carState, reelAt, curve3, CREDIT_PTS, WINDOW_A } from "@/lib/paths";
-import { reelTexture, reelStripTexture, signTexture, questionTexture } from "./textures";
-import { C, bookmarkGeo, starGeo, Figure, HomeBuilding, PhoneBody, Car } from "./parts";
+import { cameraFor, carState, passerAt, reelAt, curve3, CREDIT_PTS, WINDOW_A } from "@/lib/paths";
+import {
+  reelTexture,
+  reelStripTexture,
+  signTexture,
+  questionTexture,
+  adTexture,
+  facadeMat,
+  roadMat,
+} from "./textures";
+import { C, bookmarkGeo, starGeo, Figure, HomeBuilding, PhoneBody, Car, ContactShadow } from "./parts";
 
 const YEL = new THREE.Color(C.yellow);
 const DEEP = new THREE.Color(C.deep);
@@ -20,6 +28,14 @@ const BRAND = new THREE.Color(C.brand);
 // Shared materials: the day/night code changes their colour.
 const windowMat = new THREE.MeshBasicMaterial({ color: C.yellow });
 const bulbMat = new THREE.MeshBasicMaterial({ color: C.yellow });
+const haloMat = new THREE.MeshBasicMaterial({
+  color: C.yellow,
+  transparent: true,
+  opacity: 0.2,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+const starsMat = new THREE.PointsMaterial({ color: "#ffffff", size: 2, sizeAttenuation: false, transparent: true, fog: false });
 
 function rng(seed: number) {
   let s = seed;
@@ -80,6 +96,7 @@ function Street() {
     return { buildings: list, windows: wins };
   }, []);
 
+  const mats = useMemo(() => ({ main: roadMat(2, 40), side: roadMat(12, 2) }), []);
   const dashes = useMemo(() => {
     const dummy = new THREE.Object3D();
     const m: THREE.Matrix4[] = [];
@@ -105,13 +122,11 @@ function Street() {
         <planeGeometry args={[160, 180]} />
         <meshLambertMaterial color={C.deep} />
       </mesh>
-      <mesh rotation-x={-Math.PI / 2} position={[0, 0, -40]}>
+      <mesh rotation-x={-Math.PI / 2} position={[0, 0, -40]} material={mats.main}>
         <planeGeometry args={[8, 150]} />
-        <meshLambertMaterial color={C.brand} />
       </mesh>
-      <mesh rotation-x={-Math.PI / 2} position={[22, 0, -19.25]}>
+      <mesh rotation-x={-Math.PI / 2} position={[22, 0, -19.25]} material={mats.side}>
         <planeGeometry args={[36, 5.5]} />
-        <meshLambertMaterial color={C.brand} />
       </mesh>
       {[-1, 1].map((side) => (
         <mesh key={side} position={[side * 4.75, 0.08, -40]}>
@@ -140,16 +155,28 @@ function Street() {
       </instancedMesh>
 
       {buildings.map((b, k) => (
-        <mesh key={k} position={[b.x, b.h / 2, b.z]}>
-          <boxGeometry args={[b.d, b.h, b.dz]} />
-          <meshLambertMaterial color={C.brand} />
-        </mesh>
+        <group key={k}>
+          <mesh position={[b.x, b.h / 2, b.z]}>
+            <boxGeometry args={[b.d, b.h, b.dz]} />
+            <primitive object={facadeMat()} attach="material" />
+          </mesh>
+          <mesh position={[b.x, b.h + 0.15, b.z]}>
+            <boxGeometry args={[b.d + 0.4, 0.3, b.dz + 0.4]} />
+            <meshLambertMaterial color={C.deep} />
+          </mesh>
+        </group>
       ))}
       {SIDE_BUILDINGS.map(([x, z, w, d, h], k) => (
-        <mesh key={`s${k}`} position={[x, h / 2, z]}>
-          <boxGeometry args={[w, h, d]} />
-          <meshLambertMaterial color={C.brand} />
-        </mesh>
+        <group key={`s${k}`}>
+          <mesh position={[x, h / 2, z]}>
+            <boxGeometry args={[w, h, d]} />
+            <primitive object={facadeMat()} attach="material" />
+          </mesh>
+          <mesh position={[x, h + 0.15, z]}>
+            <boxGeometry args={[w + 0.4, 0.3, d + 0.4]} />
+            <meshLambertMaterial color={C.deep} />
+          </mesh>
+        </group>
       ))}
 
       <instancedMesh
@@ -157,8 +184,14 @@ function Street() {
         material={windowMat}
         ref={(m) => {
           if (!m) return;
-          windows.forEach((mat, k) => m.setMatrixAt(k, mat));
+          const tints = ["#ffffff", "#ffe9b0", "#e8d4ff", "#ffffff"];
+          const col = new THREE.Color();
+          windows.forEach((mat, k) => {
+            m.setMatrixAt(k, mat);
+            m.setColorAt(k, col.set(tints[k % tints.length]));
+          });
           m.instanceMatrix.needsUpdate = true;
+          if (m.instanceColor) m.instanceColor.needsUpdate = true;
         }}
       >
         <planeGeometry args={[0.9, 1.1]} />
@@ -174,6 +207,9 @@ function Street() {
             <mesh position={[0, 3.5, 0]} material={bulbMat}>
               <sphereGeometry args={[0.22, 10, 10]} />
             </mesh>
+            <mesh position={[0, 3.5, 0]} material={haloMat}>
+              <sphereGeometry args={[0.8, 10, 10]} />
+            </mesh>
           </group>
         )),
       )}
@@ -182,6 +218,20 @@ function Street() {
 }
 
 // ---------------------------------------------------------------- sky, light, sun and moon
+// A few hundred stars on a big dome, seen at night.
+const starsGeo = (() => {
+  const r = rng(99);
+  const pos: number[] = [];
+  for (let i = 0; i < 260; i++) {
+    const a = r() * Math.PI * 2;
+    const h = 0.25 + r() * 0.75;
+    const rad = 95;
+    pos.push(Math.cos(a) * rad * (1 - h * 0.35), 18 + h * 80, -30 + Math.sin(a) * rad * (1 - h * 0.35));
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  return g;
+})();
 function Sky({ id }: { id: StoryId }) {
   const amb = useRef<THREE.AmbientLight>(null);
   const dir = useRef<THREE.DirectionalLight>(null);
@@ -194,7 +244,9 @@ function Sky({ id }: { id: StoryId }) {
     tmp.copy(DEEP).lerp(LILAC, d);
     (scene.background as THREE.Color).copy(tmp);
     (scene.fog as THREE.Fog).color.copy(tmp);
-    if (amb.current) amb.current.intensity = lerp(0.9, 1.25, d);
+    if (amb.current) amb.current.intensity = lerp(0.6, 0.95, d);
+    haloMat.opacity = 0.22 * (1 - d);
+    starsMat.opacity = 0.9 * (1 - d);
     if (dir.current) dir.current.intensity = lerp(1.6, 2.0, d);
     windowMat.color.copy(YEL).lerp(BRAND, d);
     bulbMat.color.copy(YEL).lerp(BRAND, d);
@@ -213,7 +265,9 @@ function Sky({ id }: { id: StoryId }) {
   });
   return (
     <>
-      <ambientLight ref={amb} intensity={0.9} />
+      <ambientLight ref={amb} intensity={0.6} />
+      <hemisphereLight args={[C.lilac, C.deep, 0.6]} />
+      <points material={starsMat} geometry={starsGeo} />
       <directionalLight ref={dir} position={[3, 8, 6]} intensity={1.6} />
       <mesh ref={sun} visible={false}>
         <sphereGeometry args={[1.6, 20, 20]} />
@@ -231,54 +285,18 @@ function Sky({ id }: { id: StoryId }) {
 function Cafe({ id }: { id: StoryId }) {
   const sign = useMemo(() => signTexture("Café Luna"), []);
   const winMats = useMemo(() => [0, 1, 2].map(() => new THREE.MeshBasicMaterial({ color: C.deep })), []);
-  const ringMats = useMemo(
-    () => [0, 1, 2].map(() => new THREE.MeshBasicMaterial({ color: C.yellow, transparent: true, depthWrite: false })),
-    [],
-  );
-  const ringsGroup = useRef<THREE.Group>(null);
-  const ringRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const rainRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const rain = useMemo(() => {
-    const r = rng(11);
-    return Array.from({ length: 22 }, (_, k) => ({
-      x: (r() - 0.5) * 4.4,
-      z: (r() - 0.5) * 6,
-      y: 4.85 + (k % 3) * 0.04,
-      delay: (k / 22) * 0.6,
-      spin: 2 + r() * 3,
-      turn: (r() - 0.5) * 3,
-    }));
-  }, []);
-
-  useFrame((state) => {
+  useFrame(() => {
     const p = story.p;
     winMats.forEach((m, k) => {
       const lit =
-        id === "you" ? range(p, 0.89 + k * 0.01, 0.93) : id === "influencer" ? 1 : range(p, 0.4 + k * 0.05, 0.46 + k * 0.05);
+        id === "you" ? range(p, 0.89 + k * 0.01, 0.93) : id === "influencer" ? 1 : range(p, 0.86 + k * 0.01, 0.9);
       m.color.copy(DEEP).lerp(YEL, lit);
-    });
-    const restaurant = id === "restaurant";
-    const ringEnv = restaurant ? range(p, 0.28, 0.32) * (1 - range(p, 0.7, 0.75)) : 0;
-    if (ringsGroup.current) ringsGroup.current.visible = ringEnv > 0.01;
-    ringRefs.current.forEach((ring, k) => {
-      if (!ring) return;
-      const ph = (state.clock.elapsedTime * 0.5 + k / 3) % 1;
-      ring.scale.setScalar(0.6 + ph * 3);
-      ringMats[k].opacity = (1 - ph) * 0.85 * ringEnv;
-    });
-    const f = restaurant ? range(p, 0.08, 0.3) : 0;
-    rainRefs.current.forEach((m, k) => {
-      if (!m) return;
-      const it = rain[k];
-      const a = range(f, it.delay, it.delay + 0.35);
-      m.visible = a > 0;
-      m.position.set(it.x, lerp(11, it.y, a * a), it.z);
-      m.rotation.set(lerp(it.spin, -Math.PI / 2, smooth(a)), it.turn * (1 - a), 0);
     });
   });
 
   return (
     <group position={[19, 0, -12.4]} rotation-y={Math.PI / 2}>
+      <ContactShadow w={8} d={9.5} opacity={0.5} />
       <mesh position={[0, 2.2, 0]}>
         <boxGeometry args={[5, 4.4, 6.6]} />
         <meshLambertMaterial color={C.lilac} />
@@ -291,46 +309,174 @@ function Cafe({ id }: { id: StoryId }) {
         <planeGeometry args={[3.2, 0.8]} />
         <meshBasicMaterial map={sign} transparent />
       </mesh>
+      {/* door, handle, striped awning */}
       <mesh position={[2.52, 1.1, -2.2]} rotation-y={Math.PI / 2}>
         <planeGeometry args={[1.1, 2.2]} />
         <meshLambertMaterial color={C.deep} />
       </mesh>
-      <mesh position={[2.9, 2.5, -2.2]}>
-        <boxGeometry args={[0.8, 0.12, 1.6]} />
-        <meshLambertMaterial color={C.red} />
+      <mesh position={[2.56, 1.1, -1.75]}>
+        <sphereGeometry args={[0.06, 8, 8]} />
+        <meshBasicMaterial color={C.yellow} />
       </mesh>
-      {[-0.4, 1, 2.4].map((z, k) => (
-        <mesh key={z} position={[2.52, 1.9, z]} rotation-y={Math.PI / 2} material={winMats[k]}>
-          <planeGeometry args={[1.1, 1.5]} />
+      {[-0.6, -0.2, 0.2, 0.6].map((dz, k) => (
+        <mesh key={dz} position={[2.9, 2.5, -2.2 + dz]}>
+          <boxGeometry args={[0.8, 0.12, 0.4]} />
+          <meshLambertMaterial color={k % 2 ? C.white : C.red} />
         </mesh>
       ))}
-      <group ref={ringsGroup} position={[2.6, 3.5, 0.2]} rotation-y={Math.PI / 2}>
-        {ringMats.map((mat, k) => (
-          <mesh
-            key={k}
-            ref={(m) => {
-              ringRefs.current[k] = m;
-            }}
-            material={mat}
-          >
-            <torusGeometry args={[1, 0.035, 8, 48]} />
+      {/* three windows with frames */}
+      {[-0.4, 1, 2.4].map((z, k) => (
+        <group key={z}>
+          <mesh position={[2.5, 1.9, z]}>
+            <boxGeometry args={[0.05, 1.65, 1.25]} />
+            <meshLambertMaterial color={C.deep} />
           </mesh>
-        ))}
+          <mesh position={[2.53, 1.9, z]} rotation-y={Math.PI / 2} material={winMats[k]}>
+            <planeGeometry args={[1.1, 1.5]} />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------- the cafe's little terrace (and a customer when they arrive)
+const TABLE_X = [17.6, 19.6, 21.6];
+function Patio({ id }: { id: StoryId }) {
+  const guest = useRef<THREE.Group>(null);
+  const cup = useRef<THREE.Mesh>(null);
+  useFrame(() => {
+    const a = id === "restaurant" ? smooth(range(story.p, 0.87, 0.91)) : 0;
+    if (guest.current) {
+      guest.current.visible = a > 0.01;
+      guest.current.scale.setScalar(Math.max(0.001, a));
+    }
+    if (cup.current) cup.current.scale.setScalar(Math.max(0.001, a));
+  });
+  return (
+    <group>
+      {TABLE_X.map((x) => (
+        <group key={x}>
+          <mesh position={[x, 0.38, -15.5]}>
+            <cylinderGeometry args={[0.05, 0.05, 0.76, 6]} />
+            <meshLambertMaterial color={C.deep} />
+          </mesh>
+          <mesh position={[x, 0.78, -15.5]}>
+            <cylinderGeometry args={[0.45, 0.45, 0.05, 16]} />
+            <meshLambertMaterial color={C.lilac} />
+          </mesh>
+          <mesh position={[x, 0.5, -16.15]}>
+            <boxGeometry args={[0.45, 0.06, 0.45]} />
+            <meshLambertMaterial color={C.yellow} />
+          </mesh>
+          <mesh position={[x, 0.78, -16.4]}>
+            <boxGeometry args={[0.45, 0.5, 0.06]} />
+            <meshLambertMaterial color={C.yellow} />
+          </mesh>
+        </group>
+      ))}
+      <group ref={guest} position={[19.6, 0.62, -16.15]} visible={false}>
+        <Figure sit body={C.yellow} hands={{ l: [-0.22, 0.28, 0.7], r: [0.22, 0.28, 0.7] }} />
       </group>
-      {rain.map((_, k) => (
+      <mesh ref={cup} position={[19.6, 0.88, -15.5]}>
+        <cylinderGeometry args={[0.1, 0.08, 0.14, 12]} />
+        <meshLambertMaterial color={C.white} />
+      </mesh>
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------- restaurant story: flyers, an advert, cars driving past
+function Flyers() {
+  const refs = useRef<(THREE.Mesh | null)[]>([]);
+  const items = useMemo(() => {
+    const r = rng(5);
+    return Array.from({ length: 18 }, () => ({
+      x: 8 + r() * 18,
+      z: -22 + r() * 6.4,
+      delay: r() * 0.08,
+      sway: r() * 6,
+      yaw: r() * Math.PI,
+    }));
+  }, []);
+  useFrame(() => {
+    const p = story.p;
+    refs.current.forEach((m, k) => {
+      if (!m) return;
+      const it = items[k];
+      const a = range(p, it.delay, it.delay + 0.12);
+      const e = smooth(a);
+      m.visible = a > 0;
+      m.position.set(it.x + (1 - a) * Math.sin(a * 8 + it.sway) * 0.9, lerp(9, 0.06, e), it.z);
+      m.rotation.order = "YXZ";
+      m.rotation.set(-Math.PI / 2 + (1 - a) * Math.sin(a * 10 + it.sway) * 0.9, it.yaw + (1 - a) * 3, 0);
+    });
+  });
+  return (
+    <>
+      {items.map((_, k) => (
         <mesh
           key={k}
           ref={(m) => {
-            rainRefs.current[k] = m;
+            refs.current[k] = m;
           }}
-          geometry={bookmarkGeo()}
-          scale={0.6}
           visible={false}
         >
-          <meshLambertMaterial color={C.brand} emissive={C.deep} />
+          <planeGeometry args={[0.5, 0.7]} />
+          <meshLambertMaterial color={k % 2 ? C.yellow : C.white} side={THREE.DoubleSide} />
         </mesh>
       ))}
+    </>
+  );
+}
+
+function Billboard() {
+  const tex = useMemo(() => adTexture(), []);
+  return (
+    <group position={[14.9, 0, -15.9]} rotation-y={Math.PI}>
+      {[-1.1, 1.1].map((x) => (
+        <mesh key={x} position={[x, 1.2, 0]}>
+          <cylinderGeometry args={[0.06, 0.06, 2.4, 6]} />
+          <meshLambertMaterial color={C.deep} />
+        </mesh>
+      ))}
+      <mesh position={[0, 2.9, 0]}>
+        <boxGeometry args={[2.6, 1.7, 0.1]} />
+        <meshLambertMaterial color={C.deep} />
+      </mesh>
+      <mesh position={[0, 2.9, 0.06]}>
+        <planeGeometry args={[2.4, 1.5]} />
+        <meshBasicMaterial map={tex} />
+      </mesh>
     </group>
+  );
+}
+
+const PASSER_COLORS = [C.lilac, C.yellow, C.white];
+function Passers() {
+  const refs = useRef<(THREE.Group | null)[]>([]);
+  useFrame(() => {
+    refs.current.forEach((g, k) => {
+      if (!g) return;
+      const st = passerAt(k, story.p);
+      g.visible = st.visible;
+      if (st.visible) g.position.set(2, 0, st.z);
+    });
+  });
+  return (
+    <>
+      {PASSER_COLORS.map((c, k) => (
+        <group
+          key={k}
+          ref={(g) => {
+            refs.current[k] = g;
+          }}
+          visible={false}
+        >
+          <Car color={c} />
+        </group>
+      ))}
+    </>
   );
 }
 
@@ -507,9 +653,12 @@ function PlaceMarker() {
 // ---------------------------------------------------------------- the car
 function DrivingCar({ id }: { id: StoryId }) {
   const g = useRef<THREE.Group>(null);
+  const driver = useRef<THREE.Group>(null);
   useFrame(() => {
     const o = g.current;
     if (!o) return;
+    // in the restaurant story the driver steps out to sit at a table
+    if (driver.current) driver.current.visible = !(id === "restaurant" && story.p > 0.885);
     const c = carState(id, story.p);
     if (!c || c.scale < 0.01) {
       o.visible = false;
@@ -522,7 +671,7 @@ function DrivingCar({ id }: { id: StoryId }) {
   });
   return (
     <group ref={g} visible={false}>
-      <Car />
+      <Car driverRef={driver} />
     </group>
   );
 }
@@ -669,6 +818,7 @@ export default function World({ id, onSlow }: { id: StoryId; onSlow: () => void 
       <Rig id={id} />
       <Street />
       <Cafe id={id} />
+      <Patio id={id} />
 
       {/* left home: the customer in "You", the influencer in "Influencer" */}
       <HomeBuilding side={-1} z={-8} roomLight={id !== "restaurant"}>
@@ -686,6 +836,14 @@ export default function World({ id, onSlow }: { id: StoryId; onSlow: () => void 
           <DayBadges />
           <PlaceMarker />
           <DrivingCar id="you" />
+        </>
+      )}
+      {id === "restaurant" && (
+        <>
+          <Flyers />
+          <Billboard />
+          <Passers />
+          <DrivingCar id="restaurant" />
         </>
       )}
       {id === "influencer" && (

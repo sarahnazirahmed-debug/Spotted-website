@@ -86,15 +86,23 @@ const CAR_INF = makeCarPath([[-2, -47], [-2, -17.9], [19.5, -17.9]], 3.5);
 const CAR_TIMES: Partial<Record<StoryId, [number, number, number]>> = {
   you: [0.67, 0.69, 0.91], // appears at, starts driving, stops
   influencer: [0.48, 0.5, 0.66],
+  restaurant: [0.49, 0.52, 0.88],
 };
 
 export function carState(id: StoryId, p: number) {
-  const path = id === "you" ? CAR_YOU : id === "influencer" ? CAR_INF : null;
+  const path = id === "you" ? CAR_YOU : id === "influencer" || id === "restaurant" ? CAR_INF : null;
   const t = CAR_TIMES[id];
   if (!path || !t) return null;
   const s = smooth(range(p, t[1], t[2]));
   const st = path.at(s * path.total);
   return { ...st, scale: smooth(range(p, t[0], t[0] + 0.02)) };
+}
+
+// ---- Restaurant story: cars that drive straight past the junction and never stop ----
+export const PASSER_STARTS = [0.22, 0.29, 0.36];
+export function passerAt(k: number, p: number) {
+  const u = range(p, PASSER_STARTS[k], PASSER_STARTS[k] + 0.1);
+  return { visible: u > 0 && u < 1, z: lerp(14, -52, u) };
 }
 
 // ---- The reel that flies from window A to window B (influencer story) ----
@@ -202,12 +210,24 @@ const WAYS: Record<StoryId, Way[]> = {
     [1.0, [1.5, 9.8, -2], [-5.5, 9.4, -8]],
   ],
   restaurant: [
-    [0.0, [16, 5.5, -25], [19.2, 3.5, -13]],
-    [0.2, [14.8, 7, -24.5], [19.2, 3.8, -13]],
-    [0.4, [17.5, 8, -25.5], [19.2, 3.8, -13]],
-    [0.6, [16, 5.2, -24.5], [19.2, 3.5, -13]],
-    [0.8, [17, 6.5, -25], [19.2, 3.5, -13]],
-    [1.0, [17, 6.5, -25], [19.2, 3.5, -13]],
+    [0.0, [11.5, 2.6, -20.8], [17.6, 2.6, -14.5]], // empty cafe, flyers, ads
+    [0.12, [12, 2.9, -20.5], [17.8, 2.6, -14.5]],
+    [0.21, [13, 3.2, -21], [17.5, 2.5, -14.8]],
+    [0.25, [26, 9, -4], [10, 1.5, -18]], // cars pass the junction
+    [0.34, [25, 8.5, -4.5], [10, 1.5, -18]],
+    [0.39, [20, 17, -12], [8, 2, -22]],
+    [0.46, [1.5, 4.5, -31], [0, 1.2, -45]],
+    ...follow(carPos("restaurant"), [
+      [0.5, [2.5, 2.8, -7.5], [0, 0.8, 2]],
+      [0.56, [3.4, 1.6, 2.4], [-0.4, 1.0, 0]], // zoom to the driver: the notification
+      [0.64, [2.2, 1.5, 1], [-0.45, 1.1, 0]],
+      [0.7, [2.5, 3, -7], [0, 0.8, 1.5]],
+      [0.76, [-6, 3.2, -0.3], [0, 0.8, 0]], // the small turn
+      [0.82, [-7, 3.4, -0.3], [0, 0.8, 0]],
+      [0.87, [-2.5, 4.5, -6], [0, 1, 0]],
+      [0.9, [-3, 4.5, -8], [0.5, 1.2, 0]],
+      [1.0, [-3, 4.5, -8], [0.5, 1.2, 0]],
+    ]),
   ],
 };
 

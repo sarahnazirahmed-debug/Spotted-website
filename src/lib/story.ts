@@ -21,7 +21,7 @@ export const easeOutBack = (x: number) => {
 export const STORY_LIST: { id: StoryId; label: string; heightVh: number; endAt: number }[] = [
   { id: "you", label: "You", heightVh: 1500, endAt: 0.95 },
   { id: "influencer", label: "Influencer", heightVh: 1400, endAt: 0.95 },
-  { id: "restaurant", label: "Restaurant", heightVh: 800, endAt: 0.88 },
+  { id: "restaurant", label: "Restaurant", heightVh: 1400, endAt: 0.95 },
 ];
 
 // ---- Key words (not subtitles): short words that pop up on different sides of the screen ----
@@ -63,14 +63,22 @@ export const KEYWORDS: Record<StoryId, KeyWord[]> = {
     { at: 0.86, to: 0.95, text: "CREDIT", x: 26, y: 72, tone: "sun", big: true },
   ],
   restaurant: [
-    { at: 0.04, to: 0.22, text: "SAVED", x: 24, y: 22, big: true },
-    { at: 0.3, to: 0.48, text: "OFFERS", x: 74, y: 24, tone: "sun", big: true },
-    { at: 0.55, to: 0.74, text: "FULL", x: 26, y: 72, tone: "lilac", big: true },
+    { at: 0.0, to: 0.13, text: "EMPTY", x: 24, y: 22, big: true },
+    { at: 0.08, to: 0.2, text: "FLYERS", x: 76, y: 36, tone: "sun", rot: 3 },
+    { at: 0.16, to: 0.28, text: "ADS", x: 26, y: 72, tone: "lilac", big: true, rot: -3 },
+    { at: 0.28, to: 0.45, text: "PASSING BY", x: 50, y: 16, tone: "lilac", big: true },
+    { at: 0.36, to: 0.47, text: "NO ONE STOPS", x: 50, y: 78, tone: "red", rot: -2 },
+    { at: 0.52, to: 0.66, text: "PERFECT TIME", x: 50, y: 15, tone: "sun", big: true },
+    { at: 0.68, to: 0.8, text: "SMALL TURN", x: 74, y: 72, tone: "lilac", big: true, rot: 3 },
+    { at: 0.86, to: 0.95, text: "MADE IT", x: 50, y: 15, tone: "sun", big: true },
   ],
 };
 
 // When the "1 km away" notification is on screen (only in "You").
-export const NOTIFY: Partial<Record<StoryId, [number, number]>> = { you: [0.77, 0.88] };
+export const NOTIFY: Partial<Record<StoryId, [number, number]>> = {
+  you: [0.77, 0.88],
+  restaurant: [0.55, 0.68],
+};
 
 export type Overlay = {
   active: number[];
