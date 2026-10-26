@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { story, overlayFor, CUT_POINTS, type Overlay } from "@/lib/story";
+import { story, overlayFor, type Overlay } from "@/lib/story";
 import Waitlist from "./Waitlist";
 import LiteStory from "./LiteStory";
 
@@ -51,7 +51,6 @@ export default function Story() {
 
 function Scroller({ onLite }: { onLite: () => void }) {
   const box = useRef<HTMLDivElement>(null);
-  const flash = useRef<HTMLDivElement>(null);
   const [ov, setOv] = useState<Overlay>(() => overlayFor(0));
 
   useEffect(() => {
@@ -61,12 +60,9 @@ function Scroller({ onLite }: { onLite: () => void }) {
       gsap.to(proxy, {
         p: 1,
         ease: "none",
-        scrollTrigger: { trigger: box.current, start: "top top", end: "bottom bottom", scrub: 0.4 },
+        scrollTrigger: { trigger: box.current, start: "top top", end: "bottom bottom", scrub: 1 },
         onUpdate: () => {
           story.p = proxy.p;
-          // quick white flash at each cut
-          const f = Math.max(...CUT_POINTS.map((b) => 1 - Math.abs(proxy.p - b) / 0.012));
-          if (flash.current) flash.current.style.opacity = String(Math.max(0, f) * 0.7);
           const next = overlayFor(proxy.p);
           setOv((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
         },
@@ -79,7 +75,7 @@ function Scroller({ onLite }: { onLite: () => void }) {
   }, []);
 
   return (
-    <div ref={box} style={{ height: "900vh" }} className="relative">
+    <div ref={box} style={{ height: "1000vh" }} className="relative">
       <h1 className="sr-only">Spotted. Launching 1 January in the UAE.</h1>
       <div className="fixed inset-0 bg-deep" aria-hidden="true">
         <World onSlow={onLite} />
@@ -121,7 +117,7 @@ function Scroller({ onLite }: { onLite: () => void }) {
             <p className="max-w-[92vw] rounded-3xl bg-deep/85 px-5 py-3 text-center text-[clamp(1.4rem,6.2vw,2.4rem)] font-extrabold leading-tight text-white">
               {ov.words.slice(0, ov.shown).map((w, k) => (
                 <span
-                  key={`${ov.scene}-${ov.step}-${k}`}
+                  key={`${ov.step}-${k}`}
                   className={`pop-word mr-[0.28em] ${k === ov.shown - 1 ? "text-sun" : ""}`}
                 >
                   {w}
@@ -148,7 +144,6 @@ function Scroller({ onLite }: { onLite: () => void }) {
         </div>
       </div>
 
-      <div ref={flash} className="pointer-events-none fixed inset-0 z-20 bg-white opacity-0" aria-hidden="true" />
     </div>
   );
 }
