@@ -3,7 +3,6 @@
 // The scroll-driven stories. GSAP ScrollTrigger turns scrolling into a number (story.p),
 // the 3D world reads that number, and this file draws the key words and menu on top.
 
-import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,10 +11,11 @@ import Waitlist from "./Waitlist";
 import LiteStory from "./LiteStory";
 import Menu from "./Menu";
 import WhatsApp from "./WhatsApp";
+import FlatWorld from "./flat/FlatWorld";
 
-const World = dynamic(() => import("./story/World"), { ssr: false });
 
-// ---- Can this phone handle 3D? If not, show the simple version. ----
+
+// ---- Can this phone handle the animated version? If not, show the simple version. ----
 let decided: "3d" | "lite" | null = null;
 function decide(): "3d" | "lite" {
   if (decided) return decided;
@@ -27,16 +27,7 @@ function decide(): "3d" | "lite" {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) decided = "lite";
   else if (nav.connection?.saveData) decided = "lite";
   else if ((nav.deviceMemory ?? 8) <= 2 || (nav.hardwareConcurrency ?? 8) <= 2) decided = "lite";
-  else {
-    try {
-      const c = document.createElement("canvas");
-      const gl = (c.getContext("webgl2") || c.getContext("webgl")) as WebGLRenderingContext | null;
-      if (!gl) decided = "lite";
-      else gl.getExtension("WEBGL_lose_context")?.loseContext();
-    } catch {
-      decided = "lite";
-    }
-  }
+
   return decided;
 }
 const subscribe = () => () => {};
@@ -123,10 +114,10 @@ function Scroller({
     <div ref={box} style={{ height: `${meta.heightVh}vh` }} className="relative">
       <h1 className="sr-only">Spotted. Launching 1 January in the UAE.</h1>
       <div className="fixed inset-0 bg-deep" aria-hidden="true">
-        <World
+        <FlatWorld
           id={id}
           onSlow={() => {
-            // ?force3d keeps the 3D version even on a slow screen (for testing).
+            // ?force3d keeps the animated version even on a slow screen (for testing).
             if (!new URLSearchParams(window.location.search).has("force3d")) onLite();
           }}
         />

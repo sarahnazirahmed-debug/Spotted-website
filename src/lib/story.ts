@@ -68,7 +68,7 @@ export const KEYWORDS: Record<StoryId, KeyWord[]> = {
     { at: 0.16, to: 0.28, text: "ADS", x: 26, y: 72, tone: "lilac", big: true, rot: -3 },
     { at: 0.28, to: 0.45, text: "PASSING BY", x: 50, y: 16, tone: "lilac", big: true },
     { at: 0.36, to: 0.47, text: "NO ONE STOPS", x: 50, y: 78, tone: "red", rot: -2 },
-    { at: 0.52, to: 0.66, text: "PERFECT TIME", x: 50, y: 15, tone: "sun", big: true },
+    { at: 0.52, to: 0.66, text: "PERFECT TIME", x: 70, y: 40, tone: "sun", big: true, rot: -3 },
     { at: 0.68, to: 0.8, text: "SMALL TURN", x: 74, y: 72, tone: "lilac", big: true, rot: 3 },
     { at: 0.86, to: 0.95, text: "MADE IT", x: 50, y: 15, tone: "sun", big: true },
   ],
