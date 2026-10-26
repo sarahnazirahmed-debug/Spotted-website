@@ -4,6 +4,8 @@
 // Used when the phone is slow, 3D is not supported, or the visitor asks for less motion.
 
 import Waitlist from "./Waitlist";
+import Menu from "./Menu";
+import type { StoryId } from "@/lib/story";
 
 function Bookmark({ color, size = 64 }: { color: string; size?: number }) {
   return (
@@ -61,20 +63,22 @@ const SECTIONS = [
   },
 ];
 
-export default function LiteStory({ onSwitch }: { onSwitch: () => void }) {
+export default function LiteStory({
+  current,
+  onStory,
+  onToggleLite,
+}: {
+  current: StoryId;
+  onStory: (id: StoryId) => void;
+  onToggleLite: () => void;
+}) {
   return (
     <main>
       <section className="bg-brand px-5 pb-14 pt-6 text-white">
         <div className="mx-auto max-w-2xl">
           <div className="flex items-center justify-between">
             <span className="text-2xl font-extrabold">Spotted</span>
-            <button
-              type="button"
-              onClick={onSwitch}
-              className="min-h-11 rounded-full bg-white/15 px-4 text-sm font-bold"
-            >
-              Try 3D version
-            </button>
+            <Menu current={current} lite onStory={onStory} onToggleLite={onToggleLite} />
           </div>
           <div className="mt-12 flex items-start gap-3">
             <Bookmark color="#E5383B" size={72} />

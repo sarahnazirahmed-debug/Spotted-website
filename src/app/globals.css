@@ -46,3 +46,8 @@ body {
   display: inline-block;
   animation: pop-word 0.18s ease-out both;
 }
+
+/* Key words: little reel stickers that pop in and out. */
+.keyword {
+  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.3, 1.6, 0.5, 1);
+}

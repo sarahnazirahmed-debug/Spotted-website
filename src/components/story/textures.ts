@@ -127,3 +127,102 @@ export function reelTexture(accent: string) {
     spec,
   );
 }
+
+// A tall strip of three different reels (cup, cake, pizza). The phone scrolls through it.
+export function reelStripTexture() {
+  const spec = `800 26px ${fontFamily()}`;
+  const tex = makeTexture(
+    256,
+    448 * 3,
+    (ctx, w, hAll) => {
+      const h = hAll / 3;
+      const icons = ["cup", "cake", "pizza"];
+      icons.forEach((icon, n) => {
+        ctx.save();
+        ctx.translate(0, n * h);
+        const g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, n === 1 ? "#E5383B" : "#6A1FB0");
+        g.addColorStop(1, "#3C096C");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = `800 26px ${fontFamily()}`;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillText("Reels", 18, 18);
+        ctx.fillStyle = n === 0 ? "#FFD23F" : "#C9A2FF";
+        if (icon === "cup") {
+          ctx.beginPath();
+          ctx.roundRect(w * 0.26, h * 0.42, w * 0.36, h * 0.2, 20);
+          ctx.fill();
+          ctx.lineWidth = 14;
+          ctx.strokeStyle = "#FFD23F";
+          ctx.beginPath();
+          ctx.arc(w * 0.63, h * 0.5, w * 0.08, -Math.PI / 2, Math.PI / 2);
+          ctx.stroke();
+        } else if (icon === "cake") {
+          ctx.beginPath();
+          ctx.roundRect(w * 0.22, h * 0.5, w * 0.56, h * 0.14, 14);
+          ctx.fill();
+          ctx.fillStyle = "#FFD23F";
+          ctx.beginPath();
+          ctx.roundRect(w * 0.28, h * 0.4, w * 0.44, h * 0.1, 12);
+          ctx.fill();
+          ctx.fillStyle = "#FFFFFF";
+          ctx.beginPath();
+          ctx.arc(w * 0.5, h * 0.36, 14, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.moveTo(w * 0.2, h * 0.4);
+          ctx.lineTo(w * 0.8, h * 0.4);
+          ctx.lineTo(w * 0.5, h * 0.68);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = "#E5383B";
+          ctx.beginPath();
+          ctx.arc(w * 0.4, h * 0.46, 12, 0, Math.PI * 2);
+          ctx.arc(w * 0.58, h * 0.47, 12, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = "rgba(255,255,255,0.9)";
+        ctx.beginPath();
+        ctx.roundRect(18, h * 0.8, w * 0.62, 22, 11);
+        ctx.fill();
+        ctx.restore();
+      });
+    },
+    spec,
+  );
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(1, 1 / 3);
+  return tex;
+}
+
+// A speech bubble with a big question mark (the cafe does not know who sent the customer).
+export function questionTexture() {
+  const spec = `800 120px ${fontFamily()}`;
+  return makeTexture(
+    256,
+    256,
+    (ctx, w, h) => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = "#C9A2FF";
+      ctx.beginPath();
+      ctx.roundRect(16, 16, w - 32, h - 72, 48);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(w * 0.4, h - 58);
+      ctx.lineTo(w * 0.5, h - 12);
+      ctx.lineTo(w * 0.6, h - 58);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#3C096C";
+      ctx.font = `800 120px ${fontFamily()}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("?", w / 2, (h - 40) / 2 + 6);
+    },
+    spec,
+  );
+}

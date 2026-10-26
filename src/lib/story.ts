@@ -1,14 +1,12 @@
-// Shared settings for the scroll story: scene timing, camera shots and captions.
+// Shared settings for the scroll stories: which story, key words, helpers.
 // Everything here is plain numbers and text, so it is easy to tweak.
+
+export type V3 = [number, number, number];
+export type StoryId = "you" | "influencer" | "restaurant";
 
 // The scroll position (0 to 1) is stored here. GSAP writes it, the 3D world reads it.
 export const story = { p: 0 };
 
-export type V3 = [number, number, number];
-
-// Where each of the 5 scenes ends on the scroll bar (0 = top, 1 = bottom).
-export const SCENE_ENDS = [0.12, 0.38, 0.6, 0.84, 1] as const;
-export const SCENE_STARTS = [0, 0.12, 0.38, 0.6, 0.84] as const;
 export const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 export const range = (t: number, a: number, b: number) => clamp01((t - a) / (b - a));
 export const smooth = (t: number) => t * t * (3 - 2 * t);
@@ -19,112 +17,86 @@ export const easeOutBack = (x: number) => {
   return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
 };
 
-// Which scene are we in (i), and how far through it (t, 0 to 1)?
-export function sceneAt(p: number) {
-  const pc = clamp01(p);
-  let i = 0;
-  while (i < 4 && pc >= SCENE_ENDS[i]) i++;
-  const s = SCENE_STARTS[i];
-  return { i, t: clamp01((pc - s) / (SCENE_ENDS[i] - s)) };
-}
-
-// Scene 4 (influencers): six small bookmarks fly from the reel card to the cafe.
-export const FLIGHT_COUNT = 6;
-export const flightProgress = (t: number, j: number) =>
-  range(t, 0.12 + j * 0.1, 0.42 + j * 0.1);
-
-// ---- Camera path: ONE smooth ride down the street (no cuts) ----
-// Each waypoint is: scroll position, camera position, where the camera looks.
-const WAY: [number, V3, V3][] = [
-  [0.0, [0, 2.2, 5], [0, 1.9, -4]],
-  [0.08, [1.4, 2.1, -2], [0, 1.8, -10]],
-  [0.17, [0.3, 1.6, -10.2], [0, 1.5, -14]], // close to the phone
-  [0.24, [1.8, 1.9, -12.8], [-0.5, 1.4, -21]], // glide past the phone
-  [0.3, [3.5, 2.4, -17.5], [-2.5, 1.4, -28]],
-  [0.38, [3.2, 2.6, -21], [-4, 2, -30]], // the dot walks past the cafe
-  [0.47, [3.5, 5.2, -20], [-7, 3.8, -30]], // rise up to see the roof
-  [0.55, [3, 6.8, -21.5], [-7, 3.8, -30]],
-  [0.62, [3, 4.8, -17], [-5, 3.6, -28]], // come back down to the street
-  [0.72, [2.8, 3.5, -15], [-3.8, 3.7, -27]],
-  [0.84, [2.5, 3.6, -16], [-4, 3.8, -28]],
-  [0.92, [1.5, 6, -10], [-4, 3, -31]],
-  [1.0, [2, 10, 0], [-3, 2, -34]],
+// The three stories. heightVh = how long the page is (longer = slower story).
+export const STORY_LIST: { id: StoryId; label: string; heightVh: number; endAt: number }[] = [
+  { id: "you", label: "You", heightVh: 1500, endAt: 0.95 },
+  { id: "influencer", label: "Influencer", heightVh: 1400, endAt: 0.95 },
+  { id: "restaurant", label: "Restaurant", heightVh: 800, endAt: 0.88 },
 ];
 
-// Catmull-Rom: a smooth curve that passes through every waypoint.
-const cr = (a: number, b: number, c: number, d: number, u: number) =>
-  0.5 *
-  (2 * b + (-a + c) * u + (2 * a - 5 * b + 4 * c - d) * u * u + (-a + 3 * b - 3 * c + d) * u * u * u);
+// ---- Key words (not subtitles): short words that pop up on different sides of the screen ----
+// x, y = where the word sits, in percent of the screen (50, 50 is the middle).
+export type KeyWord = {
+  at: number;
+  to: number;
+  text: string;
+  x: number;
+  y: number;
+  tone?: "white" | "sun" | "red" | "lilac";
+  big?: boolean;
+  rot?: number;
+};
 
-export function cameraFor(p: number) {
-  const pc = clamp01(p);
-  let k = 0;
-  while (k < WAY.length - 2 && pc >= WAY[k + 1][0]) k++;
-  const u = range(pc, WAY[k][0], WAY[k + 1][0]);
-  const i0 = Math.max(0, k - 1);
-  const i3 = Math.min(WAY.length - 1, k + 2);
-  const at = (sel: 1 | 2): V3 => [0, 1, 2].map((c) =>
-    cr(WAY[i0][sel][c], WAY[k][sel][c], WAY[k + 1][sel][c], WAY[i3][sel][c], u),
-  ) as V3;
-  return { pos: at(1), look: at(2) };
-}
+export const KEYWORDS: Record<StoryId, KeyWord[]> = {
+  you: [
+    { at: 0.0, to: 0.09, text: "SPOT", x: 24, y: 22, big: true },
+    { at: 0.025, to: 0.09, text: "SAVE", x: 76, y: 38, tone: "sun", rot: 4 },
+    { at: 0.17, to: 0.26, text: "SCROLL", x: 70, y: 24, rot: -3 },
+    { at: 0.2, to: 0.3, text: "REELS", x: 26, y: 72, tone: "lilac" },
+    { at: 0.28, to: 0.37, text: "SAVED", x: 72, y: 70, tone: "sun", big: true, rot: 3 },
+    { at: 0.4, to: 0.47, text: "DAY 1", x: 24, y: 22, big: true },
+    { at: 0.49, to: 0.56, text: "DAY 2", x: 76, y: 22, big: true },
+    { at: 0.58, to: 0.65, text: "DAY 3", x: 24, y: 22, big: true },
+    { at: 0.68, to: 0.76, text: "LATER", x: 74, y: 24, tone: "lilac" },
+    { at: 0.77, to: 0.88, text: "1 KM", x: 24, y: 70, tone: "sun", big: true, rot: -3 },
+    { at: 0.9, to: 0.95, text: "ARRIVED", x: 50, y: 18, tone: "sun", big: true },
+  ],
+  influencer: [
+    { at: 0.0, to: 0.1, text: "CREATE", x: 24, y: 22, big: true },
+    { at: 0.06, to: 0.12, text: "REEL", x: 76, y: 70, tone: "sun" },
+    { at: 0.16, to: 0.33, text: "KMS APART", x: 50, y: 16, tone: "lilac", big: true },
+    { at: 0.34, to: 0.41, text: "SCROLL", x: 72, y: 24 },
+    { at: 0.4, to: 0.47, text: "SAVE", x: 26, y: 70, tone: "sun", big: true },
+    { at: 0.5, to: 0.64, text: "GOES THERE", x: 50, y: 14, tone: "lilac", big: true },
+    { at: 0.68, to: 0.79, text: "NO CREDIT", x: 28, y: 22, tone: "red", big: true, rot: -3 },
+    { at: 0.8, to: 0.87, text: "SPOTTED", x: 74, y: 24, tone: "sun", big: true, rot: 3 },
+    { at: 0.86, to: 0.95, text: "CREDIT", x: 26, y: 72, tone: "sun", big: true },
+  ],
+  restaurant: [
+    { at: 0.04, to: 0.22, text: "SAVED", x: 24, y: 22, big: true },
+    { at: 0.3, to: 0.48, text: "OFFERS", x: 74, y: 24, tone: "sun", big: true },
+    { at: 0.55, to: 0.74, text: "FULL", x: 26, y: 72, tone: "lilac", big: true },
+  ],
+};
 
-// ---- Captions (shown word by word, like a reel). `at` is the scroll position. ----
-export const CAPTIONS: { at: number; text: string }[] = [
-  { at: 0, text: "Spot it. Save it." },
-  { at: 0.06, text: "Get a nudge when you are near." },
-  { at: 0.12, text: "You scroll a reel." },
-  { at: 0.17, text: "Spot a café you love." },
-  { at: 0.21, text: "Tap. Saved." },
-  { at: 0.28, text: "Days later, you walk by." },
-  { at: 0.35, text: "Spotted nudges you." },
-  { at: 0.4, text: "Restaurants get saved." },
-  { at: 0.47, text: "Offers pulse out to savers." },
-  { at: 0.54, text: "Lights on. Tables full." },
-  { at: 0.62, text: "Influencers post a reel." },
-  { at: 0.7, text: "Every save lands at the café." },
-  { at: 0.78, text: "Stars climb. Trust grows." },
-];
+// When the "1 km away" notification is on screen (only in "You").
+export const NOTIFY: Partial<Record<StoryId, [number, number]>> = { you: [0.77, 0.88] };
 
 export type Overlay = {
-  step: number;
-  words: string[];
-  shown: number;
-  journey: string | null;
+  active: number[];
   bubble: boolean;
   hint: boolean;
   end: boolean;
 };
 
-// Works out what the on-screen words should look like at scroll position p.
-export function overlayFor(p: number): Overlay {
-  let step = -1;
-  CAPTIONS.forEach((c, k) => {
-    if (p >= c.at) step = k;
+export function overlayFor(id: StoryId, p: number): Overlay {
+  const active: number[] = [];
+  KEYWORDS[id].forEach((k, i) => {
+    if (p >= k.at && p < k.to) active.push(i);
   });
-  let words: string[] = [];
-  let shown = 0;
-  // After the last caption the box goes away so the ending can take over.
-  if (step >= 0 && p < 0.86) {
-    words = CAPTIONS[step].text.split(" ");
-    // one new word roughly every 0.5% of the scroll bar
-    shown = Math.min(words.length, Math.floor((p - CAPTIONS[step].at) / 0.005) + 1);
-  }
-  const journey =
-    p >= 0.12 && p < 0.38
-      ? "Journey 1 · You"
-      : p >= 0.38 && p < 0.6
-        ? "Journey 2 · Restaurants"
-        : p >= 0.6 && p < 0.84
-          ? "Journey 3 · Influencers"
-          : null;
+  const n = NOTIFY[id];
+  const endAt = STORY_LIST.find((s) => s.id === id)!.endAt;
   return {
-    step,
-    words,
-    shown,
-    journey,
-    bubble: p >= 0.35 && p < 0.46,
-    hint: p < 0.03,
-    end: p >= 0.88,
+    active,
+    bubble: !!n && p >= n[0] && p < n[1],
+    hint: p < 0.025,
+    end: p >= endAt,
   };
+}
+
+// 0 = night, 1 = day. In "You", three days and nights pass between p = 0.40 and 0.66.
+export function dayFactor(id: StoryId, p: number) {
+  if (id !== "you") return 0;
+  const c = range(p, 0.4, 0.66) * 3; // 0 to 3 days
+  return 0.5 - 0.5 * Math.cos(2 * Math.PI * c);
 }
