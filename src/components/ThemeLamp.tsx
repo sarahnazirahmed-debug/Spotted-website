@@ -77,7 +77,7 @@ export default function ThemeLamp() {
           ref={line}
           aria-hidden="true"
           className="absolute top-0 w-[2px] origin-top bg-[var(--lamp-string)]"
-          style={{ left: "calc(50% - 1px)", height: CORD }}
+          style={{ left: "calc(50% - 1px)", height: CORD, boxShadow: "0 0 0 1px rgba(60,9,108,0.35)" }}
         />
         <span
           ref={handle}

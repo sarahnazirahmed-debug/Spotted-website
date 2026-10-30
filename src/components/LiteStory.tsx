@@ -83,7 +83,7 @@ export default function LiteStory({
           <div className="mt-12 flex items-start gap-3">
             <Bookmark color="#E5383B" size={72} />
           </div>
-          <h1 className="mt-4 text-5xl font-extrabold leading-tight">Spot it. Save it.</h1>
+          <h2 className="mt-4 text-5xl font-extrabold leading-tight">Spot it. Save it.</h2>
           <p className="mt-3 text-lg text-lilac">Get a nudge when you are near.</p>
         </div>
       </section>

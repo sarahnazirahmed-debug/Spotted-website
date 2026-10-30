@@ -33,7 +33,7 @@
   --alt: color-mix(in srgb, var(--lilac) 40%, var(--white));
   --box: var(--deep);
   --footer: var(--brand);
-  --lamp-string: var(--brand);
+  --lamp-string: var(--lilac);
   --lamp-handle: var(--red);
 }
 
@@ -93,3 +93,31 @@ body {
 .bulb-flash {
   animation: bulb-flash 0.5s ease-out;
 }
+
+/* ---- Hero: blurred, softly moving purple gradient with lilac glows ---- */
+.hero-bg {
+  background: linear-gradient(150deg, #3c096c 0%, #6a1fb0 55%, #3c096c 100%);
+  background-size: 200% 200%;
+  animation: hero-shift 18s ease-in-out infinite alternate;
+}
+.hero-glow {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(201, 162, 255, 0.55) 0%, rgba(201, 162, 255, 0) 68%);
+  filter: blur(40px);
+  will-change: transform;
+}
+.hero-glow-a { width: 62vmax; height: 62vmax; left: -18vmax; top: -22vmax; animation: hero-drift-a 20s ease-in-out infinite alternate; }
+.hero-glow-b { width: 54vmax; height: 54vmax; right: -16vmax; top: 18%; animation: hero-drift-b 24s ease-in-out infinite alternate; }
+.hero-glow-c { width: 44vmax; height: 44vmax; left: 22%; bottom: -26vmax; opacity: 0.8; animation: hero-drift-a 28s ease-in-out infinite alternate-reverse; }
+@keyframes hero-shift { from { background-position: 0% 30%; } to { background-position: 100% 70%; } }
+@keyframes hero-drift-a { from { transform: translate(0, 0) scale(1); } to { transform: translate(9vmax, 6vmax) scale(1.15); } }
+@keyframes hero-drift-b { from { transform: translate(0, 0) scale(1.1); } to { transform: translate(-8vmax, 7vmax) scale(0.95); } }
+
+/* "Spotted" rises under the banner after it lands. With Reduce Motion the animation is off and it just shows. */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(36px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-rise { animation: hero-rise 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) 2.4s both; }
+.hero-rise-late { animation: hero-rise 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) 2.8s both; }

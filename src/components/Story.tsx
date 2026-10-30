@@ -12,6 +12,8 @@ import LiteStory from "./LiteStory";
 import Menu from "./Menu";
 import WhatsApp from "./WhatsApp";
 import ThemeLamp from "./ThemeLamp";
+import Hero from "./hero/Hero";
+import TopBar from "./TopBar";
 import { FEATURES } from "@/config/features";
 import FlatWorld from "./flat/FlatWorld";
 
@@ -45,24 +47,32 @@ export default function Story() {
   });
   const mode = forced ?? detected;
 
+  // The landing section is on top, so "go to the start" means the start of the stories.
+  const toStories = () => window.scrollTo(0, document.getElementById("stories")?.offsetTop ?? 0);
   const pick = (id: StoryId) => {
-    window.scrollTo(0, 0);
+    toStories();
     setWhich(id);
     setForced("3d");
   };
   const toggle = () => {
-    window.scrollTo(0, 0);
+    toStories();
     setForced(mode === "lite" ? "3d" : "lite");
   };
 
-  if (mode === "pending") return <div className="min-h-dvh bg-deep" />;
   return (
     <>
-      {mode === "lite" ? (
-        <LiteStory current={which} onStory={pick} onToggleLite={toggle} />
-      ) : (
-        <Scroller key={which} id={which} onLite={() => setForced("lite")} onStory={pick} onToggleLite={toggle} />
-      )}
+      {FEATURES.hero && <Hero />}
+      {FEATURES.topBar && <TopBar onStory={pick} />}
+      {/* clip-path keeps the story's full-screen layers inside this box, so the landing section stays on top */}
+      <div id="stories" className="relative" style={{ clipPath: "inset(0)" }}>
+        {mode === "pending" ? (
+          <div className="min-h-dvh bg-deep" />
+        ) : mode === "lite" ? (
+          <LiteStory current={which} onStory={pick} onToggleLite={toggle} />
+        ) : (
+          <Scroller key={which} id={which} onLite={() => setForced("lite")} onStory={pick} onToggleLite={toggle} />
+        )}
+      </div>
       {FEATURES.whatsappButton && <WhatsApp />}
       {FEATURES.themeLamp && <ThemeLamp />}
     </>
@@ -115,7 +125,7 @@ function Scroller({
 
   return (
     <div ref={box} style={{ height: `${meta.heightVh}vh` }} className="relative">
-      <h1 className="sr-only">Spotted. Launching 1 January in the UAE.</h1>
+      <h2 className="sr-only">Spotted. Launching 1 January in the UAE.</h2>
       <div className="fixed inset-0 bg-deep" aria-hidden="true">
         <FlatWorld
           id={id}
@@ -128,9 +138,11 @@ function Scroller({
 
       <div className="pointer-events-none fixed inset-0 z-10">
         {/* top bar */}
-        <div className="absolute inset-x-0 top-0 flex items-start justify-between px-4 pt-[max(1rem,env(safe-area-inset-top))]">
+        <div className={`absolute inset-x-0 top-0 flex items-start justify-between px-4 ${
+            FEATURES.topBar ? "pt-[max(4.75rem,calc(env(safe-area-inset-top)+4.25rem))]" : "pt-[max(1rem,env(safe-area-inset-top))]"
+          }`}>
           <div className="flex flex-col items-start gap-2">
-            <span className="text-2xl font-extrabold text-white drop-shadow">Spotted</span>
+            {!FEATURES.topBar && <span className="text-2xl font-extrabold text-white drop-shadow">Spotted</span>}
             <span className="rounded-full bg-lilac px-4 py-1 text-sm font-bold text-deep">{meta.label}</span>
           </div>
           <Menu current={id} lite={false} onStory={onStory} onToggleLite={onToggleLite} />
