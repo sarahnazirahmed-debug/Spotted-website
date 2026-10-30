@@ -7,10 +7,11 @@ import TopBar from "./TopBar";
 import WhatsApp from "./WhatsApp";
 import ThemeLamp from "./ThemeLamp";
 
-export default function SiteChrome() {
+// alwaysVisible: show the top bar from the start (pages with no full-screen landing section).
+export default function SiteChrome({ alwaysVisible = false }: { alwaysVisible?: boolean }) {
   return (
     <>
-      {FEATURES.topBar && <TopBar />}
+      {FEATURES.topBar && <TopBar alwaysVisible={alwaysVisible} />}
       {FEATURES.whatsappButton && <WhatsApp />}
       {FEATURES.themeLamp && <ThemeLamp />}
     </>

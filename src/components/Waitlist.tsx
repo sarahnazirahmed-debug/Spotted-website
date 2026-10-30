@@ -9,7 +9,8 @@ import { FEATURES } from "@/config/features";
 // says honestly that sign-up is not open yet. It never pretends to save an email.
 type State = "idle" | "invalid" | "sending" | "done" | "failed" | "closed";
 
-export default function Waitlist({ label = "Join the waitlist" }: { label?: string }) {
+// list: which list the email goes on ("visitors" by default, "careers" for the careers page).
+export default function Waitlist({ label = "Join the waitlist", list = "visitors" }: { label?: string; list?: string }) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<State>("idle");
 
@@ -31,7 +32,7 @@ export default function Waitlist({ label = "Join the waitlist" }: { label?: stri
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ list, email: email.trim() }),
       });
       setState(res.ok ? "done" : "failed");
     } catch {

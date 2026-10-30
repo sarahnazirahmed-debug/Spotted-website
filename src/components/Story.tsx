@@ -15,6 +15,7 @@ import ThemeLamp from "./ThemeLamp";
 import Hero from "./hero/Hero";
 import TopBar from "./TopBar";
 import WhatsSpotted from "./WhatsSpotted";
+import Footer from "./Footer";
 import { FEATURES } from "@/config/features";
 import FlatWorld from "./flat/FlatWorld";
 
@@ -63,7 +64,7 @@ export default function Story() {
   return (
     <>
       {FEATURES.hero && <Hero />}
-      {FEATURES.topBar && <TopBar onStory={pick} />}
+      {FEATURES.topBar && <TopBar />}
       {FEATURES.whatsSpotted && <WhatsSpotted />}
       {/* clip-path keeps the story's full-screen layers inside this box, so the landing section stays on top */}
       <div id="stories" className="relative" style={{ clipPath: "inset(0)" }}>
@@ -75,6 +76,7 @@ export default function Story() {
           <Scroller key={which} id={which} onLite={() => setForced("lite")} onStory={pick} onToggleLite={toggle} />
         )}
       </div>
+      {FEATURES.footer && <Footer />}
       {FEATURES.whatsappButton && <WhatsApp />}
       {FEATURES.themeLamp && <ThemeLamp />}
     </>

@@ -19,6 +19,7 @@ export const COPY: Record<
     points: [
       "People save places they see in reels. Spotted keeps your restaurant in their list.",
       "When someone who saved you is nearby, Spotted sends a nudge, even with the app closed.",
+      "Spotted Partners get 2 months free. Your data from those 2 months is saved. If you choose to continue, now or weeks or months later, new data carries on from it.",
       "We start in Khalifa City, Abu Dhabi.",
     ],
     types: ["Restaurant", "Café", "Bakery", "Food truck", "Other"],
@@ -31,6 +32,7 @@ export const COPY: Record<
     points: [
       "People save shops they see in reels. Spotted keeps your shop in their list.",
       "When someone who saved you is nearby, Spotted sends a nudge, even with the app closed.",
+      "Spotted Partners get 2 months free. Your data from those 2 months is saved. If you choose to continue, now or weeks or months later, new data carries on from it.",
       "We start in Khalifa City, Abu Dhabi.",
     ],
     types: ["Fashion", "Beauty", "Gifts", "Home", "Other"],

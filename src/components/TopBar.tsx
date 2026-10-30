@@ -5,21 +5,20 @@
 // On phones the links go into a menu button (three lines).
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { FEATURES } from "@/config/features";
-import type { StoryId } from "@/lib/story";
+import { FEATURES, type FeatureName } from "@/config/features";
 
-type LinkItem = { label: string; story?: StoryId; to?: string; href?: string };
+type LinkItem = { label: string; to?: string; href?: string; feature?: FeatureName };
 const LINKS: LinkItem[] = [
   { label: "What's Spotted", to: "whats-spotted" },
-  { label: "Restaurants", href: "/restaurants" },
-  { label: "Shops", href: "/shops" },
-  { label: "Influencers", story: "influencer" },
-  { label: "Careers" },
-  { label: "About" },
+  { label: "Restaurants", href: "/restaurants", feature: "businessPages" },
+  { label: "Shops", href: "/shops", feature: "businessPages" },
+  { label: "Influencers", href: "/influencers", feature: "influencersPage" },
+  { label: "Careers", href: "/careers", feature: "careersPage" },
+  { label: "About", href: "/about", feature: "aboutPage" },
 ];
 
-// onStory is given on the home page. On other pages the story links open the home page instead.
-export default function TopBar({ onStory }: { onStory?: (id: StoryId) => void }) {
+// alwaysVisible: pages without a full-screen landing section show the bar from the start.
+export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
   const bar = useRef<HTMLElement>(null);
@@ -35,7 +34,7 @@ export default function TopBar({ onStory }: { onStory?: (id: StoryId) => void })
       const el = bar.current;
       if (!el) return;
       const t = Math.min(1, Math.max(0, (window.scrollY - window.innerHeight * 0.35) / (window.innerHeight * 0.4)));
-      const v = reduce ? (t > 0.5 ? 1 : 0) : t;
+      const v = alwaysVisible ? 1 : reduce ? (t > 0.5 ? 1 : 0) : t;
       el.style.opacity = String(v);
       el.style.pointerEvents = v > 0.3 ? "auto" : "none";
     };
@@ -50,7 +49,7 @@ export default function TopBar({ onStory }: { onStory?: (id: StoryId) => void })
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [alwaysVisible]);
 
   useEffect(() => {
     if (!note) return;
@@ -61,13 +60,8 @@ export default function TopBar({ onStory }: { onStory?: (id: StoryId) => void })
   function go(item: LinkItem) {
     setOpen(false);
     if (item.href) {
-      if (item.href === "/restaurants" || item.href === "/shops") {
-        if (FEATURES.businessPages) router.push(item.href);
-        else setNote(`${item.label} is coming soon.`);
-      } else router.push(item.href);
-    } else if (item.story) {
-      if (onStory) onStory(item.story);
-      else router.push(`/?story=${item.story}`);
+      if (item.feature && !FEATURES[item.feature]) setNote(`${item.label} is coming soon.`);
+      else router.push(item.href);
     } else if (item.to) {
       if (pathname === "/") document.getElementById(item.to)?.scrollIntoView();
       else router.push(`/#${item.to}`);
