@@ -3,8 +3,12 @@
 // The numbers match the printed cloth in banner3d.ts (a 1024 x 1584 picture).
 import { bannerWords } from "@/config/features";
 
-export default function BannerStill({ className }: { className?: string }) {
-  const { label, date } = bannerWords();
+export default function BannerStill({ className, label: l, date: d }: { className?: string; label?: string; date?: string }) {
+  const words = bannerWords();
+  const label = l ?? words.label;
+  const date = d ?? words.date;
+  // the highlight bar is about as wide as the second line (roughly 58 units per letter)
+  const barW = Math.min(800, date.length * 58 + 16);
   const font = "var(--font-poppins), system-ui, sans-serif";
   return (
     <svg
@@ -54,7 +58,7 @@ export default function BannerStill({ className }: { className?: string }) {
       >
         {label}
       </text>
-      <rect x="200" y="1040" width="624" height="22" rx="11" fill="#FFD23F" />
+      <rect x={512 - barW / 2} y="1040" width={barW} height="22" rx="11" fill="#FFD23F" />
       <text x="512" y="1010" textAnchor="middle" fill="#FFFFFF" fontFamily={font} fontWeight="800" fontSize="108">
         {date}
       </text>

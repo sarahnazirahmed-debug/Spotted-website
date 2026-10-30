@@ -6,13 +6,18 @@
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessDirectory" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
   hero: true,
   // The "What's Spotted" page under the landing section (why, how it works, never miss out, UAE, notify me).
   whatsSpotted: true,
+  // Part A: the /restaurants and /shops pages (cloth banner "COMING SOON", pitch, business waitlist form).
+  businessPages: true,
+  // Part B: the place directory on those pages (curved video row, list and grid, filters, place pages).
+  // It is built and tested with EXAMPLE data, and OFF until real partners join.
+  businessDirectory: false,
   // The top bar that fades in when you scroll down (logo, links, Sign up / Log in).
   topBar: true,
   // The pull-string lamp (top right) that switches between light and dark.

@@ -152,3 +152,27 @@ body {
   50% { transform: translateY(-12px); }
 }
 .bob { animation: bob 3.2s ease-in-out infinite; animation-delay: var(--d, 0s); }
+
+/* ---- Directory: dish "video" movement and flip cards ---- */
+@keyframes dish-steam {
+  0% { transform: translateY(10px); opacity: 0; }
+  35% { opacity: 0.9; }
+  100% { transform: translateY(-24px); opacity: 0; }
+}
+.dish-steam { animation: dish-steam 2.4s ease-in infinite; animation-delay: var(--d, 0s); }
+@keyframes dish-pan {
+  from { transform: scale(1) translateX(0); }
+  to { transform: scale(1.08) translateX(-6px); }
+}
+.dish-pan { transform-origin: 150px 140px; animation: dish-pan 6s ease-in-out infinite alternate; }
+
+.flip { perspective: 900px; }
+.flip-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.55s; }
+.flip-face { position: absolute; inset: 0; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); }
+/* keyboard: tabbing to "View place" turns the card over */
+.flip:has(.flip-back a:focus-visible) .flip-inner { transform: rotateY(180deg); }
+/* phones (no hover): tap flips it */
+@media (hover: none) { .flip.flipped .flip-inner { transform: rotateY(180deg); } }
+/* mouse: hover flips it */
+@media (hover: hover) { .flip:hover .flip-inner { transform: rotateY(180deg); } }

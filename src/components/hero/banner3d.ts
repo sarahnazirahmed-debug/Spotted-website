@@ -110,14 +110,15 @@ function drawArtwork(label: string, date: string, family: string): HTMLCanvasEle
   g.fillStyle = "#FFFFFF";
   fit(label, 800, 78, TEX_W - 160, 8);
   g.fillText(label, TEX_W / 2 + 4, 880);
-  // Yellow highlight bar under the date.
-  g.fillStyle = "#FFD23F";
-  g.beginPath();
-  g.roundRect(200, 1040, 624, 22, 11);
-  g.fill();
+  // Second line (the date, or "Restaurants"), with a yellow highlight bar as wide as the words.
   g.fillStyle = "#FFFFFF";
   fit(date, 800, 108, TEX_W - 200, 0);
+  const lineW = g.measureText(date).width;
   g.fillText(date, TEX_W / 2, 1010);
+  g.fillStyle = "#FFD23F";
+  g.beginPath();
+  g.roundRect(TEX_W / 2 - lineW / 2 - 8, 1040, lineW + 16, 22, 11);
+  g.fill();
   return c;
 }
 

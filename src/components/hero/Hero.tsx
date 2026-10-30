@@ -40,7 +40,8 @@ function subscribeMotion(cb: () => void) {
 }
 const snapshot = (): "3d" | "still" => (window.matchMedia(reduceQuery).matches || !canDo3d() ? "still" : "3d");
 
-export default function Hero() {
+// label and line2 are the two lines printed on the banner. Without them it shows the launch words.
+export default function Hero({ label: labelProp, line2 }: { label?: string; line2?: string }) {
   const mode = useSyncExternalStore<"3d" | "still">(subscribeMotion, snapshot, () => "still");
   const [slow, setSlow] = useState(false);
   const [ready, setReady] = useState(false);
@@ -51,7 +52,9 @@ export default function Hero() {
     if (!use3d || !host.current) return;
     let dead = false;
     let banner: { dispose: () => void } | null = null;
-    const { label, date } = bannerWords();
+    const words = bannerWords();
+    const label = labelProp ?? words.label;
+    const date = line2 ?? words.date;
     const skipSlowCheck = new URLSearchParams(window.location.search).has("force3d");
     import("./banner3d")
       .then((m) =>
@@ -73,7 +76,7 @@ export default function Hero() {
       banner?.dispose();
       setReady(false);
     };
-  }, [use3d]);
+  }, [use3d, labelProp, line2]);
 
   const showStill = !(use3d && ready);
   const out = LAUNCH.status === "outNow";
@@ -95,7 +98,7 @@ export default function Hero() {
         className="pointer-events-none absolute left-1/2 top-[11%] -translate-x-1/2 transition-opacity duration-500"
         style={{ width: "min(61vw, 37.5dvh)", opacity: showStill ? 1 : 0 }}
       >
-        <BannerStill className="block h-auto w-full drop-shadow-2xl" />
+        <BannerStill label={labelProp} date={line2} className="block h-auto w-full drop-shadow-2xl" />
       </div>
 
       {/* the 3D banner draws here */}

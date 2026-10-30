@@ -4,19 +4,24 @@
 // Left: logo. Middle: links. Right: Sign up / Log in. The lamp string hangs just to the right of it.
 // On phones the links go into a menu button (three lines).
 import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { FEATURES } from "@/config/features";
 import type { StoryId } from "@/lib/story";
 
-type LinkItem = { label: string; story?: StoryId; to?: string };
+type LinkItem = { label: string; story?: StoryId; to?: string; href?: string };
 const LINKS: LinkItem[] = [
   { label: "What's Spotted", to: "whats-spotted" },
-  { label: "Restaurants", story: "restaurant" },
-  { label: "Shops" },
+  { label: "Restaurants", href: "/restaurants" },
+  { label: "Shops", href: "/shops" },
   { label: "Influencers", story: "influencer" },
   { label: "Careers" },
   { label: "About" },
 ];
 
-export default function TopBar({ onStory }: { onStory: (id: StoryId) => void }) {
+// onStory is given on the home page. On other pages the story links open the home page instead.
+export default function TopBar({ onStory }: { onStory?: (id: StoryId) => void }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const bar = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState("");
@@ -55,9 +60,18 @@ export default function TopBar({ onStory }: { onStory: (id: StoryId) => void }) 
 
   function go(item: LinkItem) {
     setOpen(false);
-    if (item.story) onStory(item.story);
-    else if (item.to) document.getElementById(item.to)?.scrollIntoView();
-    else setNote(`${item.label} is coming soon.`);
+    if (item.href) {
+      if (item.href === "/restaurants" || item.href === "/shops") {
+        if (FEATURES.businessPages) router.push(item.href);
+        else setNote(`${item.label} is coming soon.`);
+      } else router.push(item.href);
+    } else if (item.story) {
+      if (onStory) onStory(item.story);
+      else router.push(`/?story=${item.story}`);
+    } else if (item.to) {
+      if (pathname === "/") document.getElementById(item.to)?.scrollIntoView();
+      else router.push(`/#${item.to}`);
+    } else setNote(`${item.label} is coming soon.`);
   }
 
   const link =
@@ -71,7 +85,7 @@ export default function TopBar({ onStory }: { onStory: (id: StoryId) => void }) 
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 lg:pr-[8.5rem]">
         <a
-          href="#top"
+          href={pathname === "/" ? "#top" : "/"}
           aria-label="Spotted, back to the top"
           className="flex min-h-11 items-center gap-2 text-xl font-extrabold text-heading"
         >
