@@ -8,6 +8,8 @@
   --lilac: #c9a2ff;
   --yellow: #ffd23f;
   --white: #ffffff;
+  --green: #2bb673; /* only for green stars and growth */
+  --whatsapp: #25d366; /* only on the WhatsApp button */
   --ink: #1a1025; /* black-ish, only for text where needed */
 }
 
@@ -50,6 +52,7 @@
   --color-lilac: var(--lilac);
   --color-sun: var(--yellow);
   --color-ink: var(--ink);
+  --color-leaf: var(--green);
   --font-sans: var(--font-poppins);
 }
 
@@ -121,3 +124,31 @@ body {
 }
 .hero-rise { animation: hero-rise 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) 2.4s both; }
 .hero-rise-late { animation: hero-rise 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) 2.8s both; }
+
+/* ---- What's Spotted page: one simple animation per section (objects only) ---- */
+/* A saved bookmark drops in, then fades: saved... and forgotten. */
+@keyframes bm-drop {
+  0% { transform: translateY(-150px); opacity: 0; }
+  14% { transform: translateY(0); opacity: 1; }
+  60% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(0); opacity: 0.2; }
+}
+.bm-drop { animation: bm-drop 7s ease-in infinite; animation-delay: var(--d, 0s); }
+/* Rings that spread out from a pin: "you are near". */
+@keyframes ring-out {
+  0% { transform: scale(0.25); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 0; }
+}
+.ring-out { transform-origin: center; transform-box: fill-box; animation: ring-out 3.6s ease-out infinite; animation-delay: var(--d, 0s); }
+/* The step number lights up one after another: 1, 2, 3. */
+@keyframes step-glow {
+  0%, 30%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 255, 0); transform: scale(1); }
+  10% { box-shadow: 0 0 0 10px rgba(201, 162, 255, 0.55); transform: scale(1.12); }
+}
+.step-glow { animation: step-glow 6s ease-out infinite; animation-delay: var(--d, 0s); }
+/* Little bobbing tiles. */
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.bob { animation: bob 3.2s ease-in-out infinite; animation-delay: var(--d, 0s); }

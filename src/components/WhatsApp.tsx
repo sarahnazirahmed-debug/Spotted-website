@@ -8,7 +8,7 @@ export default function WhatsApp() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
-      className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-30 flex size-12 items-center justify-center rounded-full bg-brand shadow-lg ring-2 ring-white transition active:scale-95"
+      className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-30 flex size-12 items-center justify-center rounded-full bg-[#25D366] shadow-lg ring-2 ring-white transition active:scale-95"
     >
       <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
         <path

@@ -84,7 +84,7 @@ export function Logo() {
   );
 }
 
-export function StarShape({ fill = C.yellow }: { fill?: string }) {
+export function StarShape({ fill = C.green }: { fill?: string }) {
   const pts = Array.from({ length: 10 }, (_, k) => {
     const r = k % 2 ? 14 : 34;
     const a = -Math.PI / 2 + (k * Math.PI) / 5;

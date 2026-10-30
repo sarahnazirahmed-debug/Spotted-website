@@ -56,7 +56,7 @@ const SECTIONS = [
     art: (
       <div className="flex gap-1">
         {[0, 1, 2, 3, 4].map((k) => (
-          <Star key={k} color={k < 3 ? "#C9A2FF" : "#FFD23F"} />
+          <Star key={k} color={k < 3 ? "#2BB673" : "#C9A2FF"} />
         ))}
       </div>
     ),
@@ -73,7 +73,7 @@ export default function LiteStory({
   onToggleLite: () => void;
 }) {
   return (
-    <main>
+    <div>
       <section className="bg-brand px-5 pb-14 pt-6 text-white">
         <div className="mx-auto max-w-2xl">
           <div className="flex items-center justify-between">
@@ -106,6 +106,6 @@ export default function LiteStory({
           <Waitlist />
         </div>
       </section>
-    </main>
+    </div>
   );
 }

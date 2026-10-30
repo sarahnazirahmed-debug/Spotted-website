@@ -9,6 +9,7 @@ export const C = {
   red: "#E5383B",
   lilac: "#C9A2FF",
   yellow: "#FFD23F",
+  green: "#2BB673", // only for green stars
   white: "#FFFFFF",
 };
 

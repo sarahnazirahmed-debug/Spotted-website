@@ -14,6 +14,7 @@ import WhatsApp from "./WhatsApp";
 import ThemeLamp from "./ThemeLamp";
 import Hero from "./hero/Hero";
 import TopBar from "./TopBar";
+import WhatsSpotted from "./WhatsSpotted";
 import { FEATURES } from "@/config/features";
 import FlatWorld from "./flat/FlatWorld";
 
@@ -63,6 +64,7 @@ export default function Story() {
     <>
       {FEATURES.hero && <Hero />}
       {FEATURES.topBar && <TopBar onStory={pick} />}
+      {FEATURES.whatsSpotted && <WhatsSpotted />}
       {/* clip-path keeps the story's full-screen layers inside this box, so the landing section stays on top */}
       <div id="stories" className="relative" style={{ clipPath: "inset(0)" }}>
         {mode === "pending" ? (

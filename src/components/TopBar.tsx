@@ -8,7 +8,7 @@ import type { StoryId } from "@/lib/story";
 
 type LinkItem = { label: string; story?: StoryId; to?: string };
 const LINKS: LinkItem[] = [
-  { label: "What's Spotted", to: "stories" },
+  { label: "What's Spotted", to: "whats-spotted" },
   { label: "Restaurants", story: "restaurant" },
   { label: "Shops" },
   { label: "Influencers", story: "influencer" },
