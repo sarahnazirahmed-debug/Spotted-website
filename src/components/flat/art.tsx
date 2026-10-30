@@ -1,10 +1,13 @@
 // Flat illustrated shapes, drawn like the reference picture: soft simple forms, no people.
 import { C } from "@/lib/flat";
 
-// ---- The arrival pin: a red location pin. Origin = the tip of the pin. About 300 tall. ----
+// ---- The glowing pin: a red location pin with a soft yellow glow. Origin = the tip. About 300 tall. ----
+// It is the traveller in every story: it moves along the road and lands at the cafe.
 export function ArrivalPin() {
   return (
     <g>
+      <circle cx="0" cy="-200" r="300" fill={C.yellow} opacity="0.1" />
+      <circle cx="0" cy="-200" r="200" fill={C.yellow} opacity="0.18" />
       <ellipse cx="0" cy="2" rx="60" ry="10" fill={C.deep} opacity="0.3" />
       <path d="M 0 0 C -100 -120 -136 -190 -136 -230 A 136 136 0 0 1 136 -230 C 136 -190 100 -120 0 0 Z" fill={C.red} />
       <path d="M 0 0 C 100 -120 136 -190 136 -230 C 136 -270 110 -330 40 -358 C 100 -300 90 -150 0 0 Z" fill={C.deep} opacity="0.16" />

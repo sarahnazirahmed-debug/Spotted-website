@@ -369,17 +369,20 @@ function Patio() {
   );
 }
 
-// ---------------------------------------------------------------- cars
+// ---------------------------------------------------------------- the glowing pin and the cars
+// The glowing pin moves along the road to the cafe. (Other cars are just traffic, nobody inside.)
 function DrivingCar({ id }: { id: StoryId }) {
   const g = useRef<SVGGElement>(null);
   useTick((p) => {
     const c = carState(id, p);
-    vis(g.current, c.scale > 0.02);
-    place(g.current, c.x, c.y, c.scale, (c.angle * 180) / Math.PI);
+    // In You and Restaurant the pin hops to the cafe door at the end (see Arrival), so it hides here.
+    const hopped = id === "influencer" ? false : p > (id === "you" ? 0.915 : 0.885);
+    vis(g.current, c.scale > 0.02 && !hopped);
+    place(g.current, c.x, c.y, c.scale * 0.55, 0);
   });
   return (
     <g ref={g} visibility="hidden">
-      <CarSide />
+      <ArrivalPin />
     </g>
   );
 }
@@ -411,13 +414,13 @@ function Passers() {
   );
 }
 
-// A red pin lands at the cafe door when the car stops (You and Restaurant stories).
+// The glowing pin hops to the cafe door at the end (You and Restaurant stories) (You and Restaurant stories).
 function Arrival({ id }: { id: StoryId }) {
   const g = useRef<SVGGElement>(null);
   useTick((p) => {
     const a = id === "you" ? range(p, 0.915, 0.95) : id === "restaurant" ? range(p, 0.885, 0.93) : 0;
     vis(g.current, a > 0.01);
-    place(g.current, lerp(4400, 4300, smooth(a)), lerp(900, 812, smooth(a)), lerp(0.2, 0.4, smooth(a)));
+    place(g.current, lerp(4400, 4300, smooth(a)), lerp(900, 812, smooth(a)), lerp(0.45, 0.55, smooth(a)));
   });
   return (
     <g ref={g} visibility="hidden">
