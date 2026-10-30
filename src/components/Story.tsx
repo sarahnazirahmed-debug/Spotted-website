@@ -11,6 +11,8 @@ import Waitlist from "./Waitlist";
 import LiteStory from "./LiteStory";
 import Menu from "./Menu";
 import WhatsApp from "./WhatsApp";
+import ThemeLamp from "./ThemeLamp";
+import { FEATURES } from "@/config/features";
 import FlatWorld from "./flat/FlatWorld";
 
 
@@ -61,7 +63,8 @@ export default function Story() {
       ) : (
         <Scroller key={which} id={which} onLite={() => setForced("lite")} onStory={pick} onToggleLite={toggle} />
       )}
-      <WhatsApp />
+      {FEATURES.whatsappButton && <WhatsApp />}
+      {FEATURES.themeLamp && <ThemeLamp />}
     </>
   );
 }

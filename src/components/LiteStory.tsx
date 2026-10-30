@@ -89,17 +89,17 @@ export default function LiteStory({
       </section>
 
       {SECTIONS.map((s) => (
-        <section key={s.tag} className="px-5 py-12 even:bg-lilac/40">
+        <section key={s.tag} className="bg-page px-5 py-12 text-onpage even:bg-alt">
           <div className="mx-auto max-w-2xl">
             <span className="rounded-full bg-lilac px-4 py-1 text-sm font-bold text-deep">{s.tag}</span>
-            <h2 className="mt-4 text-3xl font-extrabold leading-tight text-deep">{s.title}</h2>
+            <h2 className="mt-4 text-3xl font-extrabold leading-tight text-heading">{s.title}</h2>
             <p className="mt-3">{s.text}</p>
-            <div className="mt-6 inline-block rounded-3xl bg-deep p-5">{s.art}</div>
+            <div className="mt-6 inline-block rounded-3xl bg-box p-5">{s.art}</div>
           </div>
         </section>
       ))}
 
-      <section className="bg-deep px-5 py-14 text-white">
+      <section className="bg-footer px-5 py-14 text-white">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="text-3xl font-extrabold leading-tight">Launching 1 January in the UAE</h2>
           <p className="mb-5 mt-2 text-lilac">Be first to know when Spotted opens.</p>

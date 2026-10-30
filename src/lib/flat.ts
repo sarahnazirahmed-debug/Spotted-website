@@ -171,7 +171,7 @@ const WAYS: Record<StoryId, Way[]> = {
     [0.08, [720, 600, 1.4]],
     [0.14, [570, 470, 3.4]], // up to the window
     [0.2, [550, 440, 6]],
-    [0.34, [550, 440, 6.2]], // inside: she scrolls and saves
+    [0.34, [550, 440, 6.2]], // inside: the reels scroll and a place is saved
     [0.4, [580, 560, 1.5]],
     [0.5, [560, 600, 1.15]], // three days and nights
     [0.58, [600, 590, 1.12]],
@@ -180,7 +180,7 @@ const WAYS: Record<StoryId, Way[]> = {
     ...follow(carXY("you"), [
       [0.69, 250, -110, 1.6],
       [0.74, 200, -90, 1.9],
-      [0.77, 40, -110, 5.2], // zoom to the driver
+      [0.77, 40, -110, 5.2], // zoom to the car
       [0.82, 40, -110, 5.2],
       [0.86, 330, -170, 1.4],
       [0.91, 40, -260, 1.2],
@@ -189,7 +189,7 @@ const WAYS: Record<StoryId, Way[]> = {
   ],
   influencer: [
     [0.0, [560, 440, 4.2]],
-    [0.1, [550, 440, 6]], // she films the cup
+    [0.1, [550, 440, 6]], // the phone films the cup
     [0.115, [550, 440, 5.5]],
     ...follow(reelXY, [
       [0.13, 120, 40, 2.6],

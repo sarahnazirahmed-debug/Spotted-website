@@ -17,7 +17,7 @@ export default function Menu({
 }) {
   const [open, setOpen] = useState(false);
   const item =
-    "flex min-h-11 w-full items-center rounded-xl px-4 text-left text-base font-bold text-deep active:bg-lilac/60";
+    "flex min-h-11 w-full items-center rounded-xl px-4 text-left text-base font-bold text-heading active:opacity-70";
   return (
     <div className="pointer-events-auto relative">
       <button
@@ -35,13 +35,13 @@ export default function Menu({
         </svg>
       </button>
       {open && (
-        <div role="menu" className="absolute right-0 top-12 w-56 rounded-2xl bg-white p-2 shadow-xl">
+        <div role="menu" className="absolute right-0 top-12 w-56 rounded-2xl bg-page p-2 text-heading shadow-xl ring-1 ring-lilac">
           {STORY_LIST.map((s) => (
             <button
               key={s.id}
               role="menuitem"
               type="button"
-              className={`${item} ${!lite && s.id === current ? "bg-lilac/50" : ""}`}
+              className={`${item} ${!lite && s.id === current ? "bg-brand text-white" : ""}`}
               onClick={() => {
                 setOpen(false);
                 onStory(s.id);

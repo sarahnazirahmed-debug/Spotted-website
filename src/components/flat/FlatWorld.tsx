@@ -18,7 +18,7 @@ import {
   passerAt,
   curve2,
 } from "@/lib/flat";
-import { Woman, CarSide, BookmarkShape, Logo, StarShape } from "./art";
+import { ArrivalPin, PhoneStand, CarSide, BookmarkShape, Logo, StarShape } from "./art";
 
 // ---------------------------------------------------------------- tiny animation engine
 type Tick = (p: number, time: number) => void;
@@ -254,12 +254,9 @@ function Room({
         <rect x="-93" y="-89" width="26" height="38" rx="2" fill={C.deep} opacity="0.3" />
         {kind === "sit" ? (
           <g>
-            <g transform="translate(-42 98) scale(0.33)">
-              <Woman pose="sit" />
-            </g>
             <rect x="-112" y="26" width="146" height="70" rx="10" fill={C.lilac} />
             <rect x="-106" y="10" width="46" height="26" rx="12" fill={C.white} />
-            {/* what she sees: a reel feed */}
+            {/* the reel feed on the phone */}
             <circle cx="22" cy="-38" r="5" fill={C.white} />
             <circle cx="12" cy="-24" r="3" fill={C.white} />
             <rect x="34" y="-102" width="80" height="130" rx="14" fill={C.white} />
@@ -284,8 +281,8 @@ function Room({
             <rect x="52" y="30" width="34" height="26" rx="8" fill={C.yellow} />
             <path d="M 86 36 a 6 7 0 0 1 0 13" fill="none" stroke={C.yellow} strokeWidth="4" />
             <path d="M 60 24 q 4 -8 0 -14 M 72 24 q 4 -8 0 -14" fill="none" stroke={C.white} strokeWidth="3" strokeLinecap="round" />
-            <g transform="translate(-44 108) scale(0.29)">
-              <Woman pose="film" />
+            <g transform="translate(-50 66)">
+              <PhoneStand />
             </g>
           </g>
         )}
@@ -294,7 +291,7 @@ function Room({
       <rect x={-hw} y={-hh} width={win.w} height={win.h} fill={C.yellow} opacity="0.1" />
       <rect x={-hw} y={-hh} width={win.w} height={win.h} fill="none" stroke={C.lilac} strokeWidth="10" />
       <rect x={-hw - 14} y={hh} width={win.w + 28} height="16" rx="5" fill={C.lilac} />
-      {/* bookmark that pops up when she saves */}
+      {/* bookmark that pops up when a place is saved */}
       <g ref={pop} visibility="hidden">
         <BookmarkShape />
       </g>
@@ -375,18 +372,14 @@ function Patio() {
 // ---------------------------------------------------------------- cars
 function DrivingCar({ id }: { id: StoryId }) {
   const g = useRef<SVGGElement>(null);
-  const driver = useRef<SVGGElement>(null);
   useTick((p) => {
     const c = carState(id, p);
     vis(g.current, c.scale > 0.02);
     place(g.current, c.x, c.y, c.scale, (c.angle * 180) / Math.PI);
-    // the driver steps out at the end (You and Restaurant stories)
-    const out = id === "influencer" ? false : p > (id === "you" ? 0.915 : 0.885);
-    vis(driver.current, !out);
   });
   return (
     <g ref={g} visibility="hidden">
-      <CarSide driverRef={driver} />
+      <CarSide />
     </g>
   );
 }
@@ -418,7 +411,7 @@ function Passers() {
   );
 }
 
-// She steps out of the car and walks to the cafe door (You and Restaurant stories).
+// A red pin lands at the cafe door when the car stops (You and Restaurant stories).
 function Arrival({ id }: { id: StoryId }) {
   const g = useRef<SVGGElement>(null);
   useTick((p) => {
@@ -428,7 +421,7 @@ function Arrival({ id }: { id: StoryId }) {
   });
   return (
     <g ref={g} visibility="hidden">
-      <Woman pose="stand" />
+      <ArrivalPin />
     </g>
   );
 }
@@ -449,7 +442,7 @@ function HeroLogo() {
     );
     const env = 1 - smooth(range(p, 0.37, 0.4));
     vis(g.current, env > 0.01);
-    // after she saves it, the logo is the bookmark that pops on her phone
+    // after the place is saved, the logo is the bookmark that pops on the phone
     const pulse = 1 + 0.25 * Math.sin(Math.PI * range(p, 0.29, 0.34));
     place(g.current, x, y + Math.sin(t * 1.6) * 8 * (1 - u), lerp(2.2, 0.55, u) * env * pulse);
   });

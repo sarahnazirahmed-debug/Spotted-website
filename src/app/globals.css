@@ -11,7 +11,39 @@
   --ink: #1a1025; /* black-ish, only for text where needed */
 }
 
+/* Theme colours. Dark is the default; the lamp switches to light.
+   Use them in classes like bg-page, text-onpage, text-heading, bg-alt, bg-box, bg-footer. */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: var(--deep);
+  --on-page: var(--white);
+  --heading: var(--white);
+  --alt: var(--deep);
+  --box: var(--brand);
+  --footer: var(--deep);
+  --lamp-string: var(--lilac);
+  --lamp-handle: var(--yellow);
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --page: var(--white);
+  --on-page: var(--ink);
+  --heading: var(--deep);
+  --alt: color-mix(in srgb, var(--lilac) 40%, var(--white));
+  --box: var(--deep);
+  --footer: var(--brand);
+  --lamp-string: var(--brand);
+  --lamp-handle: var(--red);
+}
+
 @theme inline {
+  --color-page: var(--page);
+  --color-onpage: var(--on-page);
+  --color-heading: var(--heading);
+  --color-alt: var(--alt);
+  --color-box: var(--box);
+  --color-footer: var(--footer);
   --color-brand: var(--brand);
   --color-deep: var(--deep);
   --color-spot-red: var(--red);
@@ -22,8 +54,8 @@
 }
 
 body {
-  background: var(--white);
-  color: var(--ink);
+  background: var(--page);
+  color: var(--on-page);
   font-family: var(--font-poppins), system-ui, sans-serif;
   font-weight: 500;
 }
@@ -50,4 +82,14 @@ body {
 /* Key words: little reel stickers that pop in and out. */
 .keyword {
   transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+/* The lamp bulb flashes when the string is pulled. */
+@keyframes bulb-flash {
+  0% { filter: brightness(1); }
+  25% { filter: brightness(2.4) drop-shadow(0 0 48px #ffd23f); }
+  100% { filter: brightness(1); }
+}
+.bulb-flash {
+  animation: bulb-flash 0.5s ease-out;
 }

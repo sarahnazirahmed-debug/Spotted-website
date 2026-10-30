@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FEATURES } from "@/config/features";
 
 // Waitlist email form.
 // NOTE: Version 1 has no server, so the email is checked but NOT saved anywhere yet.
@@ -18,6 +19,8 @@ export default function Waitlist() {
     // TODO: send `email` to a real waitlist service here.
     setState("done");
   }
+
+  if (!FEATURES.waitlist) return null;
 
   if (state === "done") {
     return (
