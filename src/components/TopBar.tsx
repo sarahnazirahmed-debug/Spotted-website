@@ -98,13 +98,13 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
         </nav>
 
         <div className="ml-auto hidden items-center gap-2 lg:flex">
-          <button type="button" className={link} onClick={() => go({ label: "Log in" })}>
+          <button type="button" className={link} onClick={() => go({ label: "Log in", href: "/login", feature: "accounts" })}>
             Log in
           </button>
           <button
             type="button"
             className="min-h-11 rounded-full bg-brand px-5 text-sm font-extrabold text-white transition active:scale-95"
-            onClick={() => go({ label: "Sign up" })}
+            onClick={() => go({ label: "Sign up", href: "/signup", feature: "accounts" })}
           >
             Sign up
           </button>
@@ -133,13 +133,13 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
               </button>
             ))}
             <div className="mt-2 flex gap-2">
-              <button type="button" className={`${link} flex-1 justify-center border border-lilac text-base`} onClick={() => go({ label: "Log in" })}>
+              <button type="button" className={`${link} flex-1 justify-center border border-lilac text-base`} onClick={() => go({ label: "Log in", href: "/login", feature: "accounts" })}>
                 Log in
               </button>
               <button
                 type="button"
                 className="min-h-11 flex-1 rounded-full bg-brand px-5 text-base font-extrabold text-white"
-                onClick={() => go({ label: "Sign up" })}
+                onClick={() => go({ label: "Sign up", href: "/signup", feature: "accounts" })}
               >
                 Sign up
               </button>

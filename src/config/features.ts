@@ -6,7 +6,7 @@
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "creatorWaitlist" | "businessDirectory" | "influencersPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "creatorWaitlist" | "businessDirectory" | "accounts" | "influencersPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
@@ -18,6 +18,9 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // Part B: the place directory on those pages (curved video row, list and grid, filters, place pages).
   // It is built and tested with EXAMPLE data, and OFF until real partners join.
   businessDirectory: false,
+  // Sign up, log in (email code) and the partner dashboard. OFF until Supabase is connected
+  // (see supabase/schema.sql and .env.example).
+  accounts: false,
   // The /influencers page (what creators get, Free vs Creator Pro, example stats, creator waitlist).
   influencersPage: true,
   // The /careers page ("We are not hiring yet", email form).
@@ -50,6 +53,8 @@ export const LAUNCH = {
   comingSoon: { label: "COMING SOON", date: "01.01.2027" },
   outNow: { label: "OUT NOW", date: "01.01.2027" },
   // Shown only when status is "outNow".
+  // Shown on the sign-up thank-you screen next to the store buttons until launch.
+  storeNote: "Coming 1 January",
   stores: {
     appStore: "", // paste the App Store link here
     googlePlay: "", // paste the Google Play link here
