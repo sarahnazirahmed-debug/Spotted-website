@@ -91,3 +91,17 @@ test("SITE_RULES.md has the new rules", () => {
     assert.ok(s.toLowerCase().includes(word.toLowerCase()), `missing: ${word}`);
   }
 });
+
+test("the site can be built as plain files for Cloudflare Pages", () => {
+  const pkg = JSON.parse(text("package.json"));
+  assert.equal(pkg.scripts["build:cloudflare"], "NEXT_OUTPUT=export next build");
+  assert.match(text("next.config.ts"), /output: "export"/);
+  assert.match(text("public/_redirects"), /^\/influencers \/insider 301$/m);
+  assert.equal(text(".node-version").trim(), "22");
+  // a plain-files site has no server code, so none of these may appear
+  for (const f of files) {
+    const s = noComments(text(f));
+    assert.doesNotMatch(s, /from "next\/server"|from "next\/headers"|"use server"/, `${f} needs a server`);
+  }
+  assert.ok(!files.some((f) => /[\\/]route\.tsx?$/.test(f) || /[\\/]middleware\.tsx?$/.test(f)), "a route or middleware file needs a server");
+});
