@@ -20,7 +20,7 @@ export const FEATURES: Record<FeatureName, boolean> = {
   businessDirectory: false,
   // Sign up, log in (email code) and the partner dashboard. OFF until Supabase is connected
   // (see supabase/schema.sql and .env.example).
-  accounts: true,
+  accounts: false,
   // The /insider page ("Spotted Insider": the paid plan for creators, example stats, Insider waitlist).
   insiderPage: true,
   // The /careers page ("We are not hiring yet", email form).
