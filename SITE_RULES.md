@@ -19,7 +19,8 @@ These rules are for the Spotted website (this folder). Follow them in every step
 
 - **No launch dates anywhere on the site.** Not on the banner, the stories, the sign-up note or `features.ts`. Say **"Coming soon"** only.
 - English only for now, **but ready for more languages** (Arabic next):
-  - keep words in plain text files or lists (`copy.ts`, `features.ts`), not buried inside drawings;
+  - keep words in ONE text file: `src/content/en.ts` (the public pages read it through `src/content/index.ts`; to add a language, copy `en.ts` and translate it). Prices and plan lines are in `src/config/pricing.ts`;
+  - never put long sentences inside the page code (a test checks the main pages);
   - never put words inside pictures (the 3D banner words come from the page);
   - leave room for longer words, and for right-to-left writing (use `start`/`end` and `ms-`/`me-` in new CSS, not left and right where it can be avoided);
   - keep `lang` on the page's `<html>` tag.
@@ -71,3 +72,13 @@ These rules are for the Spotted website (this folder). Follow them in every step
 - The **database** decides who may see and do what (`supabase/admin.sql`, with row-level security). The website only decides which buttons to show. Tests for both are in `tests/admin-database.test.mjs` and `tests/admin-helpers.test.mjs`.
 - Exactly one main admin. Nobody can change or remove it.
 - The Pin Desk stores only reel links and place facts. Nothing about app users. The creator handle is for the team only and is never shown to app users or the public.
+
+## 12. The public pages (business website)
+
+- Top menu, in this order: Home, Restaurants, Shops, Insiders, Pricing, How to join, FAQ, About, Sign in. Careers is built but OFF.
+- The animated home (cloth banner, stories) and the pull-string lamp are built but OFF (`hero`, `themeLamp` in `features.ts`).
+- Prices and "what is included" are in ONE file: `src/config/pricing.ts`. The first 2 months are free; paying yearly gives 1 month free.
+- The live counters (People on Spotted, Saves, Spotted Partners, Spotted Insiders) show for the visitor's country and worldwide, but each one only after it passes its number in `src/config/counters.ts`. They show totals only, never any person's details.
+- The App Store and Google Play buttons show only when `storeButtons` is ON and the links are filled in.
+- Restaurants, Shops and Insiders say "Coming soon" and have a "Get in touch" form that saves to Supabase. There is no sign-up yet.
+- WhatsApp and Instagram buttons use words and a plain arrow, never the real logos. The Instagram link comes from `NEXT_PUBLIC_INSTAGRAM_URL`.

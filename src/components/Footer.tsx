@@ -1,16 +1,22 @@
-// The footer: links to every page, contact, and the legal pages.
+// The footer: links to every page, the WhatsApp and Instagram buttons, and the contact email (once it exists).
 import Link from "next/link";
 import { CONTACT, FEATURES } from "@/config/features";
+import { text } from "@/content";
+import SocialButtons from "./site/SocialButtons";
 
 export default function Footer() {
   const links: [string, string, boolean][] = [
-    ["Restaurants", "/restaurants", FEATURES.businessPages],
-    ["Shops", "/shops", FEATURES.businessPages],
-    ["Insider", "/insider", FEATURES.insiderPage],
-    ["Careers", "/careers", FEATURES.careersPage],
-    ["About", "/about", FEATURES.aboutPage],
-    ["Privacy", "/privacy", FEATURES.legalPages],
-    ["Terms", "/terms", FEATURES.legalPages],
+    [text.nav.restaurants, "/restaurants", FEATURES.businessPages],
+    [text.nav.shops, "/shops", FEATURES.businessPages],
+    [text.nav.insiders, "/insider", FEATURES.insiderPage],
+    [text.nav.pricing, "/pricing", FEATURES.pricingPage],
+    [text.nav.howToJoin, "/how-to-join", FEATURES.howToJoinPage],
+    [text.nav.faq, "/faq", FEATURES.faqPage],
+    [text.nav.about, "/about", FEATURES.aboutPage],
+    [text.footer.careers, "/careers", FEATURES.careersPage],
+    [text.footer.removeReels, "/remove-reels", FEATURES.removeReelsPage],
+    [text.footer.privacy, "/privacy", FEATURES.legalPages],
+    [text.footer.terms, "/terms", FEATURES.legalPages],
   ];
   return (
     <footer className="bg-footer px-5 py-12 text-paper">
@@ -22,9 +28,11 @@ export default function Footer() {
             </svg>
             Spotted
           </p>
-          <p className="mt-2 text-mist">Made in the UAE.</p>
+          <p className="mt-2 text-mist">{text.footer.tagline}</p>
+          <p className="mb-3 mt-6 text-sm font-bold text-mist">{text.footer.follow}</p>
+          <SocialButtons />
           {CONTACT.emailLive && (
-            <a href={`mailto:${CONTACT.email}`} className="mt-3 inline-flex min-h-11 items-center font-bold underline">
+            <a href={`mailto:${CONTACT.email}`} className="mt-4 inline-flex min-h-11 items-center font-bold underline">
               {CONTACT.email}
             </a>
           )}

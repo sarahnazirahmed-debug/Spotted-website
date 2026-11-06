@@ -77,8 +77,9 @@ test("creator credit is hidden by default and Insider has no free plan", () => {
   assert.match(text("src/config/features.ts"), /creatorCredit: false/);
   const insider = text("src/components/creators/InsiderPage.tsx");
   assert.doesNotMatch(insider, /Free vs|Creator Pro|AED 0/);
-  assert.match(insider, /AED 249/);
-  assert.match(insider, /First 2 months free/);
+  // the price and the free months come from the one pricing file
+  assert.match(text("src/config/pricing.ts"), /INSIDER_PLAN[\s\S]*priceAed: 249/);
+  assert.match(text("src/config/pricing.ts"), /FREE_MONTHS = 2/);
 });
 
 test("the old /influencers address redirects to /insider", () => {

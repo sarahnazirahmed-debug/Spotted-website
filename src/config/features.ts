@@ -6,11 +6,13 @@
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
-  hero: true,
+  // (Now OFF: the new home page is a clean business page. The cloth banner, the stories and the old
+  // "What's Spotted" page stay in the code, ready to switch back on.)
+  hero: false,
   // The "What's Spotted" page under the landing section (why, how it works, never miss out, UAE, notify me).
   whatsSpotted: true,
   // Part A: the /restaurants and /shops pages (cloth banner "COMING SOON", pitch, business waitlist form).
@@ -27,7 +29,8 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // The /insider page ("Spotted Insider": the paid plan for creators, example stats, Insider waitlist).
   insiderPage: true,
   // The /careers page ("We are not hiring yet", email form).
-  careersPage: true,
+  // (OFF for now: built, but not in the menu or footer.)
+  careersPage: false,
   // The /about page (the story of Spotted, contact).
   aboutPage: true,
   // The /privacy and /terms pages.
@@ -37,7 +40,8 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // The top bar that fades in when you scroll down (logo, links, Sign up / Log in).
   topBar: true,
   // The pull-string lamp (top right) that switches between light and dark.
-  themeLamp: true,
+  // (OFF for now. The site stays in the dark theme until it is switched back on.)
+  themeLamp: false,
   // The "Join the waitlist" email form for visitors, and the careers email form.
   // OFF for now (no place to save emails yet): the pages show a WhatsApp message button instead.
   waitlist: false,
@@ -49,6 +53,23 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // and the star row in the simple version. OFF: only paying Spotted Insider members ever get anything
   // about them, and nothing about a creator is shown to the public.
   creatorCredit: false,
+  // The /pricing page (plans and what is included: edit src/config/pricing.ts).
+  pricingPage: true,
+  // The /how-to-join page (numbered steps for partners and Insiders).
+  howToJoinPage: true,
+  // The /faq page (questions and answers).
+  faqPage: true,
+  // The "Creators: remove my reels" page and form.
+  removeReelsPage: true,
+  // The live counters on the home page (People on Spotted, Saves, Spotted Partners, Spotted Insiders).
+  // Each one still waits until it passes its own number: src/config/counters.ts.
+  liveCounters: true,
+  // The App Store and Google Play buttons on the home page. OFF until the app is out; the two store
+  // links go in LAUNCH.stores below.
+  storeButtons: false,
+  // The "Get in touch" forms on Restaurants, Shops and Insiders (saved to Supabase).
+  // If OFF, those pages show a WhatsApp message button instead.
+  getInTouch: true,
   // The round WhatsApp button (bottom right).
   whatsappButton: true,
 };
