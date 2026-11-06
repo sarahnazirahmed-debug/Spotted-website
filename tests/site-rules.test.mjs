@@ -98,6 +98,11 @@ test("the site can be built as plain files for Cloudflare Pages", () => {
   assert.match(text("next.config.ts"), /output: "export"/);
   assert.match(text("public/_redirects"), /^\/influencers \/insider 301$/m);
   assert.equal(text(".node-version").trim(), "22");
+  // Cloudflare "Workers" screen: wrangler.jsonc points at the out folder
+  const wrangler = JSON.parse(text("wrangler.jsonc").replace(/^\s*\/\/.*$/gm, ""));
+  assert.equal(wrangler.name, "spotted-website");
+  assert.equal(wrangler.assets.directory, "./out");
+  assert.equal(wrangler.assets.not_found_handling, "404-page");
   // a plain-files site has no server code, so none of these may appear
   for (const f of files) {
     const s = noComments(text(f));

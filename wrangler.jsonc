@@ -1,0 +1,11 @@
+// Cloudflare reads this file when it deploys the site (the "Deploy command": npx wrangler deploy).
+// It says: this site is plain files in the "out" folder (made by: npm run build:cloudflare), no server needed.
+{
+  "name": "spotted-website",
+  "compatibility_date": "2025-10-01",
+  "assets": {
+    "directory": "./out",
+    // pages that do not exist show the site's own 404 page
+    "not_found_handling": "404-page"
+  }
+}
