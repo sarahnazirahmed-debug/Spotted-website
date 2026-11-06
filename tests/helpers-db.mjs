@@ -24,6 +24,7 @@ export async function makeDb() {
   await db.exec(readFileSync("supabase/schema.sql", "utf8"));
   await db.exec(readFileSync("supabase/admin.sql", "utf8"));
   await db.exec(readFileSync("supabase/public_site.sql", "utf8"));
+  await db.exec(readFileSync("supabase/dashboard.sql", "utf8"));
   return db;
 }
 

@@ -3,6 +3,9 @@
 -- WARNING: it deletes whatever is stored in those tables (including the team list and the Pin Desk).
 -- Use it only on a new project, or when you are sure.
 
+-- dashboard.sql (dashboard numbers)
+drop function if exists public.dashboard_real(text, integer), public.dashboard_influencers();
+
 -- public_site.sql (contact forms and live counters)
 drop function if exists public.public_stats();
 drop table if exists public.stats_counters, public.removal_requests, public.contact_requests cascade;

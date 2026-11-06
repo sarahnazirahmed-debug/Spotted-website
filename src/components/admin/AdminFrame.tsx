@@ -5,6 +5,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { canOpenDashboard } from "@/lib/dashboard/access";
 import { canOpenTeam, ROLE_LABEL } from "@/lib/teamRules";
 import AdminLogin from "./AdminLogin";
 import { useAdmin } from "./AdminProvider";
@@ -78,6 +79,7 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
           <span className="mr-2 text-xl font-extrabold text-heading">Spotted team</span>
           <nav aria-label="Admin" className="flex flex-wrap items-center gap-1">
             {tab("/admin/pin", "Pin Desk")}
+            {canOpenDashboard(me.role) && tab("/admin/dashboard", "Dashboard")}
             {canOpenTeam(me.role) && tab("/admin/team", "Team")}
           </nav>
           <span className="ml-auto text-sm font-bold">
