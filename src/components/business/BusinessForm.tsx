@@ -9,8 +9,8 @@ import { COPY } from "./copy";
 type State = "idle" | "invalid" | "sending" | "done" | "failed" | "closed";
 
 const field =
-  "min-h-12 w-full rounded-2xl bg-white px-5 text-base font-medium text-ink outline-none focus:ring-4 focus:ring-lilac";
-const label = "mb-1 block text-sm font-bold text-white";
+  "min-h-12 w-full rounded-2xl bg-paper px-5 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent";
+const label = "mb-1 block text-sm font-bold text-paper";
 
 export default function BusinessForm({ kind }: { kind: Kind }) {
   const c = COPY[kind];
@@ -57,7 +57,7 @@ export default function BusinessForm({ kind }: { kind: Kind }) {
 
   if (state === "done") {
     return (
-      <p role="status" className="rounded-2xl bg-lilac px-5 py-4 text-center font-bold text-deep">
+      <p role="status" className="rounded-2xl bg-chip px-5 py-4 text-center font-bold text-charcoal">
         Thank you. We will get in touch before Spotted opens.
       </p>
     );
@@ -105,12 +105,12 @@ export default function BusinessForm({ kind }: { kind: Kind }) {
       <button
         type="submit"
         disabled={state === "sending"}
-        className="min-h-12 rounded-full bg-white px-7 font-extrabold text-deep transition active:scale-95 disabled:opacity-60 sm:col-span-2"
+        className="min-h-12 rounded-full bg-paper px-7 font-extrabold text-charcoal transition active:scale-95 disabled:opacity-60 sm:col-span-2"
       >
         {state === "sending" ? "Sending..." : "Join the waitlist"}
       </button>
       {message && (
-        <p role="alert" className="text-sm font-bold text-white sm:col-span-2">
+        <p role="alert" className="text-sm font-bold text-paper sm:col-span-2">
           {message}
         </p>
       )}

@@ -1,56 +1,64 @@
 # Spotted website: site rules
 
-These rules are for the Spotted website (this folder). Follow them in every step. If a request clashes with a rule, say so before building.
+These rules are for the Spotted website (this folder). Follow them in every step. If a request clashes with a rule, say so before building. A test (`tests/site-rules.test.mjs`) checks the rules that can be checked by a computer.
 
-## 1. Colours (brand colours only)
+## 1. Colours
 
-| Colour | Hex | Use |
-|---|---|---|
-| Purple | `#6A1FB0` | Main brand colour |
-| Deep purple | `#3C096C` | Dark backgrounds, strong text |
-| Red | `#E5383B` | Pins, bookmarks, alerts |
-| Lilac | `#C9A2FF` | Soft backgrounds, tags |
-| Yellow | `#FFD23F` | **Highlights only** (small stickers, one key word, a star) |
-| White | `#FFFFFF` | Backgrounds, text on purple |
-| Green | `#2BB673` | **Only** for green stars and growth (up arrows, rising bars) |
-| WhatsApp green | `#25D366` | **Only** on the WhatsApp button |
-| Black | `#000000` or near-black | **Only** for small text |
+- **Every colour lives in ONE file: `src/styles/colors.css`**, as a named colour. Components use the names (for example `bg-page`, `text-heading`, `bg-panel`, or `var(--c-accent)` in a drawing). **Never write a colour code** (`#...`, `rgb(...)`, `hsl(...)`) anywhere else. To change the look, change that one file.
+- The brand colours are **not decided yet**. The file holds neutral placeholders: soft white, charcoal, and one warm accent (ember).
+- Special names inside that file: green (`--leaf`) is **only** for green stars and growth. WhatsApp green (`--whatsapp`) is **only** on the WhatsApp button.
+- Code that cannot use CSS names (the 3D banner, the day and night mixing) reads the colours from the page through `src/styles/palette.ts`. It never holds colour codes of its own.
+- Small text is dark on light and light on dark. Check contrast in both themes.
 
-Any other colour is not allowed. Define colours once as variables (in `globals.css`) and use the variables.
+## 2. Fonts
 
-## 2. Font
+- **Two fonts, in ONE file: `src/styles/fonts.ts`** (a heading font and a body font). Change them there and nowhere else. They become `--font-heading` and `--font-body`.
+- Today both are Poppins (500, 700, 800) as a placeholder until the brand is decided.
 
-Poppins only, weights 500, 700 and 800. No other font, no other weight.
+## 3. Words and dates
 
-## 3. Drawings: never draw people
+- **No launch dates anywhere on the site.** Not on the banner, the stories, the sign-up note or `features.ts`. Say **"Coming soon"** only.
+- English only for now, **but ready for more languages** (Arabic next):
+  - keep words in plain text files or lists (`copy.ts`, `features.ts`), not buried inside drawings;
+  - never put words inside pictures (the 3D banner words come from the page);
+  - leave room for longer words, and for right-to-left writing (use `start`/`end` and `ms-`/`me-` in new CSS, not left and right where it can be avoided);
+  - keep `lang` on the page's `<html>` tag.
+
+## 4. Drawings: never draw people
 
 - Never draw people, faces, eyes, hands or any human figure (no heads, no headscarves on a body, no arms, no silhouettes).
 - Draw things instead: pins, phones, roads, cafes, plates, bags, stars, cars without a driver, bookmarks.
 - Avoid round shapes that look like eyes (paired headlights, paired windows, a phone camera dot).
 
-## 4. No real social logos
+## 5. No real social logos, and no copying
 
-No real Instagram or TikTok logos or look-alikes. Use generic icons (a play triangle in a rounded square, a heart, a bookmark). The WhatsApp button is the only brand icon allowed, and only because the user asked for it.
+- No real Instagram or TikTok logos or look-alikes. Use generic icons (a play triangle in a rounded square, a heart, a bookmark). The WhatsApp button is the only brand icon allowed.
+- **Store only reel links and place facts** (name, area, category, opening details, offers the place gives us). **Never copy or scrape videos, photos or captions** from Instagram, TikTok or YouTube. Photos and videos on the site come from the place itself or the creator, with permission.
 
-## 5. Light and dark theme on every page
+## 6. Spotted Insider (creators)
+
+- **Spotted Insider is paid only**: AED 249 a month, first 2 months free. There is **no free creator plan** on the website and no "Free vs Pro" table.
+- **Creators who do not pay get nothing shown on the site.** No creator names, handles, credit or stars are shown to the public. The switch `creatorCredit` in `features.ts` is OFF and hides the Influencer story, creator handles on place pages and the star row in the simple version.
+- The three stars (yellow = someone saved your reel's place, purple = visited but did not order, green = visited and ordered) are explained only on the Insider page, with clearly labelled EXAMPLE numbers.
+
+## 7. Light and dark theme on every page
 
 - Every page and every section works in light and dark.
-- Colours come from variables that change with the theme (`prefers-color-scheme`, plus a manual switch later).
-- Check text contrast in both themes.
+- Colours come from the theme names in `src/styles/colors.css` and change with the theme (the lamp switches it, and the choice is remembered).
 
-## 6. Mobile first
+## 8. Mobile first
 
 - Design for a small phone first, then widen for tablet and desktop.
 - Tap targets at least 44 x 44.
 - No sideways scrolling. Respect the iPhone safe areas.
 
-## 7. Animation needs a still fallback
+## 9. Animation needs a still fallback
 
 - Every animation must have a still version (a plain picture, no movement) for slow phones and for people who turned on Reduce Motion.
 - The still version shows the same message as the animated one.
 - Never make the animation the only way to read something.
 
-## 8. Every big section has an on/off switch
+## 10. Every big section has an on/off switch
 
 - Every big section of the site can be switched on or off from `src/config/features.ts`.
 - One true/false word per section. Never delete a hidden section; to bring it back, change its switch.

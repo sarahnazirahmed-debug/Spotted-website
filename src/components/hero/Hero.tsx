@@ -54,13 +54,13 @@ export default function Hero({ label: labelProp, line2 }: { label?: string; line
     let banner: { dispose: () => void } | null = null;
     const words = bannerWords();
     const label = labelProp ?? words.label;
-    const date = line2 ?? words.date;
+    const second = line2 ?? words.line2;
     const skipSlowCheck = new URLSearchParams(window.location.search).has("force3d");
     import("./banner3d")
       .then((m) =>
         m.createBanner(host.current!, {
           label,
-          date,
+          line2: second,
           skipSlowCheck,
           onReady: () => setReady(true),
           onSlow: () => setSlow(true),
@@ -81,10 +81,10 @@ export default function Hero({ label: labelProp, line2 }: { label?: string; line
   const showStill = !(use3d && ready);
   const out = LAUNCH.status === "outNow";
   const storeBtn =
-    "pointer-events-auto flex min-h-12 items-center rounded-full bg-white px-6 text-base font-extrabold text-deep transition active:scale-95";
+    "pointer-events-auto flex min-h-12 items-center rounded-full bg-paper px-6 text-base font-extrabold text-charcoal transition active:scale-95";
 
   return (
-    <section id="top" className="relative min-h-dvh overflow-hidden text-white">
+    <section id="top" className="relative min-h-dvh overflow-hidden text-paper">
       {/* moving gradient and lilac glows */}
       <div className="hero-bg absolute inset-0" aria-hidden="true">
         <span className="hero-glow hero-glow-a" />
@@ -98,7 +98,7 @@ export default function Hero({ label: labelProp, line2 }: { label?: string; line
         className="pointer-events-none absolute left-1/2 top-[11%] -translate-x-1/2 transition-opacity duration-500"
         style={{ width: "min(61vw, 37.5dvh)", opacity: showStill ? 1 : 0 }}
       >
-        <BannerStill label={labelProp} date={line2} className="block h-auto w-full drop-shadow-2xl" />
+        <BannerStill label={labelProp} line2={line2} className="block h-auto w-full drop-shadow-2xl" />
       </div>
 
       {/* the 3D banner draws here */}

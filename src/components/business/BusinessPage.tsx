@@ -21,7 +21,7 @@ export default function BusinessPage({ kind }: { kind: Kind }) {
 
         <section className="bg-page px-5 py-20 text-onpage md:py-28">
           <div className="mx-auto max-w-3xl">
-            <span className="inline-block rounded-full bg-lilac px-4 py-1 text-sm font-bold text-deep">
+            <span className="inline-block rounded-full bg-chip px-4 py-1 text-sm font-bold text-charcoal">
               Spotted for {c.word}
             </span>
             <h2 className="mt-5 text-[clamp(2rem,6.4vw,3.8rem)] font-extrabold leading-[1.05] text-heading">{c.title}</h2>
@@ -29,7 +29,7 @@ export default function BusinessPage({ kind }: { kind: Kind }) {
               {c.points.map((p) => (
                 <li key={p} className="flex gap-3 text-lg leading-relaxed">
                   <svg viewBox="0 0 24 30" width="22" height="28" aria-hidden="true" className="mt-1 shrink-0">
-                    <path d="M3 1h18v28l-9-7-9 7z" fill="#E5383B" />
+                    <path d="M3 1h18v28l-9-7-9 7z" fill="var(--c-accent)" />
                   </svg>
                   {p}
                 </li>
@@ -39,11 +39,11 @@ export default function BusinessPage({ kind }: { kind: Kind }) {
         </section>
 
         <section id="waitlist" className="bg-alt px-5 py-20 text-onpage md:py-28">
-          <div className="mx-auto max-w-2xl rounded-3xl bg-brand p-8 text-white md:p-12">
+          <div className="mx-auto max-w-2xl rounded-3xl bg-panel p-8 text-paper md:p-12">
             {FEATURES.businessWaitlist ? (
               <>
                 <h2 className="text-[clamp(1.8rem,6vw,3rem)] font-extrabold leading-tight">Join the waitlist.</h2>
-                <p className="mb-6 mt-3 text-lg text-lilac">
+                <p className="mb-6 mt-3 text-lg text-mist">
                   Tell us about your {c.singular}. We will get in touch before Spotted opens.
                 </p>
                 <BusinessForm kind={kind} />
@@ -51,7 +51,7 @@ export default function BusinessPage({ kind }: { kind: Kind }) {
             ) : (
               <>
                 <h2 className="text-[clamp(1.8rem,6vw,3rem)] font-extrabold leading-tight">Talk to us.</h2>
-                <p className="mb-6 mt-3 text-lg text-lilac">
+                <p className="mb-6 mt-3 text-lg text-mist">
                   Tell us about your {c.singular} on WhatsApp. We will get in touch before Spotted opens.
                 </p>
                 <ContactCta text={`Hi Spotted! I have a ${c.singular} and I would like to hear more.`} />

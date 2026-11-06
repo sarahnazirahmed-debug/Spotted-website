@@ -3,14 +3,15 @@
 import { clamp01, range, smooth, lerp, type StoryId } from "./story";
 
 // ---- Palette ----
+// Colour NAMES from src/styles/colors.css (the illustration palette). SVG accepts them directly.
 export const C = {
-  brand: "#6A1FB0",
-  deep: "#3C096C",
-  red: "#E5383B",
-  lilac: "#C9A2FF",
-  yellow: "#FFD23F",
-  green: "#2BB673", // only for green stars
-  white: "#FFFFFF",
+  brand: "var(--c-main)", // buildings and main surfaces
+  deep: "var(--c-deep)", // night sky, shadows
+  red: "var(--c-accent)", // pins and bookmarks
+  lilac: "var(--c-soft)", // light surfaces
+  yellow: "var(--c-glow)", // lit windows, glows
+  green: "var(--c-leaf)", // only for green stars
+  white: "var(--c-paper)",
 };
 
 // ---- Places in the world ----

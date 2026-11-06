@@ -1,6 +1,8 @@
 // Shared settings for the scroll stories: which story, key words, helpers.
 // Everything here is plain numbers and text, so it is easy to tweak.
 
+import { FEATURES } from "@/config/features";
+
 export type V3 = [number, number, number];
 export type StoryId = "you" | "influencer" | "restaurant";
 
@@ -18,11 +20,15 @@ export const easeOutBack = (x: number) => {
 };
 
 // The three stories. heightVh = how long the page is (longer = slower story).
+// All stories. Use VISIBLE_STORIES for menus: the Influencer story is about creator credit and stars,
+// so it is hidden unless FEATURES.creatorCredit is on.
 export const STORY_LIST: { id: StoryId; label: string; heightVh: number; endAt: number }[] = [
   { id: "you", label: "You", heightVh: 1500, endAt: 0.95 },
   { id: "influencer", label: "Influencer", heightVh: 1400, endAt: 0.95 },
   { id: "restaurant", label: "Restaurant", heightVh: 1400, endAt: 0.95 },
 ];
+
+export const VISIBLE_STORIES = STORY_LIST.filter((s) => s.id !== "influencer" || FEATURES.creatorCredit);
 
 // ---- Key words (not subtitles): short words that pop up on different sides of the screen ----
 // x, y = where the word sits, in percent of the screen (50, 50 is the middle).

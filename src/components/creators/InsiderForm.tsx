@@ -1,16 +1,16 @@
 "use client";
 
-// Creator waitlist: name, Instagram / TikTok / YouTube handles (at least one), and email.
+// Insider waitlist: name, Instagram / TikTok / YouTube handles (at least one), and email.
 // Posts to NEXT_PUBLIC_WAITLIST_URL like the other forms, and says honestly if that is not set.
 import { useState } from "react";
 
 type State = "idle" | "invalid" | "sending" | "done" | "failed" | "closed";
 const field =
-  "min-h-12 w-full rounded-2xl bg-white px-5 text-base font-medium text-ink outline-none focus:ring-4 focus:ring-lilac";
-const label = "mb-1 block text-sm font-bold text-white";
+  "min-h-12 w-full rounded-2xl bg-paper px-5 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent";
+const label = "mb-1 block text-sm font-bold text-paper";
 const clean = (h: string) => h.trim().replace(/^@+/, "");
 
-export default function CreatorForm() {
+export default function InsiderForm() {
   const [state, setState] = useState<State>("idle");
   const [v, setV] = useState({ name: "", instagram: "", tiktok: "", youtube: "", email: "" });
   const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +36,7 @@ export default function CreatorForm() {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          list: "creators",
+          list: "insider",
           name: v.name.trim(),
           instagram: clean(v.instagram),
           tiktok: clean(v.tiktok),
@@ -52,7 +52,7 @@ export default function CreatorForm() {
 
   if (state === "done") {
     return (
-      <p role="status" className="rounded-2xl bg-lilac px-5 py-4 text-center font-bold text-deep">
+      <p role="status" className="rounded-2xl bg-chip px-5 py-4 text-center font-bold text-charcoal">
         Thank you. We will be in touch before Spotted opens.
       </p>
     );
@@ -91,16 +91,16 @@ export default function CreatorForm() {
       {input("tiktok", "TikTok handle", "@yourhandle")}
       {input("youtube", "YouTube handle", "@yourchannel")}
       {input("email", "Email", "you@email.com")}
-      <p className="text-sm text-lilac sm:col-span-2">Add at least one handle.</p>
+      <p className="text-sm text-mist sm:col-span-2">Add at least one handle.</p>
       <button
         type="submit"
         disabled={state === "sending"}
-        className="min-h-12 rounded-full bg-white px-7 font-extrabold text-deep transition active:scale-95 disabled:opacity-60 sm:col-span-2"
+        className="min-h-12 rounded-full bg-paper px-7 font-extrabold text-charcoal transition active:scale-95 disabled:opacity-60 sm:col-span-2"
       >
-        {state === "sending" ? "Sending..." : "Join the creator waitlist"}
+        {state === "sending" ? "Sending..." : "Join the Insider waitlist"}
       </button>
       {message && (
-        <p role="alert" className="text-sm font-bold text-white sm:col-span-2">
+        <p role="alert" className="text-sm font-bold text-paper sm:col-span-2">
           {message}
         </p>
       )}

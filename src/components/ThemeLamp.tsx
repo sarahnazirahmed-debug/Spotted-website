@@ -70,19 +70,19 @@ export default function ThemeLamp() {
           hovering.current = false;
           setShown(false);
         }}
-        className="pointer-events-auto fixed right-[4.75rem] top-0 z-40 w-11 cursor-pointer rounded-b-xl outline-none focus-visible:ring-4 focus-visible:ring-lilac"
+        className="pointer-events-auto fixed right-[4.75rem] top-0 z-40 w-11 cursor-pointer rounded-b-xl outline-none focus-visible:ring-4 focus-visible:ring-accent"
         style={{ height: CORD + 32 }}
       >
         <span
           ref={line}
           aria-hidden="true"
           className="absolute top-0 w-[2px] origin-top bg-[var(--lamp-string)]"
-          style={{ left: "calc(50% - 1px)", height: CORD, boxShadow: "0 0 0 1px rgba(60,9,108,0.35)" }}
+          style={{ left: "calc(50% - 1px)", height: CORD, boxShadow: "0 0 0 1px color-mix(in srgb, var(--c-deep) 35%, transparent)" }}
         />
         <span
           ref={handle}
           aria-hidden="true"
-          className="absolute size-5 rounded-full bg-[var(--lamp-handle)] ring-2 ring-white/70"
+          className="absolute size-5 rounded-full bg-[var(--lamp-handle)] ring-2 ring-paper/70"
           style={{ left: "calc(50% - 10px)", top: CORD }}
         />
       </button>
@@ -104,19 +104,19 @@ export default function ThemeLamp() {
           height="170"
           viewBox="0 0 120 170"
           className={flash > 0 ? "bulb-flash" : ""}
-          style={lit ? { filter: "drop-shadow(0 0 36px #FFD23F)" } : undefined}
+          style={lit ? { filter: "drop-shadow(0 0 36px var(--c-glow))" } : undefined}
         >
           <path
             d="M60 6C26 6 8 34 8 64c0 24 16 36 24 54v12h56v-12c8-18 24-30 24-54C112 34 94 6 60 6z"
-            fill={lit ? "#FFD23F" : "#C9A2FF"}
+            fill={lit ? "var(--c-glow)" : "var(--c-soft)"}
             fillOpacity={lit ? 1 : 0.3}
-            stroke="#C9A2FF"
+            stroke="var(--c-soft)"
             strokeWidth="4"
           />
-          <path d="M44 126V84l16 14 16-14v42" fill="none" stroke={lit ? "#E5383B" : "#C9A2FF"} strokeWidth="4" strokeLinejoin="round" />
-          <rect x="34" y="130" width="52" height="12" rx="4" fill="#C9A2FF" />
-          <rect x="38" y="146" width="44" height="12" rx="4" fill="#6A1FB0" />
-          <rect x="50" y="160" width="20" height="8" rx="4" fill="#3C096C" />
+          <path d="M44 126V84l16 14 16-14v42" fill="none" stroke={lit ? "var(--c-accent)" : "var(--c-soft)"} strokeWidth="4" strokeLinejoin="round" />
+          <rect x="34" y="130" width="52" height="12" rx="4" fill="var(--c-soft)" />
+          <rect x="38" y="146" width="44" height="12" rx="4" fill="var(--c-main)" />
+          <rect x="50" y="160" width="20" height="8" rx="4" fill="var(--c-deep)" />
         </svg>
       </div>
     </>

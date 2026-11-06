@@ -12,7 +12,7 @@ const LINKS: LinkItem[] = [
   { label: "What's Spotted", to: "whats-spotted" },
   { label: "Restaurants", href: "/restaurants", feature: "businessPages" },
   { label: "Shops", href: "/shops", feature: "businessPages" },
-  { label: "Influencers", href: "/influencers", feature: "influencersPage" },
+  { label: "Insider", href: "/insider", feature: "insiderPage" },
   { label: "Careers", href: "/careers", feature: "careersPage" },
   { label: "About", href: "/about", feature: "aboutPage" },
 ];
@@ -69,7 +69,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
   }
 
   const link =
-    "flex min-h-11 items-center rounded-xl px-2 text-sm font-bold text-heading transition hover:text-brand focus-visible:outline-2 focus-visible:outline-brand";
+    "flex min-h-11 items-center rounded-xl px-2 text-sm font-bold text-heading transition hover:text-accent focus-visible:outline-2 focus-visible:outline-accent";
 
   return (
     <header
@@ -84,7 +84,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
           className="flex min-h-11 items-center gap-2 text-xl font-extrabold text-heading"
         >
           <svg width="22" height="26" viewBox="0 0 24 28" aria-hidden="true">
-            <path d="M3 1h18v26l-9-7-9 7z" fill="#E5383B" />
+            <path d="M3 1h18v26l-9-7-9 7z" fill="var(--c-accent)" />
           </svg>
           Spotted
         </a>
@@ -103,7 +103,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
           </button>
           <button
             type="button"
-            className="min-h-11 rounded-full bg-brand px-5 text-sm font-extrabold text-white transition active:scale-95"
+            className="min-h-11 rounded-full bg-panel px-5 text-sm font-extrabold text-paper transition active:scale-95"
             onClick={() => go({ label: "Sign up", href: "/signup", feature: "accounts" })}
           >
             Sign up
@@ -125,7 +125,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
       </div>
 
       {open && (
-        <div id="site-menu" className="border-t border-lilac bg-page px-4 pb-4 pt-2 lg:hidden">
+        <div id="site-menu" className="border-t border-line bg-page px-4 pb-4 pt-2 lg:hidden">
           <nav aria-label="Site menu" className="mx-auto flex max-w-6xl flex-col">
             {LINKS.map((l) => (
               <button key={l.label} type="button" className={`${link} text-base`} onClick={() => go(l)}>
@@ -133,12 +133,12 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
               </button>
             ))}
             <div className="mt-2 flex gap-2">
-              <button type="button" className={`${link} flex-1 justify-center border border-lilac text-base`} onClick={() => go({ label: "Log in", href: "/login", feature: "accounts" })}>
+              <button type="button" className={`${link} flex-1 justify-center border border-line text-base`} onClick={() => go({ label: "Log in", href: "/login", feature: "accounts" })}>
                 Log in
               </button>
               <button
                 type="button"
-                className="min-h-11 flex-1 rounded-full bg-brand px-5 text-base font-extrabold text-white"
+                className="min-h-11 flex-1 rounded-full bg-panel px-5 text-base font-extrabold text-paper"
                 onClick={() => go({ label: "Sign up", href: "/signup", feature: "accounts" })}
               >
                 Sign up
@@ -149,7 +149,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
       )}
 
       {note && (
-        <p role="status" className="absolute left-1/2 top-full mt-2 -translate-x-1/2 rounded-full bg-lilac px-4 py-2 text-sm font-bold text-deep shadow-lg">
+        <p role="status" className="absolute left-1/2 top-full mt-2 -translate-x-1/2 rounded-full bg-chip px-4 py-2 text-sm font-bold text-charcoal shadow-lg">
           {note}
         </p>
       )}

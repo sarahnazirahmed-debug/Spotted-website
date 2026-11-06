@@ -37,13 +37,13 @@ export default function AboutPage() {
                 href={`https://wa.me/${whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${btn} bg-[#25D366] text-deep`}
+                className={`${btn} bg-whatsapp text-charcoal`}
               >
                 Chat on WhatsApp
               </a>
             )}
             {CONTACT.emailLive && (
-              <a href={`mailto:${CONTACT.email}`} className={`${btn} bg-brand text-white`}>
+              <a href={`mailto:${CONTACT.email}`} className={`${btn} bg-panel text-paper`}>
                 {CONTACT.email}
               </a>
             )}

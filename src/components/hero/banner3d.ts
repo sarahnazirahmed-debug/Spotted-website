@@ -1,5 +1,5 @@
 // The 3D cloth banner (Three.js). Our own artwork: a red bookmark with a V-notch, a white pin,
-// the launch words, and a purple / lilac / red holographic sheen.
+// the words, and a holographic sheen. All colours come from src/styles/colors.css.
 //
 // How the cloth works, in plain words:
 //  - The cloth is a grid of points joined by invisible springs (a "Verlet" cloth).
@@ -8,10 +8,11 @@
 //  - A visitor can grab a small patch of points with a mouse or finger and drag it around.
 //    On release the cloth swings and settles by itself.
 import * as THREE from "three";
+import { cssRgb, cssRgba, forThree, headingFontFamily } from "@/styles/palette";
 
 export type BannerOptions = {
   label: string; // e.g. "COMING SOON"
-  date: string; // e.g. "01.01.2027"
+  line2?: string; // an optional second line, e.g. "Restaurants"
   skipSlowCheck: boolean; // true when testing with ?force3d
   onReady: () => void; // the first frame is on screen
   onSlow: () => void; // this phone is too slow: switch to the still picture
@@ -31,7 +32,11 @@ const TEX_W = 1024;
 const TEX_H = 1584;
 
 // ---- The printed artwork (drawn once into a picture, then wrapped onto the cloth) ----
-function drawArtwork(label: string, date: string, family: string): HTMLCanvasElement {
+function drawArtwork(label: string, line2: string | undefined, family: string): HTMLCanvasElement {
+  const ACCENT = cssRgb("--c-accent");
+  const PAPER = cssRgb("--c-paper");
+  const SOFT = cssRgb("--c-soft");
+  const GLOW = cssRgb("--c-glow");
   const c = document.createElement("canvas");
   c.width = TEX_W;
   c.height = TEX_H;
@@ -46,11 +51,11 @@ function drawArtwork(label: string, date: string, family: string): HTMLCanvasEle
   g.lineTo(TEX_W / 2, notchY);
   g.lineTo(0, TEX_H);
   g.closePath();
-  g.fillStyle = "#E5383B";
+  g.fillStyle = ACCENT;
   g.fill();
   const shade = g.createLinearGradient(0, 0, 0, TEX_H);
-  shade.addColorStop(0, "rgba(60,9,108,0)");
-  shade.addColorStop(1, "rgba(60,9,108,0.28)");
+  shade.addColorStop(0, cssRgba("--c-deep", 0));
+  shade.addColorStop(1, cssRgba("--c-deep", 0.28));
   g.fillStyle = shade;
   g.fill();
 
@@ -58,7 +63,7 @@ function drawArtwork(label: string, date: string, family: string): HTMLCanvasEle
   g.save();
   g.setLineDash([16, 14]);
   g.lineWidth = 6;
-  g.strokeStyle = "rgba(201,162,255,0.6)";
+  g.strokeStyle = cssRgba("--c-soft", 0.6);
   g.beginPath();
   g.moveTo(40, 40);
   g.lineTo(TEX_W - 40, 40);
@@ -78,16 +83,16 @@ function drawArtwork(label: string, date: string, family: string): HTMLCanvasEle
     g.closePath();
   };
   g.save();
-  g.shadowColor = "#C9A2FF";
+  g.shadowColor = SOFT;
   g.shadowBlur = 50;
-  g.fillStyle = "#FFFFFF";
+  g.fillStyle = PAPER;
   pin();
   g.fill();
   g.restore();
-  g.fillStyle = "#FFFFFF";
+  g.fillStyle = PAPER;
   pin();
   g.fill();
-  g.fillStyle = "#E5383B";
+  g.fillStyle = ACCENT;
   g.beginPath();
   g.arc(512, 410, 46, 0, Math.PI * 2);
   g.fill();
@@ -107,17 +112,23 @@ function drawArtwork(label: string, date: string, family: string): HTMLCanvasEle
   };
   g.textAlign = "center";
   g.textBaseline = "alphabetic";
-  g.fillStyle = "#FFFFFF";
-  fit(label, 800, 78, TEX_W - 160, 8);
-  g.fillText(label, TEX_W / 2 + 4, 880);
-  // Second line (the date, or "Restaurants"), with a yellow highlight bar as wide as the words.
-  g.fillStyle = "#FFFFFF";
-  fit(date, 800, 108, TEX_W - 200, 0);
-  const lineW = g.measureText(date).width;
-  g.fillText(date, TEX_W / 2, 1010);
-  g.fillStyle = "#FFD23F";
+  g.fillStyle = PAPER;
+  // With one line only, the words sit a little lower and bigger.
+  const labelY = line2 ? 880 : 940;
+  fit(label, 800, line2 ? 78 : 96, TEX_W - 160, 8);
+  g.fillText(label, TEX_W / 2 + 4, labelY);
+  let lastW = g.measureText(label).width;
+  let barY = labelY + 30;
+  if (line2) {
+    fit(line2, 800, 108, TEX_W - 200, 0);
+    lastW = g.measureText(line2).width;
+    g.fillText(line2, TEX_W / 2, 1010);
+    barY = 1040;
+  }
+  // A highlight bar under the last line, as wide as the words.
+  g.fillStyle = GLOW;
   g.beginPath();
-  g.roundRect(TEX_W / 2 - lineW / 2 - 8, 1040, lineW + 16, 22, 11);
+  g.roundRect(TEX_W / 2 - lastW / 2 - 8, barY, lastW + 16, 22, 11);
   g.fill();
   return c;
 }
@@ -177,7 +188,7 @@ const easeOutCubic = (u: number) => 1 - Math.pow(1 - u, 3);
 
 export async function createBanner(host: HTMLElement, opts: BannerOptions): Promise<{ dispose: () => void }> {
   // The words are printed with Poppins, so wait for the font first.
-  const family = getComputedStyle(document.body).fontFamily;
+  const family = headingFontFamily();
   try {
     await document.fonts.load(`800 78px ${family}`);
   } catch {
@@ -228,7 +239,7 @@ export async function createBanner(host: HTMLElement, opts: BannerOptions): Prom
   geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
   geometry.setIndex(index);
 
-  const texture = new THREE.CanvasTexture(drawArtwork(opts.label, opts.date, family));
+  const texture = new THREE.CanvasTexture(drawArtwork(opts.label, opts.line2, family));
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
   const material = new THREE.ShaderMaterial({
@@ -239,9 +250,9 @@ export async function createBanner(host: HTMLElement, opts: BannerOptions): Prom
     uniforms: {
       map: { value: texture },
       uTime: { value: 0 },
-      cPurple: { value: new THREE.Color("#6A1FB0") },
-      cLilac: { value: new THREE.Color("#C9A2FF") },
-      cRed: { value: new THREE.Color("#E5383B") },
+      cPurple: { value: new THREE.Color(forThree("--c-main")) },
+      cLilac: { value: new THREE.Color(forThree("--c-soft")) },
+      cRed: { value: new THREE.Color(forThree("--c-accent")) },
     },
   });
   const cloth = new THREE.Mesh(geometry, material);
@@ -249,7 +260,7 @@ export async function createBanner(host: HTMLElement, opts: BannerOptions): Prom
   scene.add(cloth);
 
   // ---- The rod the cloth hangs from ----
-  const rodMat = new THREE.MeshBasicMaterial({ color: "#C9A2FF" });
+  const rodMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(forThree("--c-soft")) });
   const rodGeo = new THREE.CylinderGeometry(0.045, 0.045, W + 0.3, 12);
   rodGeo.rotateZ(Math.PI / 2);
   const capGeo = new THREE.SphereGeometry(0.085, 14, 10);

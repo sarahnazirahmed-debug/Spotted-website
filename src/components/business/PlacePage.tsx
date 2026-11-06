@@ -1,6 +1,7 @@
 // The place page (Part B). ONE design for restaurants and shops.
 // Video, photos, location map + Directions, offers, influencer reels, "Open in Spotted app".
 import Link from "next/link";
+import { FEATURES } from "@/config/features";
 import DishMedia from "./DishMedia";
 import SiteChrome from "../SiteChrome";
 import { COPY } from "./copy";
@@ -26,7 +27,7 @@ export default function PlacePage({ place }: { place: Place }) {
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <h1 className="text-[clamp(2rem,7vw,3.4rem)] font-extrabold leading-tight text-heading">{place.name}</h1>
             {place.partner && (
-              <span className="rounded-full bg-lilac px-3 py-1 text-xs font-extrabold text-deep">Spotted Partner</span>
+              <span className="rounded-full bg-chip px-3 py-1 text-xs font-extrabold text-charcoal">Spotted Partner</span>
             )}
           </div>
           <p className="mt-1 text-lg font-bold">
@@ -46,12 +47,12 @@ export default function PlacePage({ place }: { place: Place }) {
 
           {/* map + directions */}
           <h2 className={`${H3} mt-12`}>Where to find it</h2>
-          <div className="mt-4 overflow-hidden rounded-3xl bg-box p-4 text-white">
+          <div className="mt-4 overflow-hidden rounded-3xl bg-box p-4 text-paper">
             <svg viewBox="0 0 320 180" role="img" aria-label={`Map of ${place.area}`} className="w-full rounded-2xl">
-              <rect width="320" height="180" fill="#3C096C" />
-              <path d="M0 120C80 100 140 150 320 90" fill="none" stroke="#6A1FB0" strokeWidth="24" />
-              <path d="M110 0C130 70 90 110 120 180" fill="none" stroke="#6A1FB0" strokeWidth="20" />
-              <path d="M160 128C138 98 132 84 132 74a28 28 0 0 1 56 0c0 10-6 24-28 54z" fill="#E5383B" stroke="#FFFFFF" strokeWidth="4" />
+              <rect width="320" height="180" fill="var(--c-deep)" />
+              <path d="M0 120C80 100 140 150 320 90" fill="none" stroke="var(--c-main)" strokeWidth="24" />
+              <path d="M110 0C130 70 90 110 120 180" fill="none" stroke="var(--c-main)" strokeWidth="20" />
+              <path d="M160 128C138 98 132 84 132 74a28 28 0 0 1 56 0c0 10-6 24-28 54z" fill="var(--c-accent)" stroke="var(--c-paper)" strokeWidth="4" />
             </svg>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
               <p className="font-bold">
@@ -61,7 +62,7 @@ export default function PlacePage({ place }: { place: Place }) {
                 href={directions}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-h-11 items-center rounded-full bg-white px-6 font-extrabold text-deep transition active:scale-95"
+                className="flex min-h-11 items-center rounded-full bg-paper px-6 font-extrabold text-charcoal transition active:scale-95"
               >
                 Directions
               </a>
@@ -82,31 +83,37 @@ export default function PlacePage({ place }: { place: Place }) {
             </ul>
           )}
 
-          {/* influencer reels */}
-          <h2 className={`${H3} mt-12`}>Influencer reels about this place</h2>
-          {place.reels.length === 0 ? (
-            <p className="mt-3">No reels yet.</p>
-          ) : (
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-              {place.reels.map((r) => (
-                <li key={r.title} className="flex items-center gap-4 rounded-2xl bg-box p-4 text-white">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white" aria-hidden="true">
-                    <svg width="22" height="22" viewBox="0 0 24 24">
-                      <path d="M8 5l12 7-12 7z" fill="#E5383B" />
-                    </svg>
-                  </span>
-                  <span>
-                    <span className="block font-extrabold">{r.title}</span>
-                    <span className="text-sm font-bold text-lilac">{r.handle} (example)</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
+          {/* Influencer reels about this place. Creator credit is OFF (features.ts: creatorCredit): nothing
+              about a creator is shown to the public. */}
+          {FEATURES.creatorCredit && (
+            <>
+            <h2 className={`${H3} mt-12`}>Influencer reels about this place</h2>
+            {place.reels.length === 0 ? (
+              <p className="mt-3">No reels yet.</p>
+            ) : (
+              <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                {place.reels.map((r) => (
+                  <li key={r.title} className="flex items-center gap-4 rounded-2xl bg-box p-4 text-paper">
+                    <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-paper" aria-hidden="true">
+                      <svg width="22" height="22" viewBox="0 0 24 24">
+                        <path d="M8 5l12 7-12 7z" fill="var(--c-accent)" />
+                      </svg>
+                    </span>
+                    <span>
+                      <span className="block font-extrabold">{r.title}</span>
+                      <span className="text-sm font-bold text-mist">{r.handle} (example)</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            </>
           )}
 
           <a
             href={`spotted://place/${place.id}`}
-            className="mt-14 flex min-h-14 items-center justify-center rounded-full bg-brand px-8 text-lg font-extrabold text-white transition active:scale-95"
+            className="mt-14 flex min-h-14 items-center justify-center rounded-full bg-panel px-8 text-lg font-extrabold text-paper transition active:scale-95"
           >
             Open in Spotted app
           </a>

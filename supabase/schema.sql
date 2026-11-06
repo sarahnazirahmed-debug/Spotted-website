@@ -25,7 +25,7 @@ create type media_kind   as enum ('video', 'image', 'menu_pdf', 'reel_link');
 -- ---------------------------------------------------------------------------
 create table public.waitlist (
   id          uuid primary key default gen_random_uuid(),
-  list        text not null check (list in ('visitors', 'business', 'creators', 'careers')),
+  list        text not null check (list in ('visitors', 'business', 'insider', 'careers')),
   name        text check (char_length(name) <= 120),
   email       text check (char_length(email) <= 254),
   contact     text check (char_length(contact) <= 60),   -- WhatsApp number

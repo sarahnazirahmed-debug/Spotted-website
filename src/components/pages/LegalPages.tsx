@@ -116,7 +116,7 @@ export function PrivacyPage() {
           The website remembers your light or dark choice in your browser. It does not use ads or analytics.
         </li>
         <li>
-          If you fill in a form on the website (the waitlist, the business waitlist, the creator waitlist or the careers form), we
+          If you fill in a form on the website (the waitlist, the business waitlist, the Insider waitlist or the careers form), we
           receive what you type in it, such as your name, email or WhatsApp number, and use it only to contact you about Spotted.
         </li>
         <li>If you message us on WhatsApp or by email, we receive what you send.</li>

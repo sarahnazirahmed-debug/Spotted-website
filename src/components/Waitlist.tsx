@@ -42,7 +42,7 @@ export default function Waitlist({ label = "Join the waitlist", list = "visitors
 
   if (state === "done") {
     return (
-      <p role="status" className="rounded-2xl bg-lilac px-5 py-4 text-center font-bold text-deep">
+      <p role="status" className="rounded-2xl bg-chip px-5 py-4 text-center font-bold text-charcoal">
         Thank you. We will let you know when Spotted opens.
       </p>
     );
@@ -74,17 +74,17 @@ export default function Waitlist({ label = "Join the waitlist", list = "visitors
           if (state !== "sending") setState("idle");
         }}
         aria-invalid={state === "invalid"}
-        className="min-h-12 flex-1 rounded-full bg-white px-5 text-base font-medium text-ink outline-none focus:ring-4 focus:ring-lilac"
+        className="min-h-12 flex-1 rounded-full bg-paper px-5 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent"
       />
       <button
         type="submit"
         disabled={state === "sending"}
-        className="min-h-12 rounded-full bg-white px-7 font-extrabold text-deep transition active:scale-95 disabled:opacity-60"
+        className="min-h-12 rounded-full bg-paper px-7 font-extrabold text-charcoal transition active:scale-95 disabled:opacity-60"
       >
         {state === "sending" ? "Sending..." : label}
       </button>
       {message && (
-        <p role="alert" className="text-sm font-bold text-white sm:basis-full">
+        <p role="alert" className="text-sm font-bold text-paper sm:basis-full">
           {message}
         </p>
       )}

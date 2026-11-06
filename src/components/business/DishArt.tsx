@@ -3,10 +3,10 @@
 // (steam and a slow zoom); the movement is switched off by Reduce Motion in globals.css.
 import type { ArtKind } from "./data";
 
-const W = "#FFFFFF";
-const L = "#C9A2FF";
-const R = "#E5383B";
-const Y = "#FFD23F";
+const W = "var(--c-paper)";
+const L = "var(--c-soft)";
+const R = "var(--c-accent)";
+const Y = "var(--c-glow)";
 
 function Steam({ x }: { x: number }) {
   return (
@@ -35,7 +35,7 @@ export default function DishArt({
   zoom?: number;
   className?: string;
 }) {
-  const gid = `dish-${palette[0].slice(1)}-${palette[1].slice(1)}`;
+  const gid = `dish-${palette.join("-").replace(/[^a-z0-9]/gi, "")}`;
   return (
     <svg viewBox="0 0 300 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true" className={className}>
       <defs>

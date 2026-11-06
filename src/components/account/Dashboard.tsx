@@ -43,8 +43,8 @@ export default function Dashboard() {
     router.push("/login");
   }
 
-  const box = "mx-auto max-w-lg rounded-3xl bg-brand p-8 text-center text-white md:p-10";
-  const link = "mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-white px-7 font-extrabold text-deep";
+  const box = "mx-auto max-w-lg rounded-3xl bg-panel p-8 text-center text-paper md:p-10";
+  const link = "mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-paper px-7 font-extrabold text-charcoal";
 
   if (view === "loading") return <div className={box}>Loading...</div>;
   if (view === "closed") return <div className={box}>Log in is not open yet. Please check back soon.</div>;
@@ -61,7 +61,7 @@ export default function Dashboard() {
     return (
       <div className={box}>
         <h2 className="text-2xl font-extrabold">Spotted works in the app.</h2>
-        <p className="mt-3 text-lilac">This page is for restaurants, shops and creators.</p>
+        <p className="mt-3 text-mist">This page is for restaurants, shops and creators.</p>
         <button type="button" onClick={signOut} className={link}>
           Log out
         </button>
@@ -71,9 +71,9 @@ export default function Dashboard() {
   return (
     <div className={box}>
       <h2 className="text-[clamp(1.6rem,5vw,2.4rem)] font-extrabold leading-tight">Welcome, {partner?.business_name}.</h2>
-      <p className="mt-3 text-lg text-lilac">Your dashboard is coming soon.</p>
+      <p className="mt-3 text-lg text-mist">Your dashboard is coming soon.</p>
       {partner?.status === "trial" && trialEnds && (
-        <p className="mt-4 rounded-2xl bg-white/15 p-4 font-bold">
+        <p className="mt-4 rounded-2xl bg-paper/15 p-4 font-bold">
           Your 2 free months run until about {trialEnds.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}. Your data
           is saved, even if you continue later.
         </p>

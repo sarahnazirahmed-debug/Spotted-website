@@ -1,65 +1,21 @@
 @import "tailwindcss";
 
-/* Brand colours. Use them in classes like bg-brand, text-deep, bg-lilac. */
-:root {
-  --brand: #6a1fb0;
-  --deep: #3c096c;
-  --red: #e5383b;
-  --lilac: #c9a2ff;
-  --yellow: #ffd23f;
-  --white: #ffffff;
-  --green: #2bb673; /* only for green stars and growth */
-  --whatsapp: #25d366; /* only on the WhatsApp button */
-  --ink: #1a1025; /* black-ish, only for text where needed */
-}
-
-/* Theme colours. Dark is the default; the lamp switches to light.
-   Use them in classes like bg-page, text-onpage, text-heading, bg-alt, bg-box, bg-footer. */
-:root,
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --page: var(--deep);
-  --on-page: var(--white);
-  --heading: var(--white);
-  --alt: var(--deep);
-  --box: var(--brand);
-  --footer: var(--deep);
-  --lamp-string: var(--lilac);
-  --lamp-handle: var(--yellow);
-}
-:root[data-theme="light"] {
-  color-scheme: light;
-  --page: var(--white);
-  --on-page: var(--ink);
-  --heading: var(--deep);
-  --alt: color-mix(in srgb, var(--lilac) 40%, var(--white));
-  --box: var(--deep);
-  --footer: var(--brand);
-  --lamp-string: var(--lilac);
-  --lamp-handle: var(--red);
-}
+/* All colours live in ONE file: src/styles/colors.css. Do not write colour codes anywhere else. */
+@import "../styles/colors.css";
 
 @theme inline {
-  --color-page: var(--page);
-  --color-onpage: var(--on-page);
-  --color-heading: var(--heading);
-  --color-alt: var(--alt);
-  --color-box: var(--box);
-  --color-footer: var(--footer);
-  --color-brand: var(--brand);
-  --color-deep: var(--deep);
-  --color-spot-red: var(--red);
-  --color-lilac: var(--lilac);
-  --color-sun: var(--yellow);
-  --color-ink: var(--ink);
-  --color-leaf: var(--green);
-  --font-sans: var(--font-poppins);
+  /* the heading font and the body font come from src/styles/fonts.ts */
+  --font-sans: var(--font-body);
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: var(--font-heading), system-ui, sans-serif;
 }
 
 body {
   background: var(--page);
   color: var(--on-page);
-  font-family: var(--font-poppins), system-ui, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
   font-weight: 500;
 }
 
@@ -90,7 +46,7 @@ body {
 /* The lamp bulb flashes when the string is pulled. */
 @keyframes bulb-flash {
   0% { filter: brightness(1); }
-  25% { filter: brightness(2.4) drop-shadow(0 0 48px #ffd23f); }
+  25% { filter: brightness(2.4) drop-shadow(0 0 48px var(--c-glow)); }
   100% { filter: brightness(1); }
 }
 .bulb-flash {
@@ -99,14 +55,14 @@ body {
 
 /* ---- Hero: blurred, softly moving purple gradient with lilac glows ---- */
 .hero-bg {
-  background: linear-gradient(150deg, #3c096c 0%, #6a1fb0 55%, #3c096c 100%);
+  background: linear-gradient(150deg, var(--c-deep) 0%, var(--c-main) 55%, var(--c-deep) 100%);
   background-size: 200% 200%;
   animation: hero-shift 18s ease-in-out infinite alternate;
 }
 .hero-glow {
   position: absolute;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(201, 162, 255, 0.55) 0%, rgba(201, 162, 255, 0) 68%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--c-soft) 45%, transparent) 0%, transparent 68%);
   filter: blur(40px);
   will-change: transform;
 }
@@ -142,8 +98,8 @@ body {
 .ring-out { transform-origin: center; transform-box: fill-box; animation: ring-out 3.6s ease-out infinite; animation-delay: var(--d, 0s); }
 /* The step number lights up one after another: 1, 2, 3. */
 @keyframes step-glow {
-  0%, 30%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 255, 0); transform: scale(1); }
-  10% { box-shadow: 0 0 0 10px rgba(201, 162, 255, 0.55); transform: scale(1.12); }
+  0%, 30%, 100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
+  10% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--c-soft) 55%, transparent); transform: scale(1.12); }
 }
 .step-glow { animation: step-glow 6s ease-out infinite; animation-delay: var(--d, 0s); }
 /* Little bobbing tiles. */

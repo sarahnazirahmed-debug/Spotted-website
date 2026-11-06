@@ -45,7 +45,7 @@ export default function Story() {
   const [which, setWhich] = useState<StoryId>(() => {
     if (typeof window === "undefined") return "you";
     const q = new URLSearchParams(window.location.search).get("story");
-    return q === "influencer" || q === "restaurant" ? q : "you";
+    return (q === "influencer" && FEATURES.creatorCredit) || q === "restaurant" ? q : "you";
   });
   const mode = forced ?? detected;
 
@@ -69,7 +69,7 @@ export default function Story() {
       {/* clip-path keeps the story's full-screen layers inside this box, so the landing section stays on top */}
       <div id="stories" className="relative" style={{ clipPath: "inset(0)" }}>
         {mode === "pending" ? (
-          <div className="min-h-dvh bg-deep" />
+          <div className="min-h-dvh bg-charcoal" />
         ) : mode === "lite" ? (
           <LiteStory current={which} onStory={pick} onToggleLite={toggle} />
         ) : (
@@ -84,10 +84,10 @@ export default function Story() {
 }
 
 const TONES: Record<string, string> = {
-  white: "bg-deep/85 text-white",
-  sun: "bg-sun text-deep",
-  red: "bg-spot-red text-white",
-  lilac: "bg-lilac text-deep",
+  white: "bg-charcoal/85 text-paper",
+  sun: "bg-ember text-charcoal",
+  red: "bg-ember text-paper",
+  lilac: "bg-chip text-charcoal",
 };
 
 function Scroller({
@@ -129,8 +129,8 @@ function Scroller({
 
   return (
     <div ref={box} style={{ height: `${meta.heightVh}vh` }} className="relative">
-      <h2 className="sr-only">Spotted. Launching 1 January in the UAE.</h2>
-      <div className="fixed inset-0 bg-deep" aria-hidden="true">
+      <h2 className="sr-only">Spotted. Coming soon in the UAE.</h2>
+      <div className="fixed inset-0 bg-charcoal" aria-hidden="true">
         <FlatWorld
           id={id}
           onSlow={() => {
@@ -146,8 +146,8 @@ function Scroller({
             FEATURES.topBar ? "pt-[max(4.75rem,calc(env(safe-area-inset-top)+4.25rem))]" : "pt-[max(1rem,env(safe-area-inset-top))]"
           }`}>
           <div className="flex flex-col items-start gap-2">
-            {!FEATURES.topBar && <span className="text-2xl font-extrabold text-white drop-shadow">Spotted</span>}
-            <span className="rounded-full bg-lilac px-4 py-1 text-sm font-bold text-deep">{meta.label}</span>
+            {!FEATURES.topBar && <span className="text-2xl font-extrabold text-paper drop-shadow">Spotted</span>}
+            <span className="rounded-full bg-chip px-4 py-1 text-sm font-bold text-charcoal">{meta.label}</span>
           </div>
           <Menu current={id} lite={false} onStory={onStory} onToggleLite={onToggleLite} />
         </div>
@@ -175,36 +175,36 @@ function Scroller({
         })}
 
         {ov.bubble && (
-          <div className="pop-word absolute left-1/2 top-[13%] flex w-[min(20rem,88vw)] -translate-x-1/2 items-center gap-3 rounded-3xl bg-white px-4 py-3 text-deep shadow-xl">
+          <div className="pop-word absolute left-1/2 top-[13%] flex w-[min(20rem,88vw)] -translate-x-1/2 items-center gap-3 rounded-3xl bg-paper px-4 py-3 text-charcoal shadow-xl">
             <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true" className="shrink-0">
-              <path d="M6 3h12v18l-6-5-6 5z" fill="#E5383B" />
+              <path d="M6 3h12v18l-6-5-6 5z" fill="var(--c-accent)" />
             </svg>
             <div>
-              <p className="text-xs font-bold uppercase tracking-wide text-brand">Spotted</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-accent">Spotted</p>
               <p className="text-base font-extrabold leading-snug">This place is 1 km away</p>
             </div>
           </div>
         )}
 
         {ov.hint && (
-          <span className="absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 rounded-full bg-sun px-5 py-2 text-sm font-bold text-deep">
+          <span className="absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 rounded-full bg-ember px-5 py-2 text-sm font-bold text-charcoal">
             Scroll
           </span>
         )}
       </div>
 
-      {/* Ending: launch date and waitlist */}
+      {/* Ending: "coming soon" and waitlist */}
       <div
         className={`fixed inset-x-0 bottom-0 z-20 px-4 pb-[max(5rem,env(safe-area-inset-bottom))] pt-24 transition-opacity duration-300 ${
           ov.end ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
-        style={{ background: "linear-gradient(to top, #3C096C 60%, transparent)" }}
+        style={{ background: "linear-gradient(to top, var(--c-deep) 60%, transparent)" }}
       >
-        <div className="mx-auto max-w-xl rounded-3xl bg-brand p-5 text-center text-white">
+        <div className="mx-auto max-w-xl rounded-3xl bg-panel p-5 text-center text-paper">
           <h2 className="text-[clamp(1.6rem,7vw,2.6rem)] font-extrabold leading-tight">
-            Launching 1 January in the UAE
+            Coming soon in the UAE
           </h2>
-          <p className="mb-4 mt-2 text-lilac">Be first to know when Spotted opens.</p>
+          <p className="mb-4 mt-2 text-mist">Be first to know when Spotted opens.</p>
           <Waitlist />
         </div>
       </div>

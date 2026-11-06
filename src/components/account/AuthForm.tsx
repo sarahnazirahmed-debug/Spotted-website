@@ -13,10 +13,10 @@ import { birthdayProblem, isCode, isEmail, isPhone } from "@/lib/signupRules";
 type Step = "form" | "code" | "thanks" | "inApp";
 
 const field =
-  "min-h-12 w-full rounded-2xl bg-white px-5 text-base font-medium text-ink outline-none focus:ring-4 focus:ring-lilac";
-const label = "mb-1 block text-sm font-bold text-white";
+  "min-h-12 w-full rounded-2xl bg-paper px-5 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent";
+const label = "mb-1 block text-sm font-bold text-paper";
 const primary =
-  "min-h-12 w-full rounded-full bg-white px-7 font-extrabold text-deep transition active:scale-95 disabled:opacity-60";
+  "min-h-12 w-full rounded-full bg-paper px-7 font-extrabold text-charcoal transition active:scale-95 disabled:opacity-60";
 
 function StoreButtons() {
   const out = LAUNCH.status === "outNow";
@@ -29,13 +29,13 @@ function StoreButtons() {
     <div className="mt-6 flex flex-col gap-3 sm:flex-row">
       {items.map(([name, href]) =>
         out && href ? (
-          <a key={name} href={href} className={`${btn} bg-white text-deep`}>
+          <a key={name} href={href} className={`${btn} bg-paper text-charcoal`}>
             {name}
           </a>
         ) : (
-          <span key={name} aria-disabled="true" className={`${btn} bg-white/20 text-white`}>
+          <span key={name} aria-disabled="true" className={`${btn} bg-paper/20 text-paper`}>
             {name}
-            <span className="text-xs font-bold text-lilac">{LAUNCH.storeNote}</span>
+            <span className="text-xs font-bold text-mist">{LAUNCH.storeNote}</span>
           </span>
         ),
       )}
@@ -113,7 +113,7 @@ export default function AuthForm({ mode }: { mode: "signup" | "login" }) {
     return (
       <div className="text-center">
         <h2 className="text-[clamp(1.8rem,6vw,3rem)] font-extrabold leading-tight">Your account is ready.</h2>
-        <p className="mt-3 text-xl font-bold text-lilac">Use Spotted in the app.</p>
+        <p className="mt-3 text-xl font-bold text-mist">Use Spotted in the app.</p>
         <StoreButtons />
       </div>
     );
@@ -122,7 +122,7 @@ export default function AuthForm({ mode }: { mode: "signup" | "login" }) {
     return (
       <div className="text-center">
         <h2 className="text-[clamp(1.8rem,6vw,3rem)] font-extrabold leading-tight">Spotted works in the app.</h2>
-        <p className="mt-3 text-lg text-lilac">Save places from reels and get a nudge when you are near.</p>
+        <p className="mt-3 text-lg text-mist">Save places from reels and get a nudge when you are near.</p>
         <StoreButtons />
       </div>
     );
@@ -131,8 +131,8 @@ export default function AuthForm({ mode }: { mode: "signup" | "login" }) {
   if (step === "code") {
     return (
       <form onSubmit={verify} noValidate className="grid gap-4">
-        <p className="text-lg text-lilac">
-          We sent a code to <strong className="text-white">{v.email.trim()}</strong>. Type it here.
+        <p className="text-lg text-mist">
+          We sent a code to <strong className="text-paper">{v.email.trim()}</strong>. Type it here.
         </p>
         <div>
           <label htmlFor="auth-code" className={label}>
@@ -152,11 +152,11 @@ export default function AuthForm({ mode }: { mode: "signup" | "login" }) {
         <button type="submit" disabled={busy} className={primary}>
           {busy ? "Checking..." : mode === "signup" ? "Finish sign up" : "Log in"}
         </button>
-        <button type="button" onClick={() => sendCode()} disabled={busy} className="min-h-11 font-bold text-white underline">
+        <button type="button" onClick={() => sendCode()} disabled={busy} className="min-h-11 font-bold text-paper underline">
           Send a new code
         </button>
         {message && (
-          <p role="alert" className="text-sm font-bold text-white">
+          <p role="alert" className="text-sm font-bold text-paper">
             {message}
           </p>
         )}
@@ -200,7 +200,7 @@ export default function AuthForm({ mode }: { mode: "signup" | "login" }) {
         {busy ? "Sending..." : "Send me a code"}
       </button>
       {message && (
-        <p role="alert" className="text-sm font-bold text-white">
+        <p role="alert" className="text-sm font-bold text-paper">
           {message}
         </p>
       )}

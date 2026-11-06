@@ -15,7 +15,7 @@ export default function AccountPage({ mode }: { mode: "signup" | "login" }) {
         lead={signup ? "Make your account now. We will send you a one-time code by email." : "We will send you a one-time code by email."}
       />
       <main className="bg-page px-5 py-16 text-onpage md:py-24">
-        <div className="mx-auto max-w-lg rounded-3xl bg-brand p-8 text-white md:p-10">
+        <div className="mx-auto max-w-lg rounded-3xl bg-panel p-8 text-paper md:p-10">
           <AuthForm mode={mode} />
         </div>
         <p className="mx-auto mt-6 max-w-lg text-center text-base font-bold">

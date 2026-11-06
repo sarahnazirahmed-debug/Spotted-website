@@ -6,23 +6,23 @@ export default function Footer() {
   const links: [string, string, boolean][] = [
     ["Restaurants", "/restaurants", FEATURES.businessPages],
     ["Shops", "/shops", FEATURES.businessPages],
-    ["Influencers", "/influencers", FEATURES.influencersPage],
+    ["Insider", "/insider", FEATURES.insiderPage],
     ["Careers", "/careers", FEATURES.careersPage],
     ["About", "/about", FEATURES.aboutPage],
     ["Privacy", "/privacy", FEATURES.legalPages],
     ["Terms", "/terms", FEATURES.legalPages],
   ];
   return (
-    <footer className="bg-footer px-5 py-12 text-white">
+    <footer className="bg-footer px-5 py-12 text-paper">
       <div className="mx-auto flex max-w-5xl flex-col gap-8 md:flex-row md:justify-between">
         <div>
           <p className="flex items-center gap-2 text-2xl font-extrabold">
             <svg width="22" height="26" viewBox="0 0 24 28" aria-hidden="true">
-              <path d="M3 1h18v26l-9-7-9 7z" fill="#E5383B" />
+              <path d="M3 1h18v26l-9-7-9 7z" fill="var(--c-accent)" />
             </svg>
             Spotted
           </p>
-          <p className="mt-2 text-lilac">Made in the UAE.</p>
+          <p className="mt-2 text-mist">Made in the UAE.</p>
           {CONTACT.emailLive && (
             <a href={`mailto:${CONTACT.email}`} className="mt-3 inline-flex min-h-11 items-center font-bold underline">
               {CONTACT.email}

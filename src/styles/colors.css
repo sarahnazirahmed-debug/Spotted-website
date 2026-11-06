@@ -1,0 +1,106 @@
+/* ============================================================================================
+   THE ONE COLOURS FILE.
+   Every colour on the website lives here, with a name. Nothing else in the project may contain a
+   colour code (a test checks this). To change the look, change the values in this file only.
+
+   The brand colours are NOT decided yet, so these are neutral PLACEHOLDERS:
+   soft white, charcoal, and one warm accent (ember).
+   ============================================================================================ */
+
+/* ---- 1. The palette: named colours ---- */
+:root {
+  --paper: #f7f4ee;          /* soft white */
+  --paper-warm: #f1e3cf;     /* soft white, a little warmer (lit windows, glows) */
+  --stone: #e7e1d6;          /* light grey-beige (alternate sections on light pages) */
+  --mist: #cfc9be;           /* light text on dark surfaces */
+  --ash: #8f8b84;            /* borders and lines */
+  --graphite: #3e3e44;       /* cards on dark pages */
+  --charcoal-soft: #333338;  /* alternate sections on dark pages */
+  --charcoal: #2b2b2f;       /* main dark colour, and text on light pages */
+  --charcoal-deep: #1f1f22;  /* deepest dark (footer, night sky) */
+  --ember: #e0793a;          /* the one warm accent */
+  --leaf: #2bb673;           /* only for green stars and growth */
+  --whatsapp: #25d366;       /* only on the WhatsApp button */
+
+  /* ---- 2. Drawings and the 3D banner (the illustration palette) ---- */
+  --c-deep: var(--charcoal-deep);   /* night sky, shadows, dark outlines */
+  --c-main: var(--graphite);        /* buildings, phones, main surfaces */
+  --c-soft: var(--mist);            /* light surfaces, lamp posts, hem stitching */
+  --c-paper: var(--paper);          /* white parts: plates, cloth text, windows frames */
+  --c-accent: var(--ember);         /* pins, bookmarks, the banner cloth */
+  --c-glow: var(--paper-warm);      /* lit windows, sun, glows */
+  --c-leaf: var(--leaf);            /* green stars and growth */
+  --c-whatsapp: var(--whatsapp);
+
+  /* ---- 3. Creator stars (Spotted Insider) ---- */
+  --star-saved: var(--ember);       /* someone saved your reel's place */
+  --star-visited: var(--mist);      /* someone visited but did not order */
+  --star-ordered: var(--leaf);      /* someone visited and ordered */
+
+  /* ---- 4. Buttons that are the same in light and dark ---- */
+  --btn: var(--paper);              /* a soft white button ... */
+  --on-btn: var(--charcoal);        /* ... with charcoal words */
+  --chip: var(--stone);             /* small tags ... */
+  --on-chip: var(--charcoal);       /* ... and their words */
+  --accent: var(--ember);
+  --on-accent: var(--charcoal);
+  --line: var(--ash);
+  --lamp-handle: var(--ember);
+  --lamp-string: var(--mist);
+}
+
+/* ---- 5. Theme: dark is the default, the lamp switches to light ---- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: var(--charcoal);          /* page background */
+  --on-page: var(--paper);          /* normal text */
+  --heading: var(--paper);          /* headings */
+  --alt: var(--charcoal-soft);      /* every second section */
+  --box: var(--graphite);           /* cards */
+  --panel: var(--graphite);         /* big panels and forms */
+  --footer: var(--charcoal-deep);
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --page: var(--paper);
+  --on-page: var(--charcoal);
+  --heading: var(--charcoal);
+  --alt: var(--stone);
+  --box: var(--charcoal);
+  --panel: var(--charcoal);
+  --footer: var(--charcoal);
+}
+/* text on panels and cards is soft white in both themes */
+:root {
+  --on-panel: var(--paper);
+}
+
+/* ---- 6. Names for the CSS classes (bg-page, text-heading, bg-panel, ...) ---- */
+@theme inline {
+  --color-page: var(--page);
+  --color-onpage: var(--on-page);
+  --color-heading: var(--heading);
+  --color-alt: var(--alt);
+  --color-box: var(--box);
+  --color-panel: var(--panel);
+  --color-onpanel: var(--on-panel);
+  --color-footer: var(--footer);
+  --color-btn: var(--btn);
+  --color-onbtn: var(--on-btn);
+  --color-chip: var(--chip);
+  --color-onchip: var(--on-chip);
+  --color-accent: var(--accent);
+  --color-onaccent: var(--on-accent);
+  --color-line: var(--line);
+  --color-paper: var(--paper);
+  --color-stone: var(--stone);
+  --color-mist: var(--mist);
+  --color-ash: var(--ash);
+  --color-graphite: var(--graphite);
+  --color-charcoal: var(--charcoal);
+  --color-charcoal-deep: var(--charcoal-deep);
+  --color-ember: var(--ember);
+  --color-leaf: var(--leaf);
+  --color-whatsapp: var(--whatsapp);
+}

@@ -18,6 +18,7 @@ import {
   passerAt,
   curve2,
 } from "@/lib/flat";
+import { mixColours } from "@/styles/palette";
 import { ArrivalPin, PhoneStand, CarSide, BookmarkShape, Logo, StarShape } from "./art";
 
 // ---------------------------------------------------------------- tiny animation engine
@@ -44,13 +45,7 @@ function place(el: Element | null, x: number, y: number, s = 1, rotDeg = 0) {
 function vis(el: Element | null, on: boolean) {
   el?.setAttribute("visibility", on ? "visible" : "hidden");
 }
-const hex = (c: string) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
-function mixHex(a: string, b: string, t: number) {
-  const x = hex(a);
-  const y = hex(b);
-  return `rgb(${[0, 1, 2].map((i) => Math.round(lerp(x[i], y[i], t))).join(",")})`;
-}
-
+const mixHex = mixColours;
 function rng(seed: number) {
   let s = seed;
   return () => {
@@ -321,7 +316,7 @@ function Cafe({ id }: { id: StoryId }) {
         fontSize="42"
         fontWeight="800"
         fill={C.white}
-        style={{ fontFamily: "var(--font-poppins), sans-serif" }}
+        style={{ fontFamily: "var(--font-heading), sans-serif" }}
       >
         Café Luna
       </text>
@@ -535,7 +530,7 @@ function QuestionBubble() {
   return (
     <g ref={g} visibility="hidden">
       <path d="M -60 -50 Q -60 -78 -32 -78 L 32 -78 Q 60 -78 60 -50 L 60 12 Q 60 40 32 40 L 12 40 L 0 62 L -12 40 L -32 40 Q -60 40 -60 12 Z" fill={C.lilac} />
-      <text x="0" y="14" textAnchor="middle" fontSize="80" fontWeight="800" fill={C.deep} style={{ fontFamily: "var(--font-poppins), sans-serif" }}>
+      <text x="0" y="14" textAnchor="middle" fontSize="80" fontWeight="800" fill={C.deep} style={{ fontFamily: "var(--font-heading), sans-serif" }}>
         ?
       </text>
     </g>
@@ -638,10 +633,10 @@ function Billboard() {
       <rect x="80" y="-250" width="10" height="250" fill={C.deep} />
       <rect x="-130" y="-370" width="260" height="170" rx="8" fill={C.yellow} />
       <rect x="-130" y="-240" width="260" height="40" fill={C.red} />
-      <text x="0" y="-285" textAnchor="middle" fontSize="70" fontWeight="800" fill={C.deep} style={{ fontFamily: "var(--font-poppins), sans-serif" }}>
+      <text x="0" y="-285" textAnchor="middle" fontSize="70" fontWeight="800" fill={C.deep} style={{ fontFamily: "var(--font-heading), sans-serif" }}>
         SALE
       </text>
-      <text x="0" y="-212" textAnchor="middle" fontSize="26" fontWeight="800" fill={C.white} style={{ fontFamily: "var(--font-poppins), sans-serif" }}>
+      <text x="0" y="-212" textAnchor="middle" fontSize="26" fontWeight="800" fill={C.white} style={{ fontFamily: "var(--font-heading), sans-serif" }}>
         50% OFF TODAY
       </text>
     </g>

@@ -4,6 +4,7 @@
 // Used when the phone is slow, 3D is not supported, or the visitor asks for less motion.
 
 import Waitlist from "./Waitlist";
+import { FEATURES } from "@/config/features";
 import Menu from "./Menu";
 import type { StoryId } from "@/lib/story";
 
@@ -30,8 +31,8 @@ const SECTIONS = [
     text: "Spot a café you love, tap to save it, and Spotted tells you when a saved place is 1 km away.",
     art: (
       <div className="flex items-center gap-3">
-        <Bookmark color="#E5383B" />
-        <span className="rounded-2xl bg-white px-4 py-2 text-sm font-bold text-deep">
+        <Bookmark color="var(--c-accent)" />
+        <span className="rounded-2xl bg-paper px-4 py-2 text-sm font-bold text-charcoal">
           A place you saved is 1 km away
         </span>
       </div>
@@ -44,19 +45,20 @@ const SECTIONS = [
     art: (
       <div className="flex gap-1">
         {[0, 1, 2, 3, 4].map((k) => (
-          <Bookmark key={k} color="#6A1FB0" size={40} />
+          <Bookmark key={k} color="var(--c-main)" size={40} />
         ))}
       </div>
     ),
   },
   {
+    creator: true, // creator credit and stars: hidden unless FEATURES.creatorCredit is on
     tag: "Journey 3 · Influencers",
     title: "Every save you inspire lands at the café.",
     text: "Influencers share a reel, people save the place, and the café earns trust.",
     art: (
       <div className="flex gap-1">
         {[0, 1, 2, 3, 4].map((k) => (
-          <Star key={k} color={k < 3 ? "#2BB673" : "#C9A2FF"} />
+          <Star key={k} color={k < 3 ? "var(--c-leaf)" : "var(--c-soft)"} />
         ))}
       </div>
     ),
@@ -74,24 +76,24 @@ export default function LiteStory({
 }) {
   return (
     <div>
-      <section className="bg-brand px-5 pb-14 pt-6 text-white">
+      <section className="bg-panel px-5 pb-14 pt-6 text-paper">
         <div className="mx-auto max-w-2xl">
           <div className="flex items-center justify-between">
             <span className="text-2xl font-extrabold">Spotted</span>
             <Menu current={current} lite onStory={onStory} onToggleLite={onToggleLite} />
           </div>
           <div className="mt-12 flex items-start gap-3">
-            <Bookmark color="#E5383B" size={72} />
+            <Bookmark color="var(--c-accent)" size={72} />
           </div>
           <h2 className="mt-4 text-5xl font-extrabold leading-tight">Spot it. Save it.</h2>
-          <p className="mt-3 text-lg text-lilac">Get a nudge when you are near.</p>
+          <p className="mt-3 text-lg text-mist">Get a nudge when you are near.</p>
         </div>
       </section>
 
-      {SECTIONS.map((s) => (
+      {SECTIONS.filter((s) => !s.creator || FEATURES.creatorCredit).map((s) => (
         <section key={s.tag} className="bg-page px-5 py-12 text-onpage even:bg-alt">
           <div className="mx-auto max-w-2xl">
-            <span className="rounded-full bg-lilac px-4 py-1 text-sm font-bold text-deep">{s.tag}</span>
+            <span className="rounded-full bg-chip px-4 py-1 text-sm font-bold text-charcoal">{s.tag}</span>
             <h2 className="mt-4 text-3xl font-extrabold leading-tight text-heading">{s.title}</h2>
             <p className="mt-3">{s.text}</p>
             <div className="mt-6 inline-block rounded-3xl bg-box p-5">{s.art}</div>
@@ -99,10 +101,10 @@ export default function LiteStory({
         </section>
       ))}
 
-      <section className="bg-footer px-5 py-14 text-white">
+      <section className="bg-footer px-5 py-14 text-paper">
         <div className="mx-auto max-w-xl text-center">
-          <h2 className="text-3xl font-extrabold leading-tight">Launching 1 January in the UAE</h2>
-          <p className="mb-5 mt-2 text-lilac">Be first to know when Spotted opens.</p>
+          <h2 className="text-3xl font-extrabold leading-tight">Coming soon in the UAE</h2>
+          <p className="mb-5 mt-2 text-mist">Be first to know when Spotted opens.</p>
           <Waitlist />
         </div>
       </section>

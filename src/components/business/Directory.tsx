@@ -14,7 +14,7 @@ import type { Kind, Place } from "./data";
 type View = "row" | "list" | "grid";
 
 const chip =
-  "min-h-11 rounded-full border-2 border-lilac bg-page px-4 text-sm font-bold text-heading outline-none focus-visible:ring-4 focus-visible:ring-lilac";
+  "min-h-11 rounded-full border-2 border-line bg-page px-4 text-sm font-bold text-heading outline-none focus-visible:ring-4 focus-visible:ring-accent";
 
 function CurvedRow({ places }: { places: Place[] }) {
   const [centre, setCentre] = useState(0);
@@ -35,7 +35,7 @@ function CurvedRow({ places }: { places: Place[] }) {
         if (start.current !== null && Math.abs(e.clientX - start.current) > 50) go(e.clientX < start.current ? 1 : -1);
         start.current = null;
       }}
-      className="relative mx-auto h-[27rem] max-w-5xl overflow-hidden rounded-3xl outline-none focus-visible:ring-4 focus-visible:ring-lilac"
+      className="relative mx-auto h-[27rem] max-w-5xl overflow-hidden rounded-3xl outline-none focus-visible:ring-4 focus-visible:ring-accent"
       style={{ perspective: "1100px", touchAction: "pan-y" }}
     >
       {places.map((p, i) => {
@@ -53,7 +53,7 @@ function CurvedRow({ places }: { places: Place[] }) {
             }}
           >
             <div
-              className="overflow-hidden rounded-3xl bg-box text-white shadow-xl"
+              className="overflow-hidden rounded-3xl bg-box text-paper shadow-xl"
               onClick={() => d !== 0 && setCentre(i)}
               role={d === 0 ? undefined : "button"}
               aria-label={d === 0 ? undefined : `Show ${p.name}`}
@@ -61,13 +61,13 @@ function CurvedRow({ places }: { places: Place[] }) {
               <DishMedia place={p} active={d === 0} className="h-56 w-full" />
               <div className="p-4">
                 <p className="text-xl font-extrabold leading-tight">{p.name}</p>
-                <p className="mt-1 text-sm font-bold text-lilac">
+                <p className="mt-1 text-sm font-bold text-mist">
                   {p.area}, {p.emirate}
                 </p>
                 {d === 0 && (
                   <Link
                     href={`/${p.kind}/${p.id}`}
-                    className="mt-3 flex min-h-11 items-center justify-center rounded-full bg-white text-base font-extrabold text-deep transition active:scale-95"
+                    className="mt-3 flex min-h-11 items-center justify-center rounded-full bg-paper text-base font-extrabold text-charcoal transition active:scale-95"
                   >
                     View place
                   </Link>
@@ -82,7 +82,7 @@ function CurvedRow({ places }: { places: Place[] }) {
         aria-label="Previous place"
         onClick={() => go(-1)}
         disabled={c === 0}
-        className="absolute left-2 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-brand text-white disabled:opacity-30"
+        className="absolute left-2 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-panel text-paper disabled:opacity-30"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <path d="M15 5l-7 7 7 7" />
@@ -93,7 +93,7 @@ function CurvedRow({ places }: { places: Place[] }) {
         aria-label="Next place"
         onClick={() => go(1)}
         disabled={c >= places.length - 1}
-        className="absolute right-2 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-brand text-white disabled:opacity-30"
+        className="absolute right-2 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-panel text-paper disabled:opacity-30"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <path d="M9 5l7 7-7 7" />
@@ -128,7 +128,7 @@ export default function Directory({ kind, places }: { kind: Kind; places: Place[
       type="button"
       aria-pressed={view === v}
       onClick={() => setView(v)}
-      className={`min-h-11 px-4 text-sm font-extrabold ${view === v ? "bg-brand text-white" : "bg-page text-heading"}`}
+      className={`min-h-11 px-4 text-sm font-extrabold ${view === v ? "bg-panel text-paper" : "bg-page text-heading"}`}
     >
       {text}
     </button>
@@ -141,13 +141,13 @@ export default function Directory({ kind, places }: { kind: Kind; places: Place[
           <h2 className="mr-auto text-[clamp(1.8rem,5vw,2.8rem)] font-extrabold leading-tight text-heading">
             {COPY[kind].word} on Spotted
           </h2>
-          <span className="rounded-full bg-lilac px-4 py-1 text-xs font-extrabold text-deep">EXAMPLE PLACES</span>
+          <span className="rounded-full bg-chip px-4 py-1 text-xs font-extrabold text-charcoal">EXAMPLE PLACES</span>
         </div>
         <p className="mt-2 text-sm font-bold">These places are examples, to show how the page will look. Real partners are coming.</p>
 
         {/* view options, search, filters */}
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <div role="group" aria-label="View options" className="flex overflow-hidden rounded-full border-2 border-lilac">
+          <div role="group" aria-label="View options" className="flex overflow-hidden rounded-full border-2 border-line">
             {seg("row", "Row")}
             {seg("list", "List")}
             {seg("grid", "Grid")}
@@ -179,7 +179,7 @@ export default function Directory({ kind, places }: { kind: Kind; places: Place[
             type="button"
             aria-pressed={offersOnly}
             onClick={() => setOffersOnly((o) => !o)}
-            className={`${chip} ${offersOnly ? "!bg-brand !text-white" : ""}`}
+            className={`${chip} ${offersOnly ? "!bg-panel !text-paper" : ""}`}
           >
             Has offers
           </button>
@@ -192,7 +192,7 @@ export default function Directory({ kind, places }: { kind: Kind; places: Place[
             placeholder="Search by name, area or category"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="mt-3 min-h-12 w-full rounded-full border-2 border-lilac bg-page px-5 text-base font-medium text-heading outline-none focus:ring-4 focus:ring-lilac"
+            className="mt-3 min-h-12 w-full rounded-full border-2 border-line bg-page px-5 text-base font-medium text-heading outline-none focus:ring-4 focus:ring-accent"
           />
         )}
 

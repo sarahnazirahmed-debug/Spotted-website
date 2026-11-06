@@ -33,7 +33,7 @@ export default function DishMedia({
           className="absolute inset-0 h-full w-full object-cover"
         />
       )}
-      <span className="absolute left-3 top-3 rounded-full bg-deep/80 px-3 py-1 text-xs font-extrabold tracking-wide text-white">
+      <span className="absolute left-3 top-3 rounded-full bg-charcoal/80 px-3 py-1 text-xs font-extrabold tracking-wide text-paper">
         EXAMPLE
       </span>
     </div>

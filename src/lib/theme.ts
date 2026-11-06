@@ -19,6 +19,9 @@ function subscribe(cb: () => void) {
 
 export function setTheme(t: Theme) {
   document.documentElement.dataset.theme = t;
+  // keep the browser bar colour in step with the page colour
+  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  if (meta) meta.content = getComputedStyle(document.documentElement).getPropertyValue("--page").trim();
   try {
     localStorage.setItem(THEME_KEY, t);
   } catch {

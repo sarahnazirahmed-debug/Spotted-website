@@ -6,7 +6,7 @@
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "creatorWaitlist" | "businessDirectory" | "accounts" | "influencersPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "accounts" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
@@ -20,9 +20,9 @@ export const FEATURES: Record<FeatureName, boolean> = {
   businessDirectory: false,
   // Sign up, log in (email code) and the partner dashboard. OFF until Supabase is connected
   // (see supabase/schema.sql and .env.example).
-  accounts: false,
-  // The /influencers page (what creators get, Free vs Creator Pro, example stats, creator waitlist).
-  influencersPage: true,
+  accounts: true,
+  // The /insider page ("Spotted Insider": the paid plan for creators, example stats, Insider waitlist).
+  insiderPage: true,
   // The /careers page ("We are not hiring yet", email form).
   careersPage: true,
   // The /about page (the story of Spotted, contact).
@@ -40,29 +40,35 @@ export const FEATURES: Record<FeatureName, boolean> = {
   waitlist: false,
   // The business waitlist form on /restaurants and /shops. OFF for now (WhatsApp button instead).
   businessWaitlist: false,
-  // The creator waitlist form on /influencers. OFF for now (WhatsApp button instead).
-  creatorWaitlist: false,
+  // The Insider waitlist form on /insider. OFF for now (WhatsApp button instead).
+  insiderWaitlist: false,
+  // Public creator CREDIT and creator STARS: the Influencer story, creator handles on place pages,
+  // and the star row in the simple version. OFF: only paying Spotted Insider members ever get anything
+  // about them, and nothing about a creator is shown to the public.
+  creatorCredit: false,
   // The round WhatsApp button (bottom right).
   whatsappButton: true,
 };
 
 // LAUNCH WORDS: what the banner says, and whether the App Store / Google Play buttons show.
+// There are NO dates on the website: it only says "Coming soon".
 // On launch day, change `status` to "outNow" (one word) and fill in the two store links.
 export const LAUNCH = {
   status: "comingSoon" as "comingSoon" | "outNow",
-  comingSoon: { label: "COMING SOON", date: "01.01.2027" },
-  outNow: { label: "OUT NOW", date: "01.01.2027" },
+  comingSoon: { label: "COMING SOON" },
+  outNow: { label: "OUT NOW" },
+  // Shown on the sign-up thank-you screen next to the store buttons until the app is out.
+  storeNote: "Coming soon",
   // Shown only when status is "outNow".
-  // Shown on the sign-up thank-you screen next to the store buttons until launch.
-  storeNote: "Coming 1 January",
   stores: {
     appStore: "", // paste the App Store link here
     googlePlay: "", // paste the Google Play link here
   },
 };
 
-// The words currently printed on the banner.
-export const bannerWords = () => (LAUNCH.status === "outNow" ? LAUNCH.outNow : LAUNCH.comingSoon);
+// The words currently printed on the banner (one line; pages can add a second line, like "Restaurants").
+export const bannerWords = (): { label: string; line2?: string } =>
+  LAUNCH.status === "outNow" ? LAUNCH.outNow : LAUNCH.comingSoon;
 
 // Contact details shown on the About page, the legal pages and in the footer.
 // The email address is only shown once the domain is bought and the mailbox works:
