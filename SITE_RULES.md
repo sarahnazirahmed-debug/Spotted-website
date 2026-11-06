@@ -63,3 +63,11 @@ These rules are for the Spotted website (this folder). Follow them in every step
 - Every big section of the site can be switched on or off from `src/config/features.ts`.
 - One true/false word per section. Never delete a hidden section; to bring it back, change its switch.
 - Before the site goes public, check every switch is set the way you want.
+
+## 11. The /admin area (team only)
+
+- `/admin` is for the team (Pin Desk and Team). It is never linked from the public site, search engines are told not to list it, and it has its own switch (`adminArea`).
+- Log in with an email and a 6-digit code **every time** (the log-in is kept only in memory, never saved).
+- The **database** decides who may see and do what (`supabase/admin.sql`, with row-level security). The website only decides which buttons to show. Tests for both are in `tests/admin-database.test.mjs` and `tests/admin-helpers.test.mjs`.
+- Exactly one main admin. Nobody can change or remove it.
+- The Pin Desk stores only reel links and place facts. Nothing about app users. The creator handle is for the team only and is never shown to app users or the public.

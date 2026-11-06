@@ -6,7 +6,7 @@
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "accounts" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
@@ -18,6 +18,9 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // Part B: the place directory on those pages (curved video row, list and grid, filters, place pages).
   // It is built and tested with EXAMPLE data, and OFF until real partners join.
   businessDirectory: false,
+  // The /admin area for the team (Pin Desk and Team). It works on its own: it does NOT need "accounts".
+  // Everyone logs in with an email + 6-digit code, and the database only lets team members in.
+  adminArea: true,
   // Sign up, log in (email code) and the partner dashboard. OFF until Supabase is connected
   // (see supabase/schema.sql and .env.example).
   accounts: false,
