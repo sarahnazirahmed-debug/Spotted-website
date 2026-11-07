@@ -1,5 +1,5 @@
-import AdminComingSoon from "@/components/admin/AdminComingSoon";
+import { IncompleteList } from "@/components/admin/AdminLists";
 
 export default function Page() {
-  return <AdminComingSoon title="Incomplete" />;
+  return <IncompleteList />;
 }

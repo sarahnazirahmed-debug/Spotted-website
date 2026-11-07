@@ -4,17 +4,21 @@
 // The code is shown but can never be changed. Every change is logged with who made it (the database does that).
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { businessComplete, niceDateTime, type NotNeeded } from "@/lib/listRules";
+import { businessChecklist, niceDateTime, type NotNeeded } from "@/lib/listRules";
+import { canMarkNotNeeded } from "@/lib/teamRules";
+import ClosedBadge from "./ClosedBadge";
 import { businessProblem, cleanHandle, KINDS, OTHER_KIND, kindToSave, type BusinessType } from "@/lib/businessRules";
 import { useAdmin } from "./AdminProvider";
 import ChangeHistory from "./ChangeHistory";
 import { field, label, outline, primary } from "./ui";
 
 type Row = { id: string; code: string; name: string; type: BusinessType; subtype: string | null; instagram_handle: string | null; business_email: string | null; business_whatsapp: string | null; permanently_closed: boolean; not_needed: NotNeeded | null; added_by: string | null; created_at: string };
-const NN = [["subtype", "Kind"], ["instagram_handle", "Instagram handle"], ["business_email", "Business email"], ["business_whatsapp", "Business WhatsApp"]] as const;
+const NN = [["subtype", "Kind"], ["instagram_handle", "Instagram handle"], ["contact", "Business contact (email and WhatsApp)"], ["locations", "Locations"], ["reels", "Reels"]] as const;
 
 export default function BusinessEdit() {
-  const { supabase } = useAdmin();
+  const { supabase, me } = useAdmin();
+  const mayMark = canMarkNotNeeded(me?.role ?? null);
+  const [counts, setCounts] = useState({ locations: 0, reels: 0 });
   const [id] = useState(() => new URLSearchParams(window.location.search).get("id") ?? "");
   const [row, setRow] = useState<Row | null>(null);
   const [missing, setMissing] = useState(false);
@@ -27,8 +31,13 @@ export default function BusinessEdit() {
     let dead = false;
     void (async () => {
       if (!supabase || !id) return;
-      const { data } = await supabase.from("businesses").select("*").eq("id", id).maybeSingle();
+      const [{ data }, loc, reel] = await Promise.all([
+        supabase.from("businesses").select("*").eq("id", id).maybeSingle(),
+        supabase.from("locations").select("id", { count: "exact", head: true }).eq("business_id", id),
+        supabase.from("reels").select("id", { count: "exact", head: true }).eq("business_id", id),
+      ]);
       if (dead) return;
+      setCounts({ locations: loc.count ?? 0, reels: reel.count ?? 0 });
       if (!data) return setMissing(true);
       const r = data as Row;
       const known = KINDS[r.type].includes(r.subtype ?? "");
@@ -45,7 +54,7 @@ export default function BusinessEdit() {
 
   const set = (k: keyof typeof v, value: string | boolean) => setV((o) => ({ ...o, [k]: value }));
   const markNN = (k: keyof NotNeeded, on: boolean) => setV((o) => ({ ...o, nn: { ...o.nn, [k]: on }, ...(on ? clear(k) : {}) }));
-  const clear = (k: keyof NotNeeded) => (k === "subtype" ? { kind: "", otherKind: "" } : k === "instagram_handle" ? { instagram: "" } : k === "business_email" ? { email: "" } : { whatsapp: "" });
+  const clear = (k: keyof NotNeeded) => (k === "subtype" ? { kind: "", otherKind: "" } : k === "instagram_handle" ? { instagram: "" } : k === "contact" ? { email: "", whatsapp: "" } : {});
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -60,7 +69,8 @@ export default function BusinessEdit() {
       business_email: v.email.trim() || null,
       business_whatsapp: v.whatsapp.trim() || null,
       permanently_closed: v.closed,
-      not_needed: Object.fromEntries(Object.entries(v.nn).filter(([, on]) => on === true)),
+      // only an admin may change "Not needed" (the database refuses anyone else)
+      ...(mayMark ? { not_needed: Object.fromEntries(Object.entries(v.nn).filter(([, on]) => on === true)) } : {}),
     }).eq("id", row!.id);
     setBusy(false);
     if (error) return setMessage(error.message);
@@ -68,12 +78,14 @@ export default function BusinessEdit() {
     setVersion((n) => n + 1);
   }
 
-  const complete = businessComplete({ subtype: kindToSave(v.type, v.kind, v.otherKind), instagram_handle: cleanHandle(v.instagram) || null, business_email: v.email.trim() || null, business_whatsapp: v.whatsapp.trim() || null, not_needed: v.nn });
+  const checks = businessChecklist({ name: v.name, type: v.type, instagram_handle: cleanHandle(v.instagram) || null, business_email: v.email.trim() || null, business_whatsapp: v.whatsapp.trim() || null, not_needed: v.nn }, counts);
+  const lacking = checks.filter((c) => c.state === "missing");
 
   return (
     <div className="mx-auto grid max-w-2xl gap-6">
       <form onSubmit={save} noValidate className="grid gap-4">
-        <h1 className="text-4xl font-extrabold text-heading">Edit restaurant or shop</h1>
+        <h1 className="flex flex-wrap items-center gap-3 text-4xl font-extrabold text-heading">Edit restaurant or shop {v.closed && <ClosedBadge />}</h1>
+        <Link href={`/admin/restaurants/view?id=${row.id}`} className="w-fit font-extrabold underline">See its page: details, locations and reels</Link>
         <div className="rounded-2xl bg-panel p-4">
           <p className="text-sm font-bold text-ash">Code (for the team only, never changes)</p>
           <p className="break-all text-3xl font-extrabold tracking-widest text-heading">{row.code}</p>
@@ -110,18 +122,18 @@ export default function BusinessEdit() {
         </div>
         <div>
           <label htmlFor="be-email" className={label}>Business email (business only)</label>
-          <input id="be-email" type="email" className={field} value={v.email} disabled={v.nn.business_email === true} onChange={(e) => set("email", e.target.value)} autoCapitalize="none" />
+          <input id="be-email" type="email" className={field} value={v.email} disabled={v.nn.contact === true} onChange={(e) => set("email", e.target.value)} autoCapitalize="none" />
         </div>
         <div>
           <label htmlFor="be-wa" className={label}>Business WhatsApp (business only)</label>
-          <input id="be-wa" type="tel" className={field} value={v.whatsapp} disabled={v.nn.business_whatsapp === true} onChange={(e) => set("whatsapp", e.target.value)} />
+          <input id="be-wa" type="tel" className={field} value={v.whatsapp} disabled={v.nn.contact === true} onChange={(e) => set("whatsapp", e.target.value)} />
         </div>
         <fieldset className="grid gap-2 rounded-2xl bg-alt p-4">
           <legend className="font-extrabold">Not needed</legend>
-          <p className="text-sm font-bold">Tick a detail this place does not have. It then counts as done, and the box is emptied.</p>
+          <p className="text-sm font-bold">{mayMark ? "Tick a detail this place does not have. It then counts as done, and the box is emptied." : "Only the main admin and associates can mark a detail as Not needed."}</p>
           {NN.map(([k, text]) => (
             <label key={k} className="flex min-h-11 cursor-pointer items-center gap-3 font-bold">
-              <input type="checkbox" className="size-6" checked={v.nn[k] === true} onChange={(e) => markNN(k, e.target.checked)} />
+              <input type="checkbox" className="size-6" disabled={!mayMark} checked={v.nn[k] === true} onChange={(e) => markNN(k, e.target.checked)} />
               {text} is not needed
             </label>
           ))}
@@ -130,7 +142,7 @@ export default function BusinessEdit() {
           <input type="checkbox" className="size-6" checked={v.closed} onChange={(e) => set("closed", e.target.checked)} />
           Permanently closed
         </label>
-        <p className="font-bold">{complete ? "This place is complete." : "Not complete yet: a detail is empty and not marked as not needed."}</p>
+        <p className="font-bold">{lacking.length === 0 ? "This place is complete (it has a tick)." : `Not complete yet. Missing: ${lacking.map((m) => m.label).join(", ")}.`}</p>
         {message && <p role="status" className="font-bold text-heading">{message}</p>}
         <div className="grid gap-3 sm:grid-cols-2">
           <button type="submit" disabled={busy} className={primary}>{busy ? "Saving" : "Save"}</button>

@@ -2,7 +2,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
-import { businessComplete, describeChange, matches, newestFirst, niceDateTime, yesNo } from "../src/lib/listRules.ts";
+import { describeChange, matches, newestFirst, niceDateTime, yesNo } from "../src/lib/listRules.ts";
 import { addUser, attempt, makeDb } from "./helpers-db.mjs";
 
 test("newest on top, yes/no words, search words", () => {
@@ -13,16 +13,6 @@ test("newest on top, yes/no words, search words", () => {
   assert.ok(matches("Cafe Noor KQXM4729 sarah", "noor kqxm"));
   assert.ok(!matches("Cafe Noor", "pizza"));
   assert.match(niceDateTime("2026-11-07T14:35:00Z"), /Nov 2026/);
-});
-
-test("complete = kind, Instagram, email and WhatsApp each filled in or marked not needed", () => {
-  const full = { subtype: "Cafe", instagram_handle: "a", business_email: "a@b.ae", business_whatsapp: "+971501234567", not_needed: {} };
-  assert.equal(businessComplete(full), true);
-  assert.equal(businessComplete({ ...full, business_email: null }), false);
-  assert.equal(businessComplete({ ...full, business_email: null, not_needed: { business_email: true } }), true);
-  assert.equal(businessComplete({ ...full, instagram_handle: "  " }), false);
-  assert.equal(businessComplete({ subtype: null, instagram_handle: null, business_email: null, business_whatsapp: null, not_needed: { subtype: true, instagram_handle: true, business_email: true, business_whatsapp: true } }), true);
-  assert.equal(businessComplete({ ...full, not_needed: null }), true);
 });
 
 test("history lines say what changed", () => {

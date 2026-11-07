@@ -30,6 +30,7 @@ export async function makeDb({ skip = [] } = {}) {
   if (!skip.includes("pindesk_codes.sql")) await db.exec(readFileSync("supabase/pindesk_codes.sql", "utf8"));
   if (!skip.includes("pindesk_offers.sql")) await db.exec(readFileSync("supabase/pindesk_offers.sql", "utf8"));
   if (!skip.includes("pindesk_log.sql")) await db.exec(readFileSync("supabase/pindesk_log.sql", "utf8"));
+  if (!skip.includes("pindesk_complete.sql")) await db.exec(readFileSync("supabase/pindesk_complete.sql", "utf8"));
   return db;
 }
 

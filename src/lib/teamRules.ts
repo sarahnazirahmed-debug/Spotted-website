@@ -12,6 +12,8 @@ export const ROLE_LABEL: Record<TeamRole, string> = {
 export const canOpenTeam = (me: TeamRole | null) => me === "main_admin" || me === "associate";
 export const canUsePinDesk = (me: TeamRole | null) => me !== null;
 export const canSeeEarnings = (me: TeamRole | null) => me === "main_admin" || me === "associate";
+// Only the main admin and associates may mark a detail "Not needed" (the database checks this too).
+export const canMarkNotNeeded = (me: TeamRole | null) => me === "main_admin" || me === "associate";
 export const canDeleteReels = (me: TeamRole | null) => me === "main_admin" || me === "associate";
 
 // The roles that `me` may give to a new person (or change a person to).

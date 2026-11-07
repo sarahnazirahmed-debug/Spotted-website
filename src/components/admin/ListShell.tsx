@@ -4,12 +4,15 @@
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { matches } from "@/lib/listRules";
+import ClosedBadge from "./ClosedBadge";
 import { field, outline, primary } from "./ui";
 
 export type ListRow = {
   id: string;
   href: string; // the edit page
   title: string;
+  editHref?: string; // when the title opens a page to look at, this opens the edit page
+  closed?: boolean; // "Permanently closed" next to the name
   ticked?: boolean; // shows a tick (a complete restaurant or shop)
   search: string; // all the words the search box looks in
   cells: [string, ReactNode][];
@@ -42,8 +45,9 @@ export default function ListShell({ title, addHref, addLabel, rows, loaded, empt
       <ul className="grid gap-3">
         {shown.map((r) => (
           <li key={r.id} className="rounded-2xl bg-box p-4 text-onpanel">
-            <h2 className="flex items-center gap-2 text-xl font-extrabold">
+            <h2 className="flex flex-wrap items-center gap-2 text-xl font-extrabold">
               <Link href={r.href} className="min-h-11 break-words underline focus-visible:outline-4 focus-visible:outline-offset-2">{r.title}</Link>
+              {r.closed && <ClosedBadge />}
               {r.ticked && (
                 <span className="inline-flex items-center gap-1 text-sm font-bold">
                   <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 10.5l4 4 8-9" /></svg>
@@ -59,7 +63,7 @@ export default function ListShell({ title, addHref, addLabel, rows, loaded, empt
                 </div>
               ))}
             </dl>
-            <Link href={r.href} className="mt-3 flex min-h-11 w-fit items-center rounded-full border-2 border-line px-5 font-extrabold">Open and edit</Link>
+            <Link href={r.editHref ?? r.href} className="mt-3 flex min-h-11 w-fit items-center rounded-full border-2 border-line px-5 font-extrabold">Open and edit</Link>
           </li>
         ))}
       </ul>

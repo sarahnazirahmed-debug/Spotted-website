@@ -2,7 +2,7 @@
 
 // The three lists: Locations, Restaurants and shops, Reels. Newest on top. "Added by" comes from the log-in (the database fills it in).
 import { useEffect, useState } from "react";
-import { businessComplete, newestFirst, niceDateTime, yesNo, type NotNeeded } from "@/lib/listRules";
+import { businessChecklist, businessComplete, newestFirst, niceDateTime, yesNo, type NotNeeded } from "@/lib/listRules";
 import { niceDay } from "@/lib/timeAgo";
 import { useAdmin } from "./AdminProvider";
 import ListShell, { type ListRow } from "./ListShell";
@@ -45,11 +45,11 @@ export function LocationsList() {
   return <ListShell title="Locations" addHref="/admin/add-location" addLabel="Add location" rows={rows} loaded={data !== null} empty="No locations yet." />;
 }
 
-type Biz = { id: string; code: string; name: string; type: "restaurant" | "shop"; subtype: string | null; instagram_handle: string | null; business_email: string | null; business_whatsapp: string | null; not_needed: NotNeeded | null; added_by: string | null; created_at: string };
+type Biz = { permanently_closed: boolean; id: string; code: string; name: string; type: "restaurant" | "shop"; subtype: string | null; instagram_handle: string | null; business_email: string | null; business_whatsapp: string | null; not_needed: NotNeeded | null; added_by: string | null; created_at: string };
 export function RestaurantsList() {
   const data = useLoad(async (db) => {
     const [b, r, l] = await Promise.all([
-      db.from("businesses").select("id, code, name, type, subtype, instagram_handle, business_email, business_whatsapp, not_needed, added_by, created_at").order("created_at", { ascending: false }).limit(10000),
+      db.from("businesses").select("id, code, name, type, subtype, instagram_handle, business_email, business_whatsapp, permanently_closed, not_needed, added_by, created_at").order("created_at", { ascending: false }).limit(10000),
       db.from("reels").select("business_id").not("business_id", "is", null).limit(50000),
       db.from("locations").select("business_id").not("business_id", "is", null).limit(50000),
     ]);
@@ -59,22 +59,56 @@ export function RestaurantsList() {
       withLocation: new Set(((l.data as { business_id: string }[] | null) ?? []).map((x) => x.business_id)),
     };
   });
-  const rows: ListRow[] = newestFirst(data?.businesses ?? []).map((b) => ({
+  const counts = (id: string) => ({ locations: data?.withLocation.has(id) ? 1 : 0, reels: data?.withReel.has(id) ? 1 : 0 });
+  const makeRow = (b: Biz, extra?: ListRow["cells"]): ListRow => ({
     id: b.id,
-    href: `/admin/restaurants/edit?id=${b.id}`,
+    href: `/admin/restaurants/view?id=${b.id}`,
+    editHref: `/admin/restaurants/edit?id=${b.id}`,
     title: b.name,
-    ticked: businessComplete(b),
+    closed: b.permanently_closed,
+    ticked: businessComplete(b, counts(b.id)),
     search: `${b.name} ${b.code} ${b.type} ${b.added_by ?? ""}`,
     cells: [
       ["Code", b.code],
       ["Type", b.type === "shop" ? "Shop" : "Restaurant"],
       ["Has a reel", yesNo(!!data?.withReel.has(b.id))],
       ["Has a location", yesNo(!!data?.withLocation.has(b.id))],
+      ...(extra ?? []),
       ["Added by", b.added_by ?? "-"],
       ["Added", niceDateTime(b.created_at)],
     ],
-  }));
+  });
+  const rows: ListRow[] = newestFirst(data?.businesses ?? []).map((b) => makeRow(b));
   return <ListShell title="Restaurants and shops" addHref="/admin/add-restaurant" addLabel="Add restaurant or shop" rows={rows} loaded={data !== null} empty="No restaurants or shops yet." />;
+}
+
+// Places without a tick, with what is still missing.
+export function IncompleteList() {
+  const data = useLoad(async (db) => {
+    const [b, r, l] = await Promise.all([
+      db.from("businesses").select("id, code, name, type, subtype, instagram_handle, business_email, business_whatsapp, permanently_closed, not_needed, added_by, created_at").order("created_at", { ascending: false }).limit(10000),
+      db.from("reels").select("business_id").not("business_id", "is", null).limit(50000),
+      db.from("locations").select("business_id").not("business_id", "is", null).limit(50000),
+    ]);
+    return {
+      businesses: (b.data as Biz[] | null) ?? [],
+      withReel: new Set(((r.data as { business_id: string }[] | null) ?? []).map((x) => x.business_id)),
+      withLocation: new Set(((l.data as { business_id: string }[] | null) ?? []).map((x) => x.business_id)),
+    };
+  });
+  const rows: ListRow[] = newestFirst(data?.businesses ?? [])
+    .map((b) => ({ b, missing: businessChecklist(b, { locations: data?.withLocation.has(b.id) ? 1 : 0, reels: data?.withReel.has(b.id) ? 1 : 0 }).filter((c) => c.state === "missing") }))
+    .filter((x) => x.missing.length > 0)
+    .map(({ b, missing }) => ({
+      id: b.id,
+      href: `/admin/restaurants/view?id=${b.id}`,
+      editHref: `/admin/restaurants/edit?id=${b.id}`,
+      title: b.name,
+      closed: b.permanently_closed,
+      search: `${b.name} ${b.code} ${b.type} ${missing.map((m) => m.label).join(" ")}`,
+      cells: [["Missing", missing.map((m) => m.label).join(", ")], ["Code", b.code], ["Type", b.type === "shop" ? "Shop" : "Restaurant"], ["Added by", b.added_by ?? "-"], ["Added", niceDateTime(b.created_at)]] as ListRow["cells"],
+    }));
+  return <ListShell title="Incomplete" addHref="/admin/add-restaurant" addLabel="Add restaurant or shop" rows={rows} loaded={data !== null} empty="Every restaurant and shop has a tick." />;
 }
 
 type ReelRow = { id: string; url: string; code: string; place_name: string | null; creator_handle: string | null; business_id: string | null; location_id: string | null; posted_on: string | null; added_by: string | null; created_at: string };
