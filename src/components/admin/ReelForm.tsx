@@ -7,6 +7,7 @@ import { locationFits, locationGroups, postedOnProblem, type BizOption, type Loc
 import { cleanDeals, cleanOffers, draftFromDeal, draftFromOffer, type Deal, type DealDraft, type Offer, type OfferDraft } from "@/lib/reelDeals";
 import { useAdmin } from "./AdminProvider";
 import ReelExtras from "./ReelExtras";
+import type { Extras } from "@/lib/reelExtrasSave";
 import { cleanDishes, MAX_DISHES } from "@/lib/dishes";
 import { mapsSearchUrl, readMapsPin } from "@/lib/mapsLink";
 import { CATEGORIES, EMIRATES, pinProblem, STATUS_LABEL, type ReelStatus } from "@/lib/pinRules";
@@ -15,9 +16,6 @@ import type { Reel, ReelInput } from "@/lib/reelTypes";
 const field = "min-h-11 w-full rounded-xl bg-paper px-3 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent";
 const label = "mb-1 block text-sm font-bold";
 const num = (v: string): number | null => (v.trim() === "" || !Number.isFinite(Number(v)) ? null : Number(v));
-
-// The deals and offers to save with the reel, and the ones that were taken off it.
-export type Extras = { deals: Deal[]; offers: Offer[]; removedDealIds: string[]; removedOfferIds: string[] };
 
 type Props = {
   // For a new reel: the link details. For an existing reel: the reel.

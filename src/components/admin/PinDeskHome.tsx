@@ -17,7 +17,7 @@ const BARS = [
 const LISTS = [
   { label: "Locations", href: "/admin/locations" },
   { label: "Restaurants", href: "/admin/restaurants" },
-  { label: "Reels", href: "/admin/pin" },
+  { label: "Reels", href: "/admin/reels" },
   { label: "Incomplete", href: "/admin/incomplete" },
 ];
 

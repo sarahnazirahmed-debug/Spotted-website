@@ -1,5 +1,5 @@
-import AdminComingSoon from "@/components/admin/AdminComingSoon";
+import { RestaurantsList } from "@/components/admin/AdminLists";
 
 export default function Page() {
-  return <AdminComingSoon title="Restaurants" />;
+  return <RestaurantsList />;
 }

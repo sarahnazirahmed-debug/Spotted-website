@@ -13,7 +13,8 @@ import { useAdmin } from "./AdminProvider";
 import DuplicateNotice from "./DuplicateNotice";
 import ReelDetails from "./ReelDetails";
 import type { Deal, Offer } from "@/lib/reelDeals";
-import ReelForm, { type Extras } from "./ReelForm";
+import ReelForm from "./ReelForm";
+import { saveReelExtras, type Extras } from "@/lib/reelExtrasSave";
 import type { BizOption, LocOption } from "@/lib/reelPlace";
 
 type Tab = "all" | ReelStatus | "waiting";
@@ -141,46 +142,7 @@ export default function PinDesk() {
     return null;
   }
 
-  // Save the deals and offers of a reel. New ones are added, old ones are changed, taken-off ones are deleted.
-  // Only the main admin and associates may delete; if that is not allowed we say so instead of pretending it worked.
-  async function saveExtras(reelId: string, extras: Extras): Promise<string | null> {
-    const db = supabase!;
-    const fail = (what: string, message: string) => `${what} did not save (${message}).`;
-    for (const o of extras.offers) {
-      const row = { title: o.title, discount: o.discount, conditions: o.conditions, end_date: o.end_date };
-      const r = o.id ? await db.from("reel_offers").update(row).eq("id", o.id) : await db.from("reel_offers").insert({ ...row, reel_id: reelId });
-      if (r.error) return fail(`The offer "${o.title}"`, r.error.message);
-    }
-    for (const d of extras.deals) {
-      const row = { title: d.title, included: d.included, conditions: d.conditions, end_date: d.end_date };
-      let id = d.id;
-      if (id) {
-        const r = await db.from("reel_deals").update(row).eq("id", id);
-        if (r.error) return fail(`The deal "${d.title}"`, r.error.message);
-      } else {
-        const r = await db.from("reel_deals").insert({ ...row, reel_id: reelId }).select("id").single();
-        if (r.error || !r.data) return fail(`The deal "${d.title}"`, r.error?.message ?? "no answer");
-        id = (r.data as { id: string }).id;
-      }
-      const up = await db.from("reel_deal_prices").upsert(d.prices.map((p) => ({ deal_id: id, people: p.people, total_price_aed: p.total_price_aed })), { onConflict: "deal_id,people" });
-      if (up.error) return fail(`The prices of "${d.title}"`, up.error.message);
-      const old = deals.find((x) => x.id === d.id)?.prices.map((p) => p.people) ?? [];
-      const gone = old.filter((n) => !d.prices.some((p) => p.people === n));
-      if (gone.length > 0) {
-        const del = await db.from("reel_deal_prices").delete().eq("deal_id", id).in("people", gone).select("id");
-        if (del.error || (del.data?.length ?? 0) < gone.length) return "only the main admin and associates can remove a price line.";
-      }
-    }
-    if (extras.removedDealIds.length > 0) {
-      const del = await db.from("reel_deals").delete().in("id", extras.removedDealIds).select("id");
-      if (del.error || (del.data?.length ?? 0) < extras.removedDealIds.length) return "only the main admin and associates can remove a deal.";
-    }
-    if (extras.removedOfferIds.length > 0) {
-      const del = await db.from("reel_offers").delete().in("id", extras.removedOfferIds).select("id");
-      if (del.error || (del.data?.length ?? 0) < extras.removedOfferIds.length) return "only the main admin and associates can remove an offer.";
-    }
-    return null;
-  }
+  const saveExtras = (reelId: string, extras: Extras) => saveReelExtras(supabase!, reelId, extras, deals);
 
   async function saveReel(values: ReelInput, extras: Extras): Promise<string | null> {
     if (!editing) return null;
