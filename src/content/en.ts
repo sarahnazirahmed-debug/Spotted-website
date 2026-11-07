@@ -26,6 +26,68 @@ export const en = {
     comingSoonNote: (label: string) => `${label} is coming soon.`,
   },
 
+  // The new Insider page (step 3): src/components/insider/
+  insiderPage: {
+    draft: "Design draft",
+    hero: {
+      label: "For influencers",
+      title: "Spotted Insider",
+      lead: "Make your reels work harder. See how many people save and visit the places you recommend, and let restaurants and shops find you.",
+      apply: "Become an Insider",
+      account: "I already have an account",
+    },
+    whyTitle: "Why become an Insider",
+    flipHint: "Tap to read more",
+    cards: [
+      {
+        title: "See what your reels do",
+        text: "Every save from your reel is counted. Green stars = visits, yellow stars = sales.",
+        stars: true,
+      },
+      { title: "Your reels live in the app", text: "Your reels sit on each place page with your name under them.", stars: false },
+      { title: "Restaurants can see you", text: "They see which influencers bring customers and can agree offers.", stars: false },
+      { title: "One simple dashboard", text: "Add reels, see numbers by month. Money is only shown as a range.", stars: false },
+    ],
+    applyTitle: "What you need to apply",
+    applyChecklistTitle: "Your checklist",
+    items: [
+      { label: "UAE Advertiser Permit", tags: ["PDF", "Required"] },
+      { label: "Instagram or TikTok handle", tags: ["Required"] },
+      { label: "Other platforms, such as YouTube and Snapchat", tags: ["Optional"] },
+      { label: "Date of birth (18 or over)", tags: ["Required"] },
+      { label: "Business email and phone", tags: ["Required"] },
+      { label: "UAE trade licence", tags: ["PDF", "Optional"] },
+    ],
+    applyNote: "Instagram and TikTok are counted first, other platforms are saved for later.",
+    screenTitle: "Your application",
+    uploadPdf: "Upload PDF",
+    device: { phone: "Phone", tablet: "Tablet", switchLabel: "Show on" },
+    dashTitle: "Your dashboard, on any screen",
+    dash: {
+      summary: "A drawing of the Insider dashboard on a laptop, with a tablet in front showing the form to add a reel. It has no real numbers.",
+      menu: ["Overview", "Reels", "Months", "Offers"],
+      cards: ["Saves", "Visits", "Sales"],
+      chartTitle: "By month",
+      rows: ["Reel", "Reel"],
+      rowCols: ["Place", "Saves"],
+      addReel: "Add a reel",
+      fields: ["Reel link", "Place", "Month"],
+      save: "Save",
+      note: "Example layout only.",
+    },
+    dealTitle: "The deal",
+    dealMonthly: "per month",
+    dealYearly: "per year",
+    dealYearlyNote: "pay 11 months, get 12",
+    dealStrip:
+      "First 2 months free. No card is asked when you apply. We ask for card details after the free months, and you can cancel any time by email.",
+    foundingLabel: "By invitation only",
+    foundingTitle: "Founding Insiders",
+    foundingText: (spots: number, period: string) =>
+      `We are inviting a small group of ${spots} influencers to join free while Spotted grows. Free period: ${period}. You do not have to post. If you choose to mention Spotted, please say it was a gift.`,
+    foundingButton: "I have an invite code",
+  },
+
   // The panel that opens from the three-bar menu button in the top bar.
   menuPanel: {
     spotted: "Spotted",

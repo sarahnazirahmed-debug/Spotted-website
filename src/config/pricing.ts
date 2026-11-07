@@ -59,3 +59,8 @@ export const INSIDER_PLAN: Plan = {
 // ---- small helpers used by the page (and tested) ----
 // What you pay for a year: 12 months, minus the free month(s).
 export const yearlyPriceAed = (monthly: number) => monthly * (12 - YEARLY_MONTHS_FREE);
+
+// Founding Insiders: a small group invited to join free while Spotted grows (by invitation only).
+export const FOUNDING_SPOTS = 10;
+// STILL TO BE DECIDED (6 or 12 months). Change this one line when you decide; the page reads it.
+export const FOUNDING_FREE_PERIOD = "[6 or 12 months, still to be decided]";

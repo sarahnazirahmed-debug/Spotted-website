@@ -36,7 +36,13 @@
   --maroon: #5c0f24;         /* top bar background */
   --cream: #faf7f2;          /* top bar text */
   --rose-line: #e8a9b6;      /* thin lines on the top bar */
-  --dark-text: #1e0a10;      /* dark text on coral buttons */
+  --dark-text: #1e0a10;      /* dark text on coral buttons, and normal text on the light draft pages */
+  --muted-text: #6b4a53;     /* quieter text on the light draft pages */
+  --pink-tint: #fdeff1;      /* soft pink strips and tags */
+  --rose-soft: #ebd3d8;      /* soft lines around cards on the light draft pages */
+  --page-base: #fbf7f6;      /* the light page colour of the draft design */
+  --visit-green: #1f7a4d;    /* green stars: visits */
+  --sales-yellow: #b7791f;   /* yellow stars: sales */
 
 /* ---- 2. Drawings and the 3D banner (the illustration palette) ---- */
   --c-deep: var(--charcoal-deep);   /* night sky, shadows, dark outlines */
@@ -131,4 +137,12 @@
   --color-onbar: var(--cream);
   --color-barline: var(--rose-line);
   --color-darktext: var(--dark-text);
+  --color-mutedtext: var(--muted-text);
+  --color-pinktint: var(--pink-tint);
+  --color-rosesoft: var(--rose-soft);
+  --color-pagebase: var(--page-base);
+  --color-cream: var(--cream);
+  --color-maroon: var(--maroon);
+  --color-visit: var(--visit-green);
+  --color-sales: var(--sales-yellow);
 }

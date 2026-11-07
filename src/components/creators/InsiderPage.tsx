@@ -7,6 +7,7 @@ import { INSIDER_PLAN, FREE_MONTHS } from "@/config/pricing";
 import { text } from "@/content";
 import { Section } from "../site/PageShell";
 import PartnerPage from "../site/PartnerPage";
+import InsiderLanding from "../insider/InsiderLanding";
 import { Star, STAR_COLOUR, type StarKind } from "./Stars";
 
 // EXAMPLE numbers, to show how the stats will look.
@@ -75,6 +76,12 @@ function Extras() {
   );
 }
 
-export default function InsiderPage() {
+// The OLD Insider page (same design as Restaurants and Shops). It is not used any more: the new
+// page is src/components/insider/InsiderLanding.tsx. Kept in the code, never deleted.
+export function LegacyInsiderPage() {
   return <PartnerPage kind="insiders" extra={<Extras />} />;
+}
+
+export default function InsiderPage() {
+  return <InsiderLanding />;
 }
