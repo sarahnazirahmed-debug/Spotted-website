@@ -9,7 +9,7 @@ import Dashboard from "@/components/account/Dashboard";
 export const metadata: Metadata = { title: "Partner dashboard", robots: { index: false } };
 
 export default function Page() {
-  if (!FEATURES.accounts) notFound();
+  if (!FEATURES.loginPage) notFound();
   return (
     <>
       <PageHeader chip="Partners" title="Your dashboard." />

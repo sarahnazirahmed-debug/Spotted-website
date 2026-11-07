@@ -1,14 +1,13 @@
 "use client";
 
-// The frame around every /admin page: log-in, the "not on the team" message, the first-visit
+// The frame around every /admin page: sends visitors to /login, the "not on the team" message, the first-visit
 // confidentiality tick box, and the top menu (Pin Desk, Team if allowed, Sign out).
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { adminTabs } from "@/lib/adminTabs";
 import { titleFor } from "@/lib/pindeskTitle";
 import { ROLE_LABEL } from "@/lib/teamRules";
-import AdminLogin from "./AdminLogin";
 import { useAdmin } from "./AdminProvider";
 
 function Confidential() {
@@ -48,10 +47,16 @@ function Confidential() {
 export default function AdminFrame({ children }: { children: React.ReactNode }) {
   const { status, me, signOut } = useAdmin();
   const path = usePathname();
+  const router = useRouter();
 
+  // Not logged in? There is only ONE place to log in: /login. Typing an /admin address sends you there.
+  useEffect(() => {
+    if (status === "loggedOut") router.replace("/login");
+  }, [status, router]);
+
+  if (status === "checking" || status === "loggedOut") return <p className="mx-auto max-w-md px-5 py-20 text-lg">Loading...</p>;
   if (status === "closed")
     return <p className="mx-auto max-w-md px-5 py-20 text-lg">Log in is not open yet. Supabase is not connected.</p>;
-  if (status === "loggedOut") return <AdminLogin />;
   if (status === "notMember" || !me)
     return (
       <div className="mx-auto max-w-md px-5 py-20">

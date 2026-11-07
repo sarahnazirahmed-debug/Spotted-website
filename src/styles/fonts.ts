@@ -3,7 +3,7 @@
 // for the headings. (Poppins is the placeholder until the brand is decided.)
 //
 // The two fonts become the CSS variables --font-heading and --font-body (see globals.css).
-import { Poppins } from "next/font/google";
+import { Inter, Merriweather, Poppins } from "next/font/google";
 
 // Big headlines and the words printed on the 3D banner.
 export const headingFont = Poppins({
@@ -17,4 +17,17 @@ export const bodyFont = Poppins({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["500", "700", "800"],
+});
+
+// The new draft design (top bar first): Merriweather bold for big public headings and the word "Spotted",
+// and Inter for everything else. The rest of the site moves over step by step.
+export const brandFont = Merriweather({
+  variable: "--font-brand",
+  subsets: ["latin"],
+  weight: ["700"],
+});
+export const barFont = Inter({
+  variable: "--font-bar",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });

@@ -31,16 +31,16 @@ test("the six plum and coral colours are in colors.css, and only there", () => {
 });
 
 // ---------------------------------------------------------------- switches
-test("insider page and business pages are OFF; waitlists and store buttons stay OFF", () => {
-  assert.equal(FEATURES.insiderPage, false);
-  assert.equal(FEATURES.businessPages, false);
+test("insider page and business pages are ON in the draft look (the new switches); waitlists and store buttons stay OFF", () => {
+  assert.equal(FEATURES.insiderPage, true);
+  assert.equal(FEATURES.businessPages, true);
   for (const k of ["waitlist", "businessWaitlist", "insiderWaitlist", "storeButtons"]) assert.equal(FEATURES[k], false, k);
 });
 
-test("with those pages OFF there are no links to them from the footer, home page, pricing or how-to-join", () => {
-  assert.equal(partnerLink("restaurants"), "/contact");
-  assert.equal(partnerLink("shops"), "/contact");
-  assert.equal(partnerLink("insider"), "/contact");
+test("the links to those pages follow their switches (ON: the page, OFF: the Contact page)", () => {
+  assert.equal(partnerLink("restaurants"), FEATURES.businessPages ? "/restaurants#get-in-touch" : "/contact");
+  assert.equal(partnerLink("shops"), FEATURES.businessPages ? "/shops#get-in-touch" : "/contact");
+  assert.equal(partnerLink("insider"), FEATURES.insiderPage ? "/insider#get-in-touch" : "/contact");
   for (const f of ["src/app/how-to-join/page.tsx", "src/components/site/PricingPage.tsx"]) {
     assert.doesNotMatch(read(f), /href="\/(restaurants|shops|insider)/, f);
     assert.match(read(f), /partnerLink\(/, f);

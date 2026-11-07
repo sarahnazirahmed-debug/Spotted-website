@@ -2,13 +2,14 @@
 
 // Keeps the /admin log-in for as long as the page stays open (it is NOT saved: reload = new code).
 // It also asks the database who you are (whoami) and what your role is.
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getAdminSupabase } from "@/lib/adminSupabase";
 import type { TeamRole } from "@/lib/teamRules";
 
 export type Me = { role: TeamRole; name: string; email: string; agreed: boolean };
-export type AdminStatus = "closed" | "loggedOut" | "notMember" | "ready";
+// "checking" = we are asking whether someone just logged in on the Log in page (/login).
+export type AdminStatus = "closed" | "checking" | "loggedOut" | "notMember" | "ready";
 
 type Ctx = {
   status: AdminStatus;
@@ -29,7 +30,7 @@ export function useAdmin(): Ctx {
 
 export default function AdminProvider({ children }: { children: React.ReactNode }) {
   const supabase = getAdminSupabase();
-  const [status, setStatus] = useState<AdminStatus>("loggedOut");
+  const [status, setStatus] = useState<AdminStatus>("checking");
   const [me, setMe] = useState<Me | null>(null);
 
   const loadMe = useCallback(async (): Promise<string | null> => {
@@ -46,6 +47,22 @@ export default function AdminProvider({ children }: { children: React.ReactNode 
     setStatus("ready");
     return null;
   }, [supabase]);
+
+  // The one Log in page (/login) logs the team in and then opens /admin. Pick that log-in up here.
+  // If nobody is logged in, the status becomes "loggedOut" and the frame sends the visitor to /login.
+  useEffect(() => {
+    if (!supabase) return;
+    let dead = false;
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (dead) return;
+      if (data.session) await loadMe();
+      else setStatus("loggedOut");
+    })();
+    return () => {
+      dead = true;
+    };
+  }, [supabase, loadMe]);
 
   const sendCode = useCallback(
     async (email: string) => {

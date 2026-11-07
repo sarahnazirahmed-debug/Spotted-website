@@ -32,6 +32,11 @@
   --leaf: #2bb673;           /* only for green stars and growth */
   --whatsapp: #25d366;       /* only on the WhatsApp button */
 
+  /* the top bar of the public pages (the new draft design: maroon and cream, no purple) */
+  --maroon: #5c0f24;         /* top bar background */
+  --cream: #faf7f2;          /* top bar text */
+  --rose-line: #e8a9b6;      /* thin line around the Log in button */
+
 /* ---- 2. Drawings and the 3D banner (the illustration palette) ---- */
   --c-deep: var(--charcoal-deep);   /* night sky, shadows, dark outlines */
   --c-main: var(--graphite);        /* buildings, phones, main surfaces */
@@ -121,4 +126,7 @@
   --color-rose: var(--rose);
   --color-blush: var(--blush);
   --color-coral: var(--coral);
+  --color-bar: var(--maroon);
+  --color-onbar: var(--cream);
+  --color-barline: var(--rose-line);
 }

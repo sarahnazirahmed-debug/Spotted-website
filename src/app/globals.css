@@ -12,6 +12,14 @@ h1, h2, h3, h4, .font-heading {
   font-family: var(--font-heading), system-ui, sans-serif;
 }
 
+/* the new draft design fonts (src/styles/fonts.ts): Merriweather bold for the word Spotted, Inter for the top bar */
+.font-brand {
+  font-family: var(--font-brand), Georgia, serif;
+}
+.font-bar {
+  font-family: var(--font-bar), system-ui, sans-serif;
+}
+
 body {
   background: var(--page);
   color: var(--on-page);

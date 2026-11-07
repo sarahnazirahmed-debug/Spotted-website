@@ -104,16 +104,17 @@ test("every country code in the picker is a real country name", () => {
 // ---- the text file and the switches ----
 test("the menu words are in the one text file, in the agreed order", () => {
   const nav = text("src/components/TopBar.tsx");
-  const order = ["n.home", "n.restaurants", "n.shops", "n.insiders", "n.pricing", "n.howToJoin", "n.faq", "n.about"];
+  // (the new draft top bar: Home, Insiders, Partners, Careers, then Admin and Log in; see tests/login-route.test.mjs)
+  const order = ["n.home", "n.insiders", "n.partners", "n.careers"];
   let at = -1;
   for (const k of order) {
     const i = nav.indexOf(`label: ${k}`);
     assert.ok(i > at, `${k} is missing or out of order in the top menu`);
     at = i;
   }
-  assert.match(nav, /SIGN_IN[\s\S]*n\.signIn/);
+  assert.match(nav, /LOG_IN[\s\S]*n\.logIn/);
   const en = text("src/content/en.ts");
-  for (const w of ["Home", "Restaurants", "Shops", "Insiders", "Pricing", "How to join", "FAQ", "About", "Sign in"]) assert.ok(en.includes(`"${w}"`), `${w} missing from the text file`);
+  for (const w of ["Home", "Restaurants", "Shops", "Insiders", "Pricing", "How to join", "FAQ", "About", "Sign in", "Partners", "Careers", "Admin", "Log in"]) assert.ok(en.includes(`"${w}"`), `${w} missing from the text file`);
 });
 
 test("the home page and partner pages take their words from the text file (no long sentences inside the page code)", () => {
@@ -123,11 +124,11 @@ test("the home page and partner pages take their words from the text file (no lo
   }
 });
 
-test("the switches are set as agreed: cloth banner and lamp OFF, careers OFF, store buttons OFF", () => {
+test("the switches are set as agreed: cloth banner and lamp OFF, careers ON (draft look), store buttons OFF", () => {
   const f = text("src/config/features.ts");
   assert.match(f, /hero: false/);
   assert.match(f, /themeLamp: false/);
-  assert.match(f, /careersPage: false/);
+  assert.match(f, /careersPage: true/);
   assert.match(f, /storeButtons: false/);
   assert.match(f, /liveCounters: true/);
   // the code for the hidden parts is still there

@@ -67,8 +67,8 @@ These rules are for the Spotted website (this folder). Follow them in every step
 
 ## 11. The /admin area (team only)
 
-- `/admin` is for the team (Pin Desk and Team). It is never linked from the public site, search engines are told not to list it, and it has its own switch (`adminArea`).
-- Log in with an email and a 6-digit code **every time** (the log-in is kept only in memory, never saved).
+- `/admin` is for the team (Pin Desk and Team). Search engines are told not to list it, and it has its own switch (`adminArea`). The top bar has a small **Admin** link, but it opens the ONE **Log in** page (`/login`), never `/admin`; a visitor who types an `/admin` address while logged out is sent to `/login`.
+- Log in (on `/login`) with an email and a 6-digit code **every time** (the log-in is kept only in memory, never saved).
 - The **database** decides who may see and do what (`supabase/admin.sql`, with row-level security). The website only decides which buttons to show. Tests for both are in `tests/admin-database.test.mjs` and `tests/admin-helpers.test.mjs`.
 - Exactly one main admin. Nobody can change or remove it.
 - `/admin/dashboard` is for the main admin and associates (everything) and staff (counts only: **never money**). Helpers do not see it. Money cards are marked `money: true` in `src/lib/dashboard/cards.ts`. Numbers with no real source yet are always labelled EXAMPLE on the page and in the Excel and PDF files.
@@ -78,7 +78,7 @@ These rules are for the Spotted website (this folder). Follow them in every step
 
 ## 12. The public pages (business website)
 
-- Top menu, in this order: Home, Restaurants, Shops, Insiders, Pricing, How to join, FAQ, About, Sign in. Careers is built but OFF.
+- Top bar (new draft design, step 1): maroon `#5C0F24` with cream text, the bookmark and **Spotted** in Merriweather on the left; links **Home, Insiders, Partners, Careers**; on the right a small **Admin** link and a **Log in** button (thin rose border). Both open the one `/login` page, which sends owners and crew to `/admin`, Insiders to `/dashboard/insider`, Partners to `/dashboard`, and unknown emails get a polite message. The switches `insiderPage` (Insiders), `businessPages` (Partners) and `careersPage` (Careers) are ON in the draft look. The rest of the site is moved to the new maroon/cream colours and Merriweather/Inter fonts in later steps.
 - The animated home (cloth banner, stories) and the pull-string lamp are built but OFF (`hero`, `themeLamp` in `features.ts`).
 - Prices and "what is included" are in ONE file: `src/config/pricing.ts`. The first 2 months are free; paying yearly gives 1 month free.
 - The live counters (People on Spotted, Saves, Spotted Partners, Spotted Insiders) show for the visitor's country and worldwide, but each one only after it passes its number in `src/config/counters.ts`. They show totals only, never any person's details.

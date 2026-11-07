@@ -6,7 +6,7 @@
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "loginPage" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
@@ -16,8 +16,9 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // The "What's Spotted" page under the landing section (why, how it works, never miss out, UAE, notify me).
   whatsSpotted: true,
   // Part A: the /restaurants and /shops pages (cloth banner "COMING SOON", pitch, business waitlist form).
-  // OFF for now: the pages, their menu and footer links and the home page cards are hidden. Switch ON to bring them back.
-  businessPages: false,
+  // PARTNERS switch (restaurants and shops are the Spotted Partners).
+  // ON in the draft look. Switch OFF to hide the pages, their menu links and the home page cards.
+  businessPages: true,
   // Part B: the place directory on those pages (curved video row, list and grid, filters, place pages).
   // It is built and tested with EXAMPLE data, and OFF until real partners join.
   businessDirectory: false,
@@ -27,12 +28,16 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // Sign up, log in (email code) and the partner dashboard. OFF until Supabase is connected
   // (see supabase/schema.sql and .env.example).
   accounts: false,
-  // The /insider page ("Spotted Insider": the paid plan for creators, example stats, Insider waitlist).
-  // OFF for now: the page and every link to it are hidden. Switch ON to bring it back.
-  insiderPage: false,
-  // The /careers page ("We are not hiring yet", email form).
-  // (OFF for now: built, but not in the menu or footer.)
-  careersPage: false,
+  // The ONE Log in page (/login) and the Insider and Partner dashboards it sends people to.
+  // Owners and crew go to /admin, Insiders to /dashboard/insider, Partners to /dashboard.
+  // (Separate from "accounts", which is the old sign-up.)
+  loginPage: true,
+  // INSIDERS switch. The /insider page ("Spotted Insider": the paid plan for creators, example stats).
+  // ON in the draft look. Switch OFF to hide the page and every link to it.
+  insiderPage: true,
+  // CAREERS switch. The /careers page ("We are not hiring yet", email form).
+  // ON in the draft look. Switch OFF to hide the page and its menu link.
+  careersPage: true,
   // The /about page (the story of Spotted, contact).
   aboutPage: true,
   // The /privacy and /terms pages.
