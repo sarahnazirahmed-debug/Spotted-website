@@ -26,7 +26,8 @@ export default function PinDesk() {
   const [q, setQ] = useState("");
   const [platform, setPlatform] = useState("");
   const [emirate, setEmirate] = useState("");
-  const [adding, setAdding] = useState(false);
+  // the home page's "Add reel" bar opens this page with ?add=1, so the add form is already open
+  const [adding, setAdding] = useState(() => new URLSearchParams(window.location.search).get("add") === "1");
   const [linkText, setLinkText] = useState("");
   const [editing, setEditing] = useState<Reel | null>(null);
   const [notice, setNotice] = useState("");

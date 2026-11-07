@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import PinDeskHome from "@/components/admin/PinDeskHome";
 
 export default function Page() {
-  redirect("/admin/pin");
+  return <PinDeskHome />;
 }

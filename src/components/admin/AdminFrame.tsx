@@ -63,11 +63,13 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
     );
   if (!me.agreed) return <Confidential />;
 
-  const tab = (href: string, text: string) => (
+  // "Pin Desk" is the home page and every Pin Desk screen under it (everything except Dashboard and Team)
+  const inPinDesk = !path.startsWith("/admin/dashboard") && !path.startsWith("/admin/team");
+  const tab = (href: string, text: string, active = path === href) => (
     <Link
       href={href}
-      aria-current={path === href ? "page" : undefined}
-      className={`flex min-h-11 items-center rounded-full px-5 font-extrabold ${path === href ? "bg-accent text-onaccent" : "text-heading hover:underline"}`}
+      aria-current={active ? "page" : undefined}
+      className={`flex min-h-11 items-center rounded-full px-5 font-extrabold ${active ? "bg-accent text-onaccent" : "text-heading hover:underline"}`}
     >
       {text}
     </Link>
@@ -78,7 +80,7 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 py-2">
           <span className="mr-2 text-xl font-extrabold text-heading">Spotted team</span>
           <nav aria-label="Admin" className="flex flex-wrap items-center gap-1">
-            {tab("/admin/pin", "Pin Desk")}
+            {tab("/admin", "Pin Desk", inPinDesk)}
             {canOpenDashboard(me.role) && tab("/admin/dashboard", "Dashboard")}
             {canOpenTeam(me.role) && tab("/admin/team", "Team")}
           </nav>
