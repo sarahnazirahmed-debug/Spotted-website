@@ -1,5 +1,5 @@
-import AdminComingSoon from "@/components/admin/AdminComingSoon";
+import AddBusiness from "@/components/admin/AddBusiness";
 
 export default function Page() {
-  return <AdminComingSoon title="Add restaurant or shop" />;
+  return <AddBusiness />;
 }
