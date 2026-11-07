@@ -12,8 +12,8 @@ export type LocOption = {
 };
 
 // "Posted on" is needed when the reel has items (dishes) or a deal (offer). It cannot be in the future.
-export function postedOnProblem(v: { dishCount: number; offerText: string; postedOn: string }, today = new Date().toISOString().slice(0, 10)): string | null {
-  const needed = v.dishCount > 0 || v.offerText.trim() !== "";
+export function postedOnProblem(v: { dishCount: number; dealCount: number; postedOn: string }, today = new Date().toISOString().slice(0, 10)): string | null {
+  const needed = v.dishCount > 0 || v.dealCount > 0;
   if (!v.postedOn) return needed ? 'Add the "Posted on" date. It is needed when the reel has items or a deal.' : null;
   if (v.postedOn < "2010-01-01") return '"Posted on" is too long ago.';
   if (v.postedOn > today) return '"Posted on" cannot be in the future.';

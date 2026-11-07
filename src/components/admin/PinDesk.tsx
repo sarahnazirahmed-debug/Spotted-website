@@ -11,7 +11,9 @@ import { reelsToRows, rowsToReels } from "@/lib/reelExcel";
 import type { Reel, ReelInput, ShareRequest } from "@/lib/reelTypes";
 import { useAdmin } from "./AdminProvider";
 import DuplicateNotice from "./DuplicateNotice";
-import ReelForm from "./ReelForm";
+import ReelDetails from "./ReelDetails";
+import type { Deal, Offer } from "@/lib/reelDeals";
+import ReelForm, { type Extras } from "./ReelForm";
 import type { BizOption, LocOption } from "@/lib/reelPlace";
 
 type Tab = "all" | ReelStatus | "waiting";
@@ -25,6 +27,8 @@ export default function PinDesk() {
   const [waiting, setWaiting] = useState<ShareRequest[]>([]);
   const [businesses, setBusinesses] = useState<BizOption[]>([]);
   const [locations, setLocations] = useState<LocOption[]>([]);
+  const [deals, setDeals] = useState<(Deal & { reel_id: string })[]>([]);
+  const [offers, setOffers] = useState<(Offer & { reel_id: string })[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [tab, setTab] = useState<Tab>("all");
   const [q, setQ] = useState("");
@@ -40,21 +44,28 @@ export default function PinDesk() {
   // fetchAll only asks the database; apply puts the answer on the page.
   const fetchAll = useCallback(async () => {
     if (!supabase) return null;
-    const [r, w, b, l] = await Promise.all([
+    const [r, w, b, l, dl, of] = await Promise.all([
       supabase.from("reels").select("*").order("created_at", { ascending: false }).limit(5000),
       supabase.from("waiting_requests").select("*").limit(1000),
       supabase.from("businesses").select("id, name, type, code").order("name").limit(10000),
       supabase.from("locations").select("id, name, emirate, maps_url, lat, lng, is_building, business_id").order("name").limit(10000),
+      supabase.from("reel_deals").select("id, reel_id, title, included, conditions, end_date, reel_deal_prices(people, total_price_aed)").limit(20000),
+      supabase.from("reel_offers").select("id, reel_id, title, discount, conditions, end_date").limit(20000),
     ]);
+    type DealRow = Omit<Deal, "prices"> & { reel_id: string; reel_deal_prices: Deal["prices"] };
     return {
+      deals: ((dl.data as DealRow[] | null) ?? []).map(({ reel_deal_prices, ...d }) => ({ ...d, prices: reel_deal_prices ?? [] })),
+      offers: (of.data as (Offer & { reel_id: string })[] | null) ?? [],
       reels: (r.data as Reel[]) ?? [],
       waiting: (w.data as ShareRequest[]) ?? [],
       businesses: (b.data as BizOption[]) ?? [],
       locations: (l.data as LocOption[]) ?? [],
     };
   }, [supabase]);
-  const apply = (d: { reels: Reel[]; waiting: ShareRequest[]; businesses: BizOption[]; locations: LocOption[] } | null) => {
+  const apply = (d: { reels: Reel[]; waiting: ShareRequest[]; businesses: BizOption[]; locations: LocOption[]; deals: (Deal & { reel_id: string })[]; offers: (Offer & { reel_id: string })[] } | null) => {
     if (!d) return;
+    setDeals(d.deals);
+    setOffers(d.offers);
     setBusinesses(d.businesses);
     setLocations(d.locations);
     setReels(d.reels);
@@ -119,25 +130,68 @@ export default function PinDesk() {
   }, [supabase, infoKey]);
   const duplicate = info?.ok ? (reels.find((r) => r.link_key === info.linkKey) ?? (remoteDup?.key === info.linkKey ? remoteDup.reel : undefined)) : undefined;
 
-  async function addReel(values: ReelInput): Promise<string | null> {
-    const { data, error } = await supabase!.from("reels").insert(values).select("code").single();
+  async function addReel(values: ReelInput, extras: Extras): Promise<string | null> {
+    const { data, error } = await supabase!.from("reels").insert(values).select("id, code").single();
     if (error) return error.code === "23505" ? "This reel already exists." : `The database did not allow that (${error.message}).`;
+    const problem = await saveExtras((data as { id: string }).id, extras);
     setAdding(false);
     setLinkText("");
-    setNotice(`Reel added. Reel code: ${(data as { code: string }).code}`);
+    setNotice(`Reel added. Reel code: ${(data as { code: string }).code}${problem ? ` (${problem})` : ""}`);
     await load();
     return null;
   }
 
-  async function saveReel(values: ReelInput): Promise<string | null> {
+  // Save the deals and offers of a reel. New ones are added, old ones are changed, taken-off ones are deleted.
+  // Only the main admin and associates may delete; if that is not allowed we say so instead of pretending it worked.
+  async function saveExtras(reelId: string, extras: Extras): Promise<string | null> {
+    const db = supabase!;
+    const fail = (what: string, message: string) => `${what} did not save (${message}).`;
+    for (const o of extras.offers) {
+      const row = { title: o.title, discount: o.discount, conditions: o.conditions, end_date: o.end_date };
+      const r = o.id ? await db.from("reel_offers").update(row).eq("id", o.id) : await db.from("reel_offers").insert({ ...row, reel_id: reelId });
+      if (r.error) return fail(`The offer "${o.title}"`, r.error.message);
+    }
+    for (const d of extras.deals) {
+      const row = { title: d.title, included: d.included, conditions: d.conditions, end_date: d.end_date };
+      let id = d.id;
+      if (id) {
+        const r = await db.from("reel_deals").update(row).eq("id", id);
+        if (r.error) return fail(`The deal "${d.title}"`, r.error.message);
+      } else {
+        const r = await db.from("reel_deals").insert({ ...row, reel_id: reelId }).select("id").single();
+        if (r.error || !r.data) return fail(`The deal "${d.title}"`, r.error?.message ?? "no answer");
+        id = (r.data as { id: string }).id;
+      }
+      const up = await db.from("reel_deal_prices").upsert(d.prices.map((p) => ({ deal_id: id, people: p.people, total_price_aed: p.total_price_aed })), { onConflict: "deal_id,people" });
+      if (up.error) return fail(`The prices of "${d.title}"`, up.error.message);
+      const old = deals.find((x) => x.id === d.id)?.prices.map((p) => p.people) ?? [];
+      const gone = old.filter((n) => !d.prices.some((p) => p.people === n));
+      if (gone.length > 0) {
+        const del = await db.from("reel_deal_prices").delete().eq("deal_id", id).in("people", gone).select("id");
+        if (del.error || (del.data?.length ?? 0) < gone.length) return "only the main admin and associates can remove a price line.";
+      }
+    }
+    if (extras.removedDealIds.length > 0) {
+      const del = await db.from("reel_deals").delete().in("id", extras.removedDealIds).select("id");
+      if (del.error || (del.data?.length ?? 0) < extras.removedDealIds.length) return "only the main admin and associates can remove a deal.";
+    }
+    if (extras.removedOfferIds.length > 0) {
+      const del = await db.from("reel_offers").delete().in("id", extras.removedOfferIds).select("id");
+      if (del.error || (del.data?.length ?? 0) < extras.removedOfferIds.length) return "only the main admin and associates can remove an offer.";
+    }
+    return null;
+  }
+
+  async function saveReel(values: ReelInput, extras: Extras): Promise<string | null> {
     if (!editing) return null;
     // the link itself never changes; only the facts do
     const { url: _url, link_key: _key, platform: _platform, ...facts } = values;
     void _url; void _key; void _platform;
     const { error } = await supabase!.from("reels").update(facts).eq("id", editing.id);
     if (error) return `The database did not allow that (${error.message}).`;
+    const problem = await saveExtras(editing.id, extras);
     setEditing(null);
-    setNotice("Saved.");
+    setNotice(problem ? `Saved, but ${problem}` : "Saved.");
     await load();
     return null;
   }
@@ -311,6 +365,8 @@ export default function PinDesk() {
               businesses={businesses}
               locations={locations}
               onBusinessCreated={(b) => setBusinesses((o) => [...o, b].sort((x, y) => x.name.localeCompare(y.name)))}
+              initialDeals={[]}
+              initialOffers={[]}
               key={info.linkKey}
               initial={{ url: info.url, link_key: info.linkKey, platform: info.platform, creator_handle: info.creator ?? null }}
               isNew
@@ -331,6 +387,8 @@ export default function PinDesk() {
             businesses={businesses}
             locations={locations}
             onBusinessCreated={(b) => setBusinesses((o) => [...o, b].sort((x, y) => x.name.localeCompare(y.name)))}
+            initialDeals={deals.filter((d) => d.reel_id === editing.id)}
+            initialOffers={offers.filter((o) => o.reel_id === editing.id)}
             key={editing.id}
             initial={editing}
             isNew={false}
@@ -389,6 +447,7 @@ export default function PinDesk() {
                     {r.status === "pinned" ? ` · Pinned by ${r.pinned_by ?? "-"}` : ""}
                     {r.creator_handle ? ` · ${r.creator_handle}` : ""}
                   </p>
+                  <ReelDetails postedOn={r.posted_on} dishes={r.dishes ?? []} deals={deals.filter((d) => d.reel_id === r.id)} offers={offers.filter((o) => o.reel_id === r.id)} />
                   {r.lat == null && <p className="text-sm font-bold">No pin yet.</p>}
                 </div>
                 <div className="flex flex-wrap gap-2">

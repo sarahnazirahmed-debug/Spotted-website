@@ -4,7 +4,9 @@
 import { useState } from "react";
 import { similarNames } from "@/lib/businessRules";
 import { locationFits, locationGroups, postedOnProblem, type BizOption, type LocOption } from "@/lib/reelPlace";
+import { cleanDeals, cleanOffers, draftFromDeal, draftFromOffer, type Deal, type DealDraft, type Offer, type OfferDraft } from "@/lib/reelDeals";
 import { useAdmin } from "./AdminProvider";
+import ReelExtras from "./ReelExtras";
 import { cleanDishes, MAX_DISHES } from "@/lib/dishes";
 import { mapsSearchUrl, readMapsPin } from "@/lib/mapsLink";
 import { CATEGORIES, EMIRATES, pinProblem, STATUS_LABEL, type ReelStatus } from "@/lib/pinRules";
@@ -14,6 +16,9 @@ const field = "min-h-11 w-full rounded-xl bg-paper px-3 text-base font-medium te
 const label = "mb-1 block text-sm font-bold";
 const num = (v: string): number | null => (v.trim() === "" || !Number.isFinite(Number(v)) ? null : Number(v));
 
+// The deals and offers to save with the reel, and the ones that were taken off it.
+export type Extras = { deals: Deal[]; offers: Offer[]; removedDealIds: string[]; removedOfferIds: string[] };
+
 type Props = {
   // For a new reel: the link details. For an existing reel: the reel.
   initial: Partial<Reel> & Pick<Reel, "url" | "link_key" | "platform">;
@@ -22,13 +27,15 @@ type Props = {
   businesses: BizOption[];
   locations: LocOption[];
   onBusinessCreated: (b: BizOption) => void;
+  initialDeals: Deal[];
+  initialOffers: Offer[];
   canDelete: boolean;
-  onSave: (values: ReelInput) => Promise<string | null>; // returns a problem message, or null when saved
+  onSave: (values: ReelInput, extras: Extras) => Promise<string | null>; // returns a problem message, or null when saved
   onDelete?: () => Promise<void>;
   onCancel: () => void;
 };
 
-export default function ReelForm({ initial, isNew, collections, businesses, locations, onBusinessCreated, canDelete, onSave, onDelete, onCancel }: Props) {
+export default function ReelForm({ initial, isNew, collections, businesses, locations, onBusinessCreated, initialDeals, initialOffers, canDelete, onSave, onDelete, onCancel }: Props) {
   const [v, setV] = useState({
     place_name: initial.place_name ?? "",
     branch: initial.branch ?? "",
@@ -53,6 +60,9 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
   const [dishes, setDishes] = useState<{ name: string; price: string }[]>(
     (initial.dishes ?? []).map((d) => ({ name: d.name, price: String(d.price_aed) })),
   );
+  const [dealsOpen, setDealsOpen] = useState(initialDeals.length + initialOffers.length > 0);
+  const [dealDrafts, setDealDrafts] = useState<DealDraft[]>(initialDeals.map(draftFromDeal));
+  const [offerDrafts, setOfferDrafts] = useState<OfferDraft[]>(initialOffers.map(draftFromOffer));
   const [mapsPaste, setMapsPaste] = useState("");
   const [pinMessage, setPinMessage] = useState("");
   const [message, setMessage] = useState("");
@@ -127,8 +137,11 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
     if ((v.lat.trim() && lat == null) || (v.lng.trim() && lng == null)) return setMessage("The pin must be numbers.");
     if ((lat != null && Math.abs(lat) > 90) || (lng != null && Math.abs(lng) > 180)) return setMessage("That pin is not on the map.");
     if (v.status === "pinned" && cannotPin) return setMessage(`Cannot mark Pinned. ${cannotPin}`);
-    if (v.offer_start && v.offer_end && v.offer_end < v.offer_start) return setMessage("The offer ends before it starts.");
-    const postedProblem = postedOnProblem({ dishCount: clean.length, offerText: v.offer_text, postedOn: v.posted_on });
+    const dealResult = cleanDeals(dealDrafts);
+    if (dealResult.problem) return setMessage(dealResult.problem);
+    const offerResult = cleanOffers(offerDrafts);
+    if (offerResult.problem) return setMessage(offerResult.problem);
+    const postedProblem = postedOnProblem({ dishCount: clean.length, dealCount: dealResult.deals.length + offerResult.offers.length, postedOn: v.posted_on });
     if (postedProblem) return setMessage(postedProblem);
     if (!locationFits(locations.find((l) => l.id === v.location_id), v.business_id)) return setMessage("That location belongs to a different restaurant or shop.");
     if (v.maps_url.trim() && !/^https:\/\//i.test(v.maps_url.trim())) return setMessage("The Google Maps link must start with https://");
@@ -158,6 +171,11 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
       location_id: v.location_id || null,
       posted_on: v.posted_on || null,
       status: v.status,
+    }, {
+      deals: dealResult.deals,
+      offers: offerResult.offers,
+      removedDealIds: initialDeals.map((d) => d.id!).filter((id) => !dealResult.deals.some((d) => d.id === id)),
+      removedOfferIds: initialOffers.map((o) => o.id!).filter((id) => !offerResult.offers.some((o) => o.id === id)),
     });
     setBusy(false);
     if (problemFromDb) setMessage(problemFromDb);
@@ -316,45 +334,28 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
 
       {/* dishes */}
       <fieldset className="grid gap-2">
-        <legend className={label}>Dishes (up to {MAX_DISHES}, with the price in AED)</legend>
+        <legend className={label}>Items seen in the reel (up to {MAX_DISHES}, name and price in AED). Not a full menu.</legend>
         {dishes.map((d, i) => (
           <div key={i} className="flex gap-2">
-            <input aria-label={`Dish ${i + 1} name`} placeholder="Dish name" className={field} value={d.name} onChange={(e) => setDishes(dishes.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
-            <input aria-label={`Dish ${i + 1} price in AED`} placeholder="AED" inputMode="decimal" className={`${field} max-w-28`} value={d.price} onChange={(e) => setDishes(dishes.map((x, j) => (j === i ? { ...x, price: e.target.value } : x)))} />
-            <button type="button" aria-label={`Remove dish ${i + 1}`} onClick={() => setDishes(dishes.filter((_, j) => j !== i))} className="min-h-11 shrink-0 rounded-full border-2 border-line px-4 font-extrabold">
+            <input aria-label={`Item ${i + 1} name`} placeholder="Item name" className={field} value={d.name} onChange={(e) => setDishes(dishes.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
+            <input aria-label={`Item ${i + 1} price in AED`} placeholder="AED" inputMode="decimal" className={`${field} max-w-28`} value={d.price} onChange={(e) => setDishes(dishes.map((x, j) => (j === i ? { ...x, price: e.target.value } : x)))} />
+            <button type="button" aria-label={`Remove item ${i + 1}`} onClick={() => setDishes(dishes.filter((_, j) => j !== i))} className="min-h-11 shrink-0 rounded-full border-2 border-line px-4 font-extrabold">
               X
             </button>
           </div>
         ))}
         {dishes.length < MAX_DISHES && (
           <button type="button" onClick={() => setDishes([...dishes, { name: "", price: "" }])} className="min-h-11 w-fit rounded-full border-2 border-line px-5 font-extrabold">
-            Add a dish
+            Add an item
           </button>
         )}
       </fieldset>
 
-      {/* offer */}
-      <div className="grid gap-3 sm:grid-cols-2">
-        <div className="sm:col-span-2">
-          <label className={label} htmlFor="rf-offer">Offer</label>
-          <input id="rf-offer" className={field} value={v.offer_text} onChange={set("offer_text")} />
-        </div>
-        <div>
-          <label className={label} htmlFor="rf-os">Offer starts</label>
-          <input id="rf-os" type="date" className={field} value={v.offer_start} onChange={set("offer_start")} />
-        </div>
-        <div>
-          <label className={label} htmlFor="rf-oe">Offer ends</label>
-          <input id="rf-oe" type="date" className={field} value={v.offer_end} onChange={set("offer_end")} />
-        </div>
-        <div className="sm:col-span-2">
-          <label className={label} htmlFor="rf-oh">Offer hours</label>
-          <input id="rf-oh" className={field} value={v.offer_hours} onChange={set("offer_hours")} placeholder="e.g. Mon to Fri, 12 to 4pm" />
-        </div>
-      </div>
+      {/* a deal or an offer: several are allowed */}
+      <ReelExtras open={dealsOpen} setOpen={setDealsOpen} deals={dealDrafts} setDeals={setDealDrafts} offers={offerDrafts} setOffers={setOfferDrafts} />
 
       <div>
-        <label className={label} htmlFor="rf-posted">Posted on {dishes.length > 0 || v.offer_text.trim() ? "(needed)" : "(needed when there are items or a deal)"}</label>
+        <label className={label} htmlFor="rf-posted">Posted on (needed when the reel has items, a deal or an offer)</label>
         <input id="rf-posted" type="date" className={field} value={v.posted_on} onChange={set("posted_on")} />
       </div>
 

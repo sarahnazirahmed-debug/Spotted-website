@@ -10,12 +10,12 @@ const loc = (o) => ({ id: "x", name: "N", emirate: null, maps_url: null, lat: nu
 
 test("Posted on is needed when there are items or a deal, and never in the future", () => {
   const today = "2026-11-07";
-  assert.equal(postedOnProblem({ dishCount: 0, offerText: "", postedOn: "" }, today), null);
-  assert.match(postedOnProblem({ dishCount: 1, offerText: "", postedOn: "" }, today), /Posted on/);
-  assert.match(postedOnProblem({ dishCount: 0, offerText: "2 for 1", postedOn: "" }, today), /Posted on/);
-  assert.equal(postedOnProblem({ dishCount: 1, offerText: "", postedOn: "2026-11-01" }, today), null);
-  assert.match(postedOnProblem({ dishCount: 0, offerText: "", postedOn: "2026-12-01" }, today), /future/);
-  assert.match(postedOnProblem({ dishCount: 0, offerText: "", postedOn: "2001-01-01" }, today), /long ago/);
+  assert.equal(postedOnProblem({ dishCount: 0, dealCount: 0, postedOn: "" }, today), null);
+  assert.match(postedOnProblem({ dishCount: 1, dealCount: 0, postedOn: "" }, today), /Posted on/);
+  assert.match(postedOnProblem({ dishCount: 0, dealCount: 1, postedOn: "" }, today), /Posted on/);
+  assert.equal(postedOnProblem({ dishCount: 1, dealCount: 0, postedOn: "2026-11-01" }, today), null);
+  assert.match(postedOnProblem({ dishCount: 0, dealCount: 0, postedOn: "2026-12-01" }, today), /future/);
+  assert.match(postedOnProblem({ dishCount: 0, dealCount: 0, postedOn: "2001-01-01" }, today), /long ago/);
 });
 
 test("location choices: its own, then free malls and hotels; none chosen shows all", () => {
@@ -46,7 +46,7 @@ test("the form links a restaurant or shop, a location, a date and keeps the crea
   assert.doesNotMatch(f, /\p{Extended_Pictographic}/u);
   const desk = readFileSync("src/components/admin/PinDesk.tsx", "utf8");
   assert.match(desk, /Reel code: /);
-  assert.match(desk, /\.insert\(values\)\.select\("code"\)/);
+  assert.match(desk, /\.insert\(values\)\.select\("id, code"\)/);
 });
 
 test("a reel saves with a restaurant, a location, both or neither; a mismatch is refused; a code is made", async () => {
