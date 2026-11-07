@@ -1,3 +1,4 @@
+import { partnerLink } from "@/config/routes";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -34,8 +35,8 @@ export default function Page() {
     <PageShell chip={t.chip} title={t.title} lead={t.lead}>
       <Section>
         <div className="grid gap-6 lg:grid-cols-2">
-          <Steps title={t.partnersTitle} steps={t.partnersSteps} href="/restaurants#get-in-touch" />
-          <Steps title={t.insidersTitle} steps={t.insidersSteps} href="/insider#get-in-touch" />
+          <Steps title={t.partnersTitle} steps={t.partnersSteps} href={partnerLink("restaurants")} />
+          <Steps title={t.insidersTitle} steps={t.insidersSteps} href={partnerLink("insider")} />
         </div>
         <div className="mt-8">
           <SocialButtons message="Hi Spotted! I would like to join." />

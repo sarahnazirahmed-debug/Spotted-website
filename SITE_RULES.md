@@ -5,7 +5,7 @@ These rules are for the Spotted website (this folder). Follow them in every step
 ## 1. Colours
 
 - **Every colour lives in ONE file: `src/styles/colors.css`**, as a named colour. Components use the names (for example `bg-page`, `text-heading`, `bg-panel`, or `var(--c-accent)` in a drawing). **Never write a colour code** (`#...`, `rgb(...)`, `hsl(...)`) anywhere else. To change the look, change that one file.
-- The brand colours are **not decided yet**. The file holds neutral placeholders: soft white, charcoal, and one warm accent (ember).
+- The brand colours are **plum and coral**: `#1A0F2E`, `#3B1B4F`, `#7A2E6F`, `#D6598F`, `#F4D7D4` and `#FF6B6B`. They are written once at the top of `src/styles/colors.css` (plum-deep, plum, plum-mid, rose, blush, coral); every other colour name is made from them.
 - Special names inside that file: green (`--leaf`) is **only** for green stars and growth. WhatsApp green (`--whatsapp`) is **only** on the WhatsApp button.
 - Code that cannot use CSS names (the 3D banner, the day and night mixing) reads the colours from the page through `src/styles/palette.ts`. It never holds colour codes of its own.
 - Small text is dark on light and light on dark. Check contrast in both themes.

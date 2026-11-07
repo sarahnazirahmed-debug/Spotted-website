@@ -4,7 +4,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { COUNTRY_CODES } from "../src/lib/countries.ts";
 import { countryFromLanguage, parseTraceCountry, pickCounters } from "../src/lib/counters.ts";
-import { COUNTER_MINIMUMS, COUNTER_ORDER } from "../src/config/counters.ts";
+// the older per-country counters (kept for when more countries open) are tested with their own numbers
+const COUNTER_MINIMUMS = { people: 100, saves: 500, partners: 10, insiders: 10 };
+const COUNTER_ORDER = ["people", "saves", "partners", "insiders"];
 import { FREE_MONTHS, INSIDER_PLAN, RESTAURANT_PLANS, SHOP_PLANS, YEARLY_MONTHS_FREE, yearlyPriceAed } from "../src/config/pricing.ts";
 
 const text = (f) => readFileSync(f, "utf8");

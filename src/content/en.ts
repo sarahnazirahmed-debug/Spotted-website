@@ -30,9 +30,8 @@ export const en = {
 
   home: {
     chip: "Spotted",
-    title: "Save the places you spot. Get reminded when you are near.",
-    lead: "Spotted keeps the places you find in reels, and gently reminds you when you walk close to one, even when the app is closed. It works in any country.",
-    appSoon: "The app is coming soon.",
+    title: "Saw it in a reel?\nSpotted remembers it.",
+    lead: "Save it once, get a nudge when you're nearby. Coming soon.",
     helpsTitle: "How Spotted helps",
     helps: [
       { title: "Save places from reels", text: "Share a reel to Spotted and confirm the place. It goes into your list and onto your map." },
@@ -56,8 +55,9 @@ export const en = {
   },
 
   counters: {
-    labels: { people: "People on Spotted", saves: "Saves", partners: "Spotted Partners", insiders: "Spotted Insiders" },
+    labels: { people: "Accounts", saved_places: "Saved places", saved_reels: "Saved reels", partners: "Spotted Partners", insiders: "Spotted Insiders" },
     worldwide: "Worldwide",
+    inUae: "In the UAE",
     inCountry: (country: string) => `In ${country}`,
     pickerLabel: "Show numbers for",
     pickerNone: "Choose a country",
@@ -242,10 +242,18 @@ export const en = {
     closed: "This form is not open yet. Please message us on WhatsApp.",
   },
 
+  contact: {
+    chip: "Contact",
+    title: "Say hello.",
+    lead: "Message us on WhatsApp or Instagram. We read every message.",
+    emailLabel: "Email",
+  },
+
   footer: {
     tagline: "Made in the UAE.",
     follow: "Find us",
     removeReels: "Remove my reels",
+    contact: "Contact",
     privacy: "Privacy",
     terms: "Terms",
     careers: "Careers",

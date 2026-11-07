@@ -3,26 +3,36 @@
    Every colour on the website lives here, with a name. Nothing else in the project may contain a
    colour code (a test checks this). To change the look, change the values in this file only.
 
-   The brand colours are NOT decided yet, so these are neutral PLACEHOLDERS:
-   soft white, charcoal, and one warm accent (ember).
+   THE BRAND COLOURS are plum and coral. The six brand colours are written ONCE, just below, as
+   plum-deep, plum, plum-mid, rose, blush and coral. Every other colour name in this file is made from them,
+   so changing one of the six changes the whole site.
    ============================================================================================ */
 
 /* ---- 1. The palette: named colours ---- */
 :root {
-  --paper: #f7f4ee;          /* soft white */
-  --paper-warm: #f1e3cf;     /* soft white, a little warmer (lit windows, glows) */
-  --stone: #e7e1d6;          /* light grey-beige (alternate sections on light pages) */
-  --mist: #cfc9be;           /* light text on dark surfaces */
-  --ash: #8f8b84;            /* borders and lines */
-  --graphite: #3e3e44;       /* cards on dark pages */
-  --charcoal-soft: #333338;  /* alternate sections on dark pages */
-  --charcoal: #2b2b2f;       /* main dark colour, and text on light pages */
-  --charcoal-deep: #1f1f22;  /* deepest dark (footer, night sky) */
-  --ember: #e0793a;          /* the one warm accent */
+  /* the six brand colours */
+  --plum-deep: #1a0f2e;      /* deepest plum: page background, dark text on light */
+  --plum: #3b1b4f;           /* plum: cards and panels */
+  --plum-mid: #7a2e6f;       /* mid plum: lines and quiet text on light pages */
+  --rose: #d6598f;           /* rose: lines on dark pages */
+  --blush: #f4d7d4;          /* blush: the soft white (text on dark, light pages) */
+  --coral: #ff6b6b;          /* coral: the one bright accent (buttons, pins, bookmarks) */
+
+  /* the working names (everything below is made from the six above) */
+  --paper: var(--blush);                                              /* soft white */
+  --paper-warm: var(--blush);                                         /* soft white (lit windows, glows) */
+  --stone: color-mix(in srgb, var(--blush) 80%, var(--rose));         /* a little deeper blush (alternate sections on light pages, chips) */
+  --mist: color-mix(in srgb, var(--blush) 70%, var(--plum-mid));      /* light text on dark surfaces */
+  --ash: color-mix(in srgb, var(--blush) 50%, var(--plum-mid));       /* quiet text and lines (the light theme changes it below) */
+  --graphite: var(--plum);                                            /* cards on dark pages */
+  --charcoal-soft: color-mix(in srgb, var(--plum-deep) 50%, var(--plum)); /* alternate sections on dark pages */
+  --charcoal: var(--plum-deep);                                       /* main dark colour, and text on light pages */
+  --charcoal-deep: var(--plum-deep);                                  /* deepest dark (night sky, shadows) */
+  --ember: var(--coral);                                              /* the one bright accent */
   --leaf: #2bb673;           /* only for green stars and growth */
   --whatsapp: #25d366;       /* only on the WhatsApp button */
 
-  /* ---- 2. Drawings and the 3D banner (the illustration palette) ---- */
+/* ---- 2. Drawings and the 3D banner (the illustration palette) ---- */
   --c-deep: var(--charcoal-deep);   /* night sky, shadows, dark outlines */
   --c-main: var(--graphite);        /* buildings, phones, main surfaces */
   --c-soft: var(--mist);            /* light surfaces, lamp posts, hem stitching */
@@ -44,7 +54,6 @@
   --on-chip: var(--charcoal);       /* ... and their words */
   --accent: var(--ember);
   --on-accent: var(--charcoal);
-  --line: var(--ash);
   --lamp-handle: var(--ember);
   --lamp-string: var(--mist);
 }
@@ -59,7 +68,8 @@
   --alt: var(--charcoal-soft);      /* every second section */
   --box: var(--graphite);           /* cards */
   --panel: var(--graphite);         /* big panels and forms */
-  --footer: var(--charcoal-deep);
+  --footer: var(--plum);
+  --line: var(--rose);              /* borders and lines */
 }
 :root[data-theme="light"] {
   color-scheme: light;
@@ -70,6 +80,8 @@
   --box: var(--charcoal);
   --panel: var(--charcoal);
   --footer: var(--charcoal);
+  --line: var(--plum-mid);
+  --ash: var(--plum-mid);           /* quiet text on the light page */
 }
 /* text on panels and cards is soft white in both themes */
 :root {
@@ -103,4 +115,10 @@
   --color-ember: var(--ember);
   --color-leaf: var(--leaf);
   --color-whatsapp: var(--whatsapp);
+  --color-plum-deep: var(--plum-deep);
+  --color-plum: var(--plum);
+  --color-plum-mid: var(--plum-mid);
+  --color-rose: var(--rose);
+  --color-blush: var(--blush);
+  --color-coral: var(--coral);
 }

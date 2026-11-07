@@ -19,7 +19,7 @@ export default function PageHeader({
       </div>
       <div className="relative mx-auto max-w-3xl">
         <span className="inline-block rounded-full bg-chip px-4 py-1 text-sm font-bold text-charcoal">{chip}</span>
-        <h1 className="mt-5 text-[clamp(2.2rem,8vw,4.6rem)] font-extrabold leading-[1.05]">{title}</h1>
+        <h1 className="mt-5 whitespace-pre-line text-[clamp(2.2rem,8vw,4.6rem)] font-extrabold leading-[1.05]">{title}</h1>
         {lead && <p className="mt-5 max-w-xl text-lg leading-relaxed text-mist">{lead}</p>}
         {children}
       </div>

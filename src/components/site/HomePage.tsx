@@ -14,6 +14,8 @@ const HELP_ICONS: IconName[] = ["bookmark", "bell", "globe"];
 
 export default function HomePage() {
   const h = text.home;
+  // the cards for restaurants, shops and Insiders show only while their pages are switched ON in features.ts
+  const cards = h.forBusiness.filter((x) => (x.href === "/insider" ? FEATURES.insiderPage : FEATURES.businessPages));
   return (
     <PageShell
       chip={h.chip}
@@ -21,7 +23,7 @@ export default function HomePage() {
       lead={h.lead}
       headerExtra={
         <>
-          <p className="mt-6 inline-block rounded-full bg-chip px-4 py-2 text-base font-extrabold text-onchip">{h.appSoon}</p>
+          <SocialButtons className="mt-8" message="Hi Spotted!" />
           <StoreButtons />
         </>
       }
@@ -43,10 +45,11 @@ export default function HomePage() {
 
       {FEATURES.liveCounters && <LiveCounters />}
 
+      {cards.length > 0 && (
       <Section title={h.forBusinessTitle}>
         <p className="mb-8 max-w-2xl text-xl leading-relaxed">{h.forBusinessLead}</p>
         <div className="grid gap-5 md:grid-cols-3">
-          {h.forBusiness.map((x) => (
+          {cards.map((x) => (
             <Link key={x.href} href={x.href} className="group rounded-3xl border-2 border-line p-7 transition hover:bg-alt">
               <h3 className="text-2xl font-extrabold text-heading">{x.title}</h3>
               <p className="mt-2 text-lg leading-relaxed">{x.text}</p>
@@ -58,6 +61,7 @@ export default function HomePage() {
           ))}
         </div>
       </Section>
+      )}
 
       <Section title={h.talkTitle} alt>
         <p className="mb-6 max-w-2xl text-xl leading-relaxed">{h.talkLead}</p>

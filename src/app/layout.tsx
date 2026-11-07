@@ -5,7 +5,7 @@ import { bodyFont, headingFont } from "@/styles/fonts";
 
 export const metadata: Metadata = {
   title: "Spotted",
-  description: "Save the places you spot. Get reminded when you are nearby.",
+  description: "Saw it in a reel? Spotted remembers it. Save it once, get a nudge when you're nearby. Coming soon.",
 };
 
 // Makes the page fit phone screens properly.

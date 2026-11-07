@@ -1,6 +1,7 @@
 "use client";
 
 // The Pricing page. Every price and every "included" line comes from src/config/pricing.ts.
+import { partnerLink } from "@/config/routes";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -85,20 +86,20 @@ export default function PricingPage() {
       <h2 className={heading}>{t.restaurantsTitle}</h2>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {RESTAURANT_PLANS.map((p) => (
-          <PlanCard key={p.id} plan={p} yearly={yearly} includeShared={p.priceAed !== null} href="/restaurants#get-in-touch" />
+          <PlanCard key={p.id} plan={p} yearly={yearly} includeShared={p.priceAed !== null} href={partnerLink("restaurants")} />
         ))}
       </div>
 
       <h2 className={heading}>{t.shopsTitle}</h2>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {SHOP_PLANS.map((p) => (
-          <PlanCard key={p.id} plan={p} yearly={yearly} includeShared href="/shops#get-in-touch" />
+          <PlanCard key={p.id} plan={p} yearly={yearly} includeShared href={partnerLink("shops")} />
         ))}
       </div>
 
       <h2 className={heading}>{t.insiderTitle}</h2>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <PlanCard plan={INSIDER_PLAN} yearly={yearly} includeShared={false} href="/insider#get-in-touch" />
+        <PlanCard plan={INSIDER_PLAN} yearly={yearly} includeShared={false} href={partnerLink("insider")} />
       </div>
 
       <p className="mt-10 max-w-3xl text-base">{t.staffExplain}</p>

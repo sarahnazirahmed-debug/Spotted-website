@@ -5,18 +5,13 @@ import { text } from "@/content";
 import SocialButtons from "./site/SocialButtons";
 
 export default function Footer() {
+  // The footer has five links: Privacy, Terms, Contact, About, FAQ. (Each shows only while its page is switched ON.)
   const links: [string, string, boolean][] = [
-    [text.nav.restaurants, "/restaurants", FEATURES.businessPages],
-    [text.nav.shops, "/shops", FEATURES.businessPages],
-    [text.nav.insiders, "/insider", FEATURES.insiderPage],
-    [text.nav.pricing, "/pricing", FEATURES.pricingPage],
-    [text.nav.howToJoin, "/how-to-join", FEATURES.howToJoinPage],
-    [text.nav.faq, "/faq", FEATURES.faqPage],
-    [text.nav.about, "/about", FEATURES.aboutPage],
-    [text.footer.careers, "/careers", FEATURES.careersPage],
-    [text.footer.removeReels, "/remove-reels", FEATURES.removeReelsPage],
     [text.footer.privacy, "/privacy", FEATURES.legalPages],
     [text.footer.terms, "/terms", FEATURES.legalPages],
+    [text.footer.contact, "/contact", FEATURES.contactPage],
+    [text.nav.about, "/about", FEATURES.aboutPage],
+    [text.nav.faq, "/faq", FEATURES.faqPage],
   ];
   return (
     <footer className="bg-footer px-5 py-12 text-paper">
@@ -37,7 +32,7 @@ export default function Footer() {
             </a>
           )}
         </div>
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-10 sm:grid-cols-3">
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-10">
           {links
             .filter(([, , on]) => on)
             .map(([name, href]) => (

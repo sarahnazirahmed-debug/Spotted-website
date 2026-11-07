@@ -6,7 +6,7 @@
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
@@ -16,7 +16,8 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // The "What's Spotted" page under the landing section (why, how it works, never miss out, UAE, notify me).
   whatsSpotted: true,
   // Part A: the /restaurants and /shops pages (cloth banner "COMING SOON", pitch, business waitlist form).
-  businessPages: true,
+  // OFF for now: the pages, their menu and footer links and the home page cards are hidden. Switch ON to bring them back.
+  businessPages: false,
   // Part B: the place directory on those pages (curved video row, list and grid, filters, place pages).
   // It is built and tested with EXAMPLE data, and OFF until real partners join.
   businessDirectory: false,
@@ -27,7 +28,8 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // (see supabase/schema.sql and .env.example).
   accounts: false,
   // The /insider page ("Spotted Insider": the paid plan for creators, example stats, Insider waitlist).
-  insiderPage: true,
+  // OFF for now: the page and every link to it are hidden. Switch ON to bring it back.
+  insiderPage: false,
   // The /careers page ("We are not hiring yet", email form).
   // (OFF for now: built, but not in the menu or footer.)
   careersPage: false,
@@ -61,8 +63,8 @@ export const FEATURES: Record<FeatureName, boolean> = {
   faqPage: true,
   // The "Creators: remove my reels" page and form.
   removeReelsPage: true,
-  // The live counters on the home page (People on Spotted, Saves, Spotted Partners, Spotted Insiders).
-  // Each one still waits until it passes its own number: src/config/counters.ts.
+  // The live counter bar on the home page (UAE only: Accounts, Saved places, Saved reels, and later Partners and Insiders).
+  // It stays hidden until accounts, saved places and saved reels are each above 500: src/config/counters.ts.
   liveCounters: true,
   // The App Store and Google Play buttons on the home page. OFF until the app is out; the two store
   // links go in LAUNCH.stores below.
@@ -72,6 +74,8 @@ export const FEATURES: Record<FeatureName, boolean> = {
   getInTouch: true,
   // The round WhatsApp button (bottom right).
   whatsappButton: true,
+  // The /contact page (WhatsApp, Instagram and the contact email once it works).
+  contactPage: true,
 };
 
 // LAUNCH WORDS: what the banner says, and whether the App Store / Google Play buttons show.

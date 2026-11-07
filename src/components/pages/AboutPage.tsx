@@ -26,7 +26,7 @@ export default function AboutPage() {
           </P>
           <H2>Made in the UAE</H2>
           <P>
-            Spotted is made in the UAE and launches in Khalifa City, Abu Dhabi. It works wherever you are, and it is built for
+            Spotted is made in the UAE and starts in Khalifa City, Abu Dhabi. It works wherever you are, and it is built for
             people who love finding new places to eat, shop and play.
           </P>
           <H2>Say hello</H2>

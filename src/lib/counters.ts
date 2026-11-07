@@ -18,6 +18,7 @@ export function countryFromLanguage(language: string | undefined): string | null
   return COUNTRY_CODES.includes(code) ? code : null;
 }
 
+// (Older, kept for when more countries open: a counter per country and for the world, each at its own minimum.)
 // A counter shows only once its number is AT LEAST its minimum, for the country and for the world separately.
 export function pickCounters(
   rows: StatRow[],
@@ -37,4 +38,20 @@ export function pickCounters(
     if (item.world !== undefined || item.country !== undefined) shown.push(item);
   }
   return shown;
+}
+
+// THE COUNTER BAR (UAE only). Hidden until every one of the `required` numbers is ABOVE its minimum.
+// Then the required tiles show, and each of the `later` tiles (partners, insiders) joins once it is above its own minimum.
+export type Tile = { metric: string; value: number };
+export function pickBar(
+  rows: StatRow[],
+  country: string,
+  minimums: Record<string, number>,
+  required: string[],
+  later: string[],
+): Tile[] {
+  const value = (metric: string) => Number(rows.find((r) => r.metric === metric && r.country === country)?.value ?? 0);
+  const above = (metric: string) => value(metric) > (minimums[metric] ?? Infinity);
+  if (!required.every(above)) return [];
+  return [...required, ...later.filter(above)].map((metric) => ({ metric, value: value(metric) }));
 }
