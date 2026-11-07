@@ -4,7 +4,9 @@
 import Link from "next/link";
 import { FOUNDING_FREE_PERIOD, FOUNDING_SPOTS, INSIDER_PLAN, yearlyPriceAed } from "@/config/pricing";
 import { text } from "@/content";
+import { applyLink, partnerLink } from "@/config/routes";
 import ProfileLanding, { heading } from "./ProfileLanding";
+import { FEATURES } from "@/config/features";
 
 const t = text.insiderPage;
 
@@ -31,7 +33,7 @@ export default function InsiderLanding() {
         <h2 className={`mt-4 ${heading}`}>{t.foundingTitle}</h2>
         <p className="mt-4 max-w-2xl text-lg leading-relaxed">{t.foundingText(FOUNDING_SPOTS, FOUNDING_FREE_PERIOD)}</p>
         <Link
-          href="/contact"
+          href={FEATURES.applyPage ? applyLink("insider", "founding") : "/contact"}
           className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full border border-maroon px-7 font-bar text-base font-bold text-maroon transition hover:bg-pinktint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
         >
           {t.foundingButton}
@@ -39,5 +41,5 @@ export default function InsiderLanding() {
       </div>
     </section>
   );
-  return <ProfileLanding t={t} deal={deal} extra={founding} />;
+  return <ProfileLanding t={t} deal={deal} extra={founding} applyHref={partnerLink("insider")} />;
 }

@@ -3,6 +3,7 @@
 // Words: src/content/en.ts (partnerPage, and insiderPage.dealStrip for the strip). Prices: src/config/pricing.ts.
 import { PARTNER_PRICE_CARDS, PARTNER_YEARLY_TBD, type PartnerCard } from "@/config/pricing";
 import { text } from "@/content";
+import { partnerLink } from "@/config/routes";
 import ProfileLanding from "./ProfileLanding";
 
 const t = text.partnerPage;
@@ -41,5 +42,5 @@ export default function PartnerLanding() {
       </p>
     </div>
   );
-  return <ProfileLanding t={t} deal={deal} />;
+  return <ProfileLanding t={t} deal={deal} applyHref={partnerLink("restaurants")} />;
 }

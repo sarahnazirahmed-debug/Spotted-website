@@ -39,7 +39,7 @@ test("the agreed words are in the text file", () => {
 
 test("the Partner page uses the same template as the Insider page, has no Founding box, and shows no home address field", () => {
   const p = read("src/components/insider/PartnerLanding.tsx").replace(/^\s*\/\/.*$/gm, "");
-  assert.match(p, /<ProfileLanding t=\{t\} deal=\{deal\} \/>/); // no `extra` box
+  assert.match(p, /<ProfileLanding t=\{t\} deal=\{deal\} applyHref=/); // no `extra` box
   assert.doesNotMatch(p, /Founding/i);
   assert.match(read("src/components/insider/InsiderLanding.tsx"), /ProfileLanding/);
 });
@@ -47,7 +47,7 @@ test("the Partner page uses the same template as the Insider page, has no Foundi
 test("the Partner page is at /partners, behind the Partners switch, and the top bar and Log in point to it", () => {
   assert.match(read("src/app/partners/page.tsx"), /!FEATURES\.businessPages\) notFound\(\)/);
   assert.match(read("src/components/TopBar.tsx"), /href: "\/partners"/);
-  assert.equal(partnerLink("restaurants"), FEATURES.businessPages ? "/partners#get-in-touch" : "/contact");
+  assert.equal(partnerLink("restaurants"), FEATURES.applyPage ? "/apply?type=partner" : FEATURES.businessPages ? "/partners#get-in-touch" : "/contact");
 });
 
 test("the Partner dashboard drawing has no real numbers", () => {

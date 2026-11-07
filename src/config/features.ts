@@ -6,7 +6,7 @@
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "loginPage" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "legalPlaceholders" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage" | "designDraft";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "loginPage" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "legalPlaceholders" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage" | "designDraft" | "applyPage";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
@@ -87,6 +87,9 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // The small "Design draft" label on pages that are still a draft design (the Insider page).
   // ON while we build the design. Switch OFF before the site goes public so the live site never shows it.
   designDraft: true,
+  // The Apply page (/apply: Insider and Partner versions) and its thank-you page.
+  // If OFF, the "Become an Insider / Partner" buttons go to the Contact page instead.
+  applyPage: true,
 };
 
 // LAUNCH WORDS: what the banner says, and whether the App Store / Google Play buttons show.

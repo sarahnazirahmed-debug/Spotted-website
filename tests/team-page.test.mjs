@@ -50,8 +50,8 @@ test("staff sees the Pin Desk and the counts, never money, and not Team", () => 
 });
 
 test("the main admin and associates see everything, including Team", () => {
-  assert.deepEqual(adminTabs("main_admin"), ["pin", "dashboard", "team"]);
-  assert.deepEqual(adminTabs("associate"), ["pin", "dashboard", "team"]);
+  assert.deepEqual(adminTabs("main_admin"), ["pin", "dashboard", "applications", "team"]);
+  assert.deepEqual(adminTabs("associate"), ["pin", "dashboard", "applications", "team"]);
   assert.equal(canSeeMoney("main_admin"), true);
   assert.equal(canSeeMoney("associate"), true);
   assert.deepEqual(adminTabs(null), []); // someone not on the team sees nothing

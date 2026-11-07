@@ -39,7 +39,8 @@ export function Section({ id, title, children, tint = false }: { id?: string; ti
   );
 }
 
-export default function ProfileLanding({ t, deal, extra }: { t: LandingCopy; deal: React.ReactNode; extra?: React.ReactNode }) {
+// applyHref: where the "Become an ..." buttons go (the Apply form, or the Contact page while the Apply page is OFF).
+export default function ProfileLanding({ t, deal, extra, applyHref }: { t: LandingCopy; deal: React.ReactNode; extra?: React.ReactNode; applyHref: string }) {
   return (
     <div className="font-bar">
       {/* 1. HERO (maroon) */}
@@ -53,7 +54,7 @@ export default function ProfileLanding({ t, deal, extra }: { t: LandingCopy; dea
             <h1 className="mt-5 font-brand text-[clamp(2.4rem,8vw,4.4rem)] font-bold leading-[1.05]">{t.hero.title}</h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-cream/90">{t.hero.lead}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/contact" className={coralButton}>
+              <Link href={applyHref} className={coralButton}>
                 {t.hero.apply}
               </Link>
               {FEATURES.loginPage && (
@@ -99,7 +100,7 @@ export default function ProfileLanding({ t, deal, extra }: { t: LandingCopy; dea
 
         {/* 7. CLOSING MAROON BAND */}
         <section id="get-in-touch" className="bg-maroon px-5 py-14 text-center text-cream">
-          <Link href="/contact" className={coralButton}>
+          <Link href={applyHref} className={coralButton}>
             {t.hero.apply}
           </Link>
         </section>

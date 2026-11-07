@@ -71,7 +71,7 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
 
   // "Pin Desk" is the home page and every Pin Desk screen under it (everything except Dashboard and Team)
   const tabs = adminTabs(me.role);
-  const inPinDesk = !path.startsWith("/admin/dashboard") && !path.startsWith("/admin/team");
+  const inPinDesk = !path.startsWith("/admin/dashboard") && !path.startsWith("/admin/team") && !path.startsWith("/admin/applications");
   const tab = (href: string, text: string, active = path === href) => (
     <Link
       href={href}
@@ -89,6 +89,7 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
           <nav aria-label="Admin" className="flex flex-wrap items-center gap-1">
             {tabs.includes("pin") && tab("/admin", "Pin Desk", inPinDesk)}
             {tabs.includes("dashboard") && tab("/admin/dashboard", "Dashboard")}
+            {tabs.includes("applications") && tab("/admin/applications", "Applications")}
             {tabs.includes("team") && tab("/admin/team", "Team")}
           </nav>
           <span className="ml-auto text-sm font-bold">

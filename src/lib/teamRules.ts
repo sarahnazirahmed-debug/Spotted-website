@@ -10,6 +10,8 @@ export const ROLE_LABEL: Record<TeamRole, string> = {
 };
 
 export const canOpenTeam = (me: TeamRole | null) => me === "main_admin" || me === "associate";
+// Applications (personal details and PDFs of people who applied) are for the main admin and associates only.
+export const canOpenApplications = (me: TeamRole | null) => me === "main_admin" || me === "associate";
 export const canUsePinDesk = (me: TeamRole | null) => me !== null;
 export const canSeeEarnings = (me: TeamRole | null) => me === "main_admin" || me === "associate";
 // Only the main admin and associates may mark a detail "Not needed" (the database checks this too).

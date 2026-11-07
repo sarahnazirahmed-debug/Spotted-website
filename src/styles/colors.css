@@ -43,6 +43,7 @@
   --page-base: #fbf7f6;      /* the light page colour of the draft design */
   --visit-green: #1f7a4d;    /* green stars: visits */
   --sales-yellow: #b7791f;   /* yellow stars: sales */
+  --problem-red: #b42318;    /* red: the tick-box message on the Apply page, and private problem reports (team only) */
 
 /* ---- 2. Drawings and the 3D banner (the illustration palette) ---- */
   --c-deep: var(--charcoal-deep);   /* night sky, shadows, dark outlines */
@@ -145,4 +146,5 @@
   --color-maroon: var(--maroon);
   --color-visit: var(--visit-green);
   --color-sales: var(--sales-yellow);
+  --color-problem: var(--problem-red);
 }
