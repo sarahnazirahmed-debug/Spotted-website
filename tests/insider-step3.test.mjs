@@ -7,7 +7,8 @@ import { INSIDER_PLAN, yearlyPriceAed, FOUNDING_SPOTS } from "../src/config/pric
 
 const read = (f) => readFileSync(f, "utf8");
 const en = read("src/content/en.ts");
-const page = read("src/components/insider/InsiderLanding.tsx");
+// the Insider and Partner pages share one template (step 4)
+const page = read("src/components/insider/ProfileLanding.tsx");
 
 test("the price is AED 249 a month and AED 2,739 a year (11 months paid, 12 given)", () => {
   assert.equal(INSIDER_PLAN.priceAed, 249);
@@ -16,7 +17,8 @@ test("the price is AED 249 a month and AED 2,739 a year (11 months paid, 12 give
 });
 
 test("the seven sections are in the agreed order", () => {
-  const order = ["1. HERO", "2. WHY BECOME", "3. WHAT YOU NEED", "4. YOUR DASHBOARD", "5. THE DEAL", "6. FOUNDING", "7. CLOSING"];
+  const order = ["1. HERO", "2. WHY BECOME", "3. WHAT YOU NEED", "4. YOUR DASHBOARD", "5. THE DEAL", "6. EXTRA BOX", "7. CLOSING"];
+  assert.match(read("src/components/insider/InsiderLanding.tsx"), /Founding/); // the 6th section on the Insider page
   let at = -1;
   for (const k of order) {
     const i = page.indexOf(k);

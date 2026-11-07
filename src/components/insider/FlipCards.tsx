@@ -1,21 +1,21 @@
 "use client";
 
-// "Why become an Insider": four cards. Tap (or press Enter) on a card and it turns maroon and shows the text.
+// "Why become an Insider / Partner": four cards. Tap (or press Enter) on a card and it turns maroon and shows the text.
 // Tap again to turn it back. No movement is used, so it is fine with Reduce Motion.
 import { useState } from "react";
-import { text } from "@/content";
 import { Icon, type IconName } from "../site/Icons";
 import { Star } from "../creators/Stars";
 
 const ICONS: IconName[] = ["star", "bookmark", "pin", "chart"];
 
-export default function FlipCards() {
-  const t = text.insiderPage;
-  const [open, setOpen] = useState<boolean[]>(t.cards.map(() => false));
+type Card = { title: string; text: string; stars: boolean };
+
+export default function FlipCards({ cards, hint }: { cards: Card[]; hint: string }) {
+  const [open, setOpen] = useState<boolean[]>(cards.map(() => false));
   const toggle = (i: number) => setOpen((o) => o.map((v, j) => (j === i ? !v : v)));
   return (
     <ul className="grid gap-4 sm:grid-cols-2">
-      {t.cards.map((c, i) => {
+      {cards.map((c, i) => {
         const back = open[i];
         return (
           <li key={c.title}>
@@ -42,7 +42,7 @@ export default function FlipCards() {
                   )}
                 </span>
               ) : (
-                <span className="mt-auto pt-4 text-sm font-semibold text-mutedtext">{t.flipHint}</span>
+                <span className="mt-auto pt-4 text-sm font-semibold text-mutedtext">{hint}</span>
               )}
             </button>
           </li>

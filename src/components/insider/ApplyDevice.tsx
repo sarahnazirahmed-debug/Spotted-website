@@ -4,19 +4,25 @@
 // (a Phone / Tablet switch of two buttons) showing the same list as a "Your application" screen,
 // with small dashed "Upload PDF" tags on the items that need a PDF.
 import { useState } from "react";
-import { text } from "@/content";
 
-const t = text.insiderPage;
+export type ApplyCopy = {
+  items: { label: string; tags: string[] }[];
+  applyChecklistTitle: string;
+  applyNote: string;
+  screenTitle: string;
+  uploadPdf: string;
+  device: { phone: string; tablet: string; switchLabel: string };
+};
 
 // The look of the three tags.
 function Tag({ word, small = false }: { word: string; small?: boolean }) {
   const size = small ? "px-2 py-0.5 text-[0.65rem]" : "px-2.5 py-0.5 text-xs";
   const look =
-    word === "Required" ? "bg-maroon text-cream" : word === "Optional" ? "border border-rosesoft bg-pinktint text-mutedtext" : "border border-dashed border-rose-line text-maroon";
+    word === "Required" ? "bg-maroon text-cream" : word === "PDF" ? "border border-dashed border-rose-line text-maroon" : "border border-rosesoft bg-pinktint text-mutedtext";
   return <span className={`inline-block rounded-full font-bold ${size} ${look}`}>{word}</span>;
 }
 
-function Checklist() {
+function Checklist({ t }: { t: ApplyCopy }) {
   return (
     <div className="rounded-2xl border border-rosesoft bg-cream p-6 text-darktext">
       <h3 className="font-brand text-xl font-bold">{t.applyChecklistTitle}</h3>
@@ -37,12 +43,12 @@ function Checklist() {
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-sm font-semibold text-mutedtext">{t.applyNote}</p>
+      {t.applyNote && <p className="mt-4 text-sm font-semibold text-mutedtext">{t.applyNote}</p>}
     </div>
   );
 }
 
-export default function ApplyDevice() {
+export default function ApplyDevice({ t }: { t: ApplyCopy }) {
   const [device, setDevice] = useState<"phone" | "tablet">("phone");
   const btn = (id: "phone" | "tablet", label: string) => (
     <button
@@ -59,7 +65,7 @@ export default function ApplyDevice() {
   return (
     <div className="grid items-start gap-8 lg:grid-cols-2">
       <div>
-        <Checklist />
+        <Checklist t={t} />
       </div>
       <div className="flex flex-col items-center">
         <div role="group" aria-label={t.device.switchLabel} className="mb-5 flex gap-2">

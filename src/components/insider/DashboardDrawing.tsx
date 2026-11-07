@@ -2,12 +2,14 @@
 // two table lines) with a drawn tablet in front showing the "Add a reel" form.
 // It never shows real numbers: every number is a dash. The note under it says "Example layout only."
 // (The bars have no numbers on them: they only show the shape of a chart.)
-import { text } from "@/content";
 
-const t = text.insiderPage.dash;
+export type DashCopy = {
+  summary: string; menu: string[]; cards: string[]; chartTitle: string; rows: string[]; rowCols: string[];
+  addReel: string; fields: string[]; save: string; note: string;
+};
 const BARS = [35, 55, 42, 70, 60, 85, 66]; // only the SHAPE of a chart
 
-export default function DashboardDrawing() {
+export default function DashboardDrawing({ t }: { t: DashCopy }) {
   return (
     <figure>
       <p className="sr-only">{t.summary}</p>

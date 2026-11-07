@@ -27,15 +27,15 @@ const LINKS: LinkItem[] = [
   { label: n.yourData, href: "/privacy", feature: "legalPages" },
   { label: n.questions, href: "/faq", feature: "faqPage" },
   { label: n.insiders, href: "/insider", feature: "insiderPage" },
-  { label: n.partners, href: "/restaurants", feature: "businessPages" },
+  { label: n.partners, href: "/partners", feature: "businessPages" },
   { label: n.careers, href: "/careers", feature: "careersPage" },
 ];
 // Admin and Staff both open the one Log in page. People never need to type /admin.
 const ADMIN: LinkItem = { label: n.admin, href: "/login", feature: "loginPage" };
 const GET_NOTIFIED: LinkItem = { label: n.getNotified, href: "/contact", feature: "contactPage" };
 
-// Partners covers both the Restaurants and the Shops pages.
-const PARTNER_PATHS = ["/restaurants", "/shops"];
+// Partners covers the Partner page and also the older Restaurants and Shops pages.
+const PARTNER_PATHS = ["/partners", "/restaurants", "/shops"];
 
 export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: boolean }) {
   const pathname = usePathname();
@@ -100,7 +100,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
   const isCurrent = (item: LinkItem) =>
     item.href.startsWith("/#") || item === ADMIN
       ? false
-      : item.href === "/restaurants"
+      : item.href === "/partners"
         ? PARTNER_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))
         : pathname === item.href;
   const isOn = (item: LinkItem) => !item.feature || FEATURES[item.feature];

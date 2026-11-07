@@ -88,6 +88,59 @@ export const en = {
     foundingButton: "I have an invite code",
   },
 
+  // The Spotted Partner page (step 4): the same structure as the Insider page.
+  partnerPage: {
+    draft: "Design draft",
+    hero: {
+      label: "For restaurants and shops",
+      title: "Spotted Partner",
+      lead: "Let people find you from the reels they already love. See who saved your place, run your own offers, and know which influencers bring you customers.",
+      apply: "Become a Partner",
+      account: "I already have an account",
+    },
+    whyTitle: "Why become a Partner",
+    flipHint: "Tap to read more",
+    cards: [
+      { title: "People save you from reels", text: "When someone saves your place from a reel, you see it. They get a reminder when they are near you.", stars: false },
+      { title: "See your numbers", text: "Saves, visits and sales recorded through Spotted, by day, week and month.", stars: false },
+      { title: "Your own offers", text: "Add or remove offers and items any time.", stars: false },
+      { title: "Know your influencers", text: "See which influencers bring you customers, and agree offers with them.", stars: false },
+    ],
+    applyTitle: "What you need to apply",
+    applyChecklistTitle: "Your checklist",
+    items: [
+      { label: "UAE trade licence", tags: ["PDF", "Required"] },
+      { label: "Food permit, for food and drink businesses", tags: ["PDF", "Food and drink only"] },
+      { label: "Business Instagram handle", tags: ["Required"] },
+      { label: "Business phone and email", tags: ["Required"] },
+      { label: "Branches and areas (never a home address)", tags: ["Required"] },
+      { label: "The plan you are interested in", tags: ["Optional"] },
+    ],
+    applyNote: "",
+    screenTitle: "Your application",
+    uploadPdf: "Upload PDF",
+    device: { phone: "Phone", tablet: "Tablet", switchLabel: "Show on" },
+    dashTitle: "Your dashboard, on any screen",
+    dash: {
+      summary: "A drawing of the Partner dashboard on a laptop, with a tablet in front showing the form to add an offer. It has no real numbers.",
+      menu: ["Overview", "Offers", "Days", "Influencers"],
+      cards: ["Saves", "Visits", "Sales"],
+      chartTitle: "By day",
+      rows: ["Offer", "Offer"],
+      rowCols: ["Item", "Ends"],
+      addReel: "Add an offer",
+      fields: ["Offer", "Starts", "Ends"],
+      save: "Save",
+      note: "Example layout only.",
+    },
+    dealTitle: "The deal",
+    dealMonthly: "per month",
+    dealYearly: "per year",
+    restaurantsTitle: "Restaurants",
+    shopsTitle: "Shops",
+    dealRule: "Anything food or drink (restaurant, cafe, bakery, sweets, cloud or home kitchen) is a Restaurant. Everything else is a Shop.",
+  },
+
   // The panel that opens from the three-bar menu button in the top bar.
   menuPanel: {
     spotted: "Spotted",
@@ -99,7 +152,7 @@ export const en = {
     join: "Join Spotted",
     joinLinks: [
       { label: "Insiders", note: "For influencers", feature: "insiderPage", href: "/insider" },
-      { label: "Partners", note: "For restaurants and shops", feature: "businessPages", href: "/restaurants" },
+      { label: "Partners", note: "For restaurants and shops", feature: "businessPages", href: "/partners" },
       { label: "Careers", note: "Work with the crew", feature: "careersPage", href: "/careers" },
     ],
     close: "Close menu",

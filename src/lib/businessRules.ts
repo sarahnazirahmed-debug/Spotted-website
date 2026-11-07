@@ -17,6 +17,10 @@ export const SHOP_KINDS = [
 ];
 export const OTHER_KIND = "Other";
 
+// The rule: anything food or drink (restaurant, cafe, cafeteria, bakery, sweets, cloud or home kitchen) is a Restaurant.
+// Everything else is a Shop.
+export const typeOfKind = (kind: string): BusinessType => (RESTAURANT_KINDS.includes(kind) ? "restaurant" : "shop");
+
 export const KINDS: Record<BusinessType, string[]> = { restaurant: RESTAURANT_KINDS, shop: [...SHOP_KINDS, OTHER_KIND] };
 
 // "@Some.Place", "instagram.com/some.place/" and "https://www.instagram.com/some.place?igsh=x" all become "some.place"

@@ -64,3 +64,20 @@ export const yearlyPriceAed = (monthly: number) => monthly * (12 - YEARLY_MONTHS
 export const FOUNDING_SPOTS = 10;
 // STILL TO BE DECIDED (6 or 12 months). Change this one line when you decide; the page reads it.
 export const FOUNDING_FREE_PERIOD = "[6 or 12 months, still to be decided]";
+
+// The eight small price cards on the Spotted Partner page (step 4).
+// Anything food or drink (restaurant, cafe, bakery, sweets, cloud or home kitchen) is a Restaurant; everything else is a Shop
+// (the kinds are in src/lib/businessRules.ts). Shop plans are named by how many benefits they have.
+// The yearly price is still to be decided: the page shows PARTNER_YEARLY_TBD for each card.
+export const PARTNER_YEARLY_TBD = "[TBD]";
+export type PartnerCard = { id: string; group: "restaurants" | "shops"; name: string; forWho?: string; priceAed: number };
+export const PARTNER_PRICE_CARDS: PartnerCard[] = [
+  { id: "starter", group: "restaurants", name: "Starter", forWho: "Cafeterias", priceAed: 99 },
+  { id: "grow", group: "restaurants", name: "Grow", forWho: "Cafes, bakeries", priceAed: 149 },
+  { id: "main", group: "restaurants", name: "Main", forWho: "One cuisine", priceAed: 199 },
+  { id: "premium", group: "restaurants", name: "Premium", forWho: "Many cuisines", priceAed: 249 },
+  { id: "branches", group: "restaurants", name: "More than one branch", priceAed: 349 },
+  { id: "shop-8", group: "shops", name: "8 benefits", priceAed: 99 },
+  { id: "shop-14", group: "shops", name: "14 benefits", priceAed: 199 },
+  { id: "shop-20", group: "shops", name: "20+ benefits", priceAed: 299 },
+];

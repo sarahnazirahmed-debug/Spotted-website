@@ -38,8 +38,8 @@ test("insider page and business pages are ON in the draft look (the new switches
 });
 
 test("the links to those pages follow their switches (ON: the page, OFF: the Contact page)", () => {
-  assert.equal(partnerLink("restaurants"), FEATURES.businessPages ? "/restaurants#get-in-touch" : "/contact");
-  assert.equal(partnerLink("shops"), FEATURES.businessPages ? "/shops#get-in-touch" : "/contact");
+  assert.equal(partnerLink("restaurants"), FEATURES.businessPages ? "/partners#get-in-touch" : "/contact");
+  assert.equal(partnerLink("shops"), FEATURES.businessPages ? "/partners#get-in-touch" : "/contact");
   assert.equal(partnerLink("insider"), FEATURES.insiderPage ? "/insider#get-in-touch" : "/contact");
   for (const f of ["src/app/how-to-join/page.tsx", "src/components/site/PricingPage.tsx"]) {
     assert.doesNotMatch(read(f), /href="\/(restaurants|shops|insider)/, f);
