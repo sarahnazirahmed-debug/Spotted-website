@@ -10,6 +10,7 @@ import { readReelLink } from "@/lib/reelLinks";
 import { reelsToRows, rowsToReels } from "@/lib/reelExcel";
 import type { Reel, ReelInput, ShareRequest } from "@/lib/reelTypes";
 import { useAdmin } from "./AdminProvider";
+import DuplicateNotice from "./DuplicateNotice";
 import ReelForm from "./ReelForm";
 import type { BizOption, LocOption } from "@/lib/reelPlace";
 
@@ -101,11 +102,26 @@ export default function PinDesk() {
 
   // ---- adding ----
   const info = linkText.trim() ? readReelLink(linkText) : null;
-  const duplicate = info?.ok ? reels.find((r) => r.link_key === info.linkKey) : undefined;
+  // Is this reel already on the desk? Checked in the list we have, and also asked of the database straight away.
+  const [remoteDup, setRemoteDup] = useState<{ key: string; reel: Reel } | null>(null);
+  const infoKey = info?.ok ? info.linkKey : "";
+  useEffect(() => {
+    let dead = false;
+    void (async () => {
+      if (!supabase || !infoKey) return;
+      const { data } = await supabase.from("reels").select("*").eq("link_key", infoKey).limit(1);
+      const row = (data as Reel[] | null)?.[0];
+      if (!dead) setRemoteDup(row ? { key: infoKey, reel: row } : null);
+    })();
+    return () => {
+      dead = true;
+    };
+  }, [supabase, infoKey]);
+  const duplicate = info?.ok ? (reels.find((r) => r.link_key === info.linkKey) ?? (remoteDup?.key === info.linkKey ? remoteDup.reel : undefined)) : undefined;
 
   async function addReel(values: ReelInput): Promise<string | null> {
     const { data, error } = await supabase!.from("reels").insert(values).select("code").single();
-    if (error) return error.code === "23505" ? "Already on the desk." : `The database did not allow that (${error.message}).`;
+    if (error) return error.code === "23505" ? "This reel already exists." : `The database did not allow that (${error.message}).`;
     setAdding(false);
     setLinkText("");
     setNotice(`Reel added. Reel code: ${(data as { code: string }).code}`);
@@ -283,12 +299,12 @@ export default function PinDesk() {
             </p>
           )}
           {duplicate && (
-            <p role="alert" className="rounded-xl bg-alt p-3 font-extrabold">
-              Already on the desk.{" "}
-              <button type="button" className="underline" onClick={() => { setAdding(false); setEditing(duplicate); setLinkText(""); }}>
-                Open it
-              </button>
-            </p>
+            <DuplicateNotice
+              reel={duplicate}
+              businessName={businesses.find((b) => b.id === duplicate.business_id)?.name ?? null}
+              onOpen={() => { setAdding(false); setEditing(duplicate); setLinkText(""); }}
+              onDifferent={() => setLinkText("")}
+            />
           )}
           {info?.ok && !duplicate && (
             <ReelForm

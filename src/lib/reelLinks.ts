@@ -10,8 +10,13 @@ export type LinkInfo =
 const ID = "[A-Za-z0-9._-]+";
 
 export function readReelLink(input: string): LinkInfo {
-  const text = input.trim();
+  let text = input.trim();
   if (!text) return { ok: false, reason: "Paste a link first." };
+  // a whole shared message ("Look at this https://... so good"): use the first link in it
+  if (/\s/.test(text)) {
+    const found = text.match(/https?:\/\/[^\s]+/i);
+    if (found) text = found[0].replace(/[)\].,;!]+$/, "");
+  }
   let u: URL;
   try {
     u = new URL(/^https?:\/\//i.test(text) ? text : `https://${text}`);
@@ -23,6 +28,10 @@ export function readReelLink(input: string): LinkInfo {
 
   // ---- Instagram: /reel/ABC, /reels/ABC, /p/ABC, /tv/ABC (also /username/reel/ABC) ----
   if (host === "instagram.com" || host === "instagr.am") {
+    // A share link (instagram.com/share/reel/xxxx) holds a share code, not the reel's own code, so it cannot be matched.
+    if (/^\/share\//i.test(path)) {
+      return { ok: false, reason: "That is an Instagram share link, and it hides the reel's real code. Open the reel, then copy the address from the address bar (it looks like instagram.com/reel/XXXX)." };
+    }
     const m = path.match(new RegExp(`/(?:reels?|p|tv)/(${ID})$`));
     if (!m) return { ok: false, reason: "That Instagram link is not a reel or post link." };
     return { ok: true, platform: "instagram", linkKey: `instagram/${m[1]}`, url: `https://www.instagram.com/reel/${m[1]}/` };
