@@ -11,6 +11,7 @@ import { reelsToRows, rowsToReels } from "@/lib/reelExcel";
 import type { Reel, ReelInput, ShareRequest } from "@/lib/reelTypes";
 import { useAdmin } from "./AdminProvider";
 import ReelForm from "./ReelForm";
+import type { BizOption, LocOption } from "@/lib/reelPlace";
 
 type Tab = "all" | ReelStatus | "waiting";
 const field = "min-h-11 rounded-xl bg-paper px-3 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent";
@@ -21,6 +22,8 @@ export default function PinDesk() {
   const { supabase, me } = useAdmin();
   const [reels, setReels] = useState<Reel[]>([]);
   const [waiting, setWaiting] = useState<ShareRequest[]>([]);
+  const [businesses, setBusinesses] = useState<BizOption[]>([]);
+  const [locations, setLocations] = useState<LocOption[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [tab, setTab] = useState<Tab>("all");
   const [q, setQ] = useState("");
@@ -36,14 +39,23 @@ export default function PinDesk() {
   // fetchAll only asks the database; apply puts the answer on the page.
   const fetchAll = useCallback(async () => {
     if (!supabase) return null;
-    const [r, w] = await Promise.all([
+    const [r, w, b, l] = await Promise.all([
       supabase.from("reels").select("*").order("created_at", { ascending: false }).limit(5000),
       supabase.from("waiting_requests").select("*").limit(1000),
+      supabase.from("businesses").select("id, name, type, code").order("name").limit(10000),
+      supabase.from("locations").select("id, name, emirate, maps_url, lat, lng, is_building, business_id").order("name").limit(10000),
     ]);
-    return { reels: (r.data as Reel[]) ?? [], waiting: (w.data as ShareRequest[]) ?? [] };
+    return {
+      reels: (r.data as Reel[]) ?? [],
+      waiting: (w.data as ShareRequest[]) ?? [],
+      businesses: (b.data as BizOption[]) ?? [],
+      locations: (l.data as LocOption[]) ?? [],
+    };
   }, [supabase]);
-  const apply = (d: { reels: Reel[]; waiting: ShareRequest[] } | null) => {
+  const apply = (d: { reels: Reel[]; waiting: ShareRequest[]; businesses: BizOption[]; locations: LocOption[] } | null) => {
     if (!d) return;
+    setBusinesses(d.businesses);
+    setLocations(d.locations);
     setReels(d.reels);
     setWaiting(d.waiting);
     setLoaded(true);
@@ -92,11 +104,11 @@ export default function PinDesk() {
   const duplicate = info?.ok ? reels.find((r) => r.link_key === info.linkKey) : undefined;
 
   async function addReel(values: ReelInput): Promise<string | null> {
-    const { error } = await supabase!.from("reels").insert(values);
+    const { data, error } = await supabase!.from("reels").insert(values).select("code").single();
     if (error) return error.code === "23505" ? "Already on the desk." : `The database did not allow that (${error.message}).`;
     setAdding(false);
     setLinkText("");
-    setNotice("Reel added.");
+    setNotice(`Reel added. Reel code: ${(data as { code: string }).code}`);
     await load();
     return null;
   }
@@ -280,6 +292,9 @@ export default function PinDesk() {
           )}
           {info?.ok && !duplicate && (
             <ReelForm
+              businesses={businesses}
+              locations={locations}
+              onBusinessCreated={(b) => setBusinesses((o) => [...o, b].sort((x, y) => x.name.localeCompare(y.name)))}
               key={info.linkKey}
               initial={{ url: info.url, link_key: info.linkKey, platform: info.platform, creator_handle: info.creator ?? null }}
               isNew
@@ -297,6 +312,9 @@ export default function PinDesk() {
         <section className="grid gap-4">
           <h2 className="text-2xl font-extrabold text-heading">Edit reel</h2>
           <ReelForm
+            businesses={businesses}
+            locations={locations}
+            onBusinessCreated={(b) => setBusinesses((o) => [...o, b].sort((x, y) => x.name.localeCompare(y.name)))}
             key={editing.id}
             initial={editing}
             isNew={false}

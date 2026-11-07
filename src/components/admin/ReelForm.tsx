@@ -2,6 +2,9 @@
 
 // The reel form: used to add a new reel and to edit one. All the fields of the "reels" table.
 import { useState } from "react";
+import { similarNames } from "@/lib/businessRules";
+import { locationFits, locationGroups, postedOnProblem, type BizOption, type LocOption } from "@/lib/reelPlace";
+import { useAdmin } from "./AdminProvider";
 import { cleanDishes, MAX_DISHES } from "@/lib/dishes";
 import { mapsSearchUrl, readMapsPin } from "@/lib/mapsLink";
 import { CATEGORIES, EMIRATES, pinProblem, STATUS_LABEL, type ReelStatus } from "@/lib/pinRules";
@@ -16,13 +19,16 @@ type Props = {
   initial: Partial<Reel> & Pick<Reel, "url" | "link_key" | "platform">;
   isNew: boolean;
   collections: string[];
+  businesses: BizOption[];
+  locations: LocOption[];
+  onBusinessCreated: (b: BizOption) => void;
   canDelete: boolean;
   onSave: (values: ReelInput) => Promise<string | null>; // returns a problem message, or null when saved
   onDelete?: () => Promise<void>;
   onCancel: () => void;
 };
 
-export default function ReelForm({ initial, isNew, collections, canDelete, onSave, onDelete, onCancel }: Props) {
+export default function ReelForm({ initial, isNew, collections, businesses, locations, onBusinessCreated, canDelete, onSave, onDelete, onCancel }: Props) {
   const [v, setV] = useState({
     place_name: initial.place_name ?? "",
     branch: initial.branch ?? "",
@@ -39,6 +45,9 @@ export default function ReelForm({ initial, isNew, collections, canDelete, onSav
     offer_end: initial.offer_end ?? "",
     offer_hours: initial.offer_hours ?? "",
     notes: initial.notes ?? "",
+    business_id: initial.business_id ?? "",
+    location_id: initial.location_id ?? "",
+    posted_on: initial.posted_on ?? "",
     status: (initial.status ?? "to_check") as ReelStatus,
   });
   const [dishes, setDishes] = useState<{ name: string; price: string }[]>(
@@ -48,6 +57,11 @@ export default function ReelForm({ initial, isNew, collections, canDelete, onSav
   const [pinMessage, setPinMessage] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const { supabase } = useAdmin();
+  const [bizFilter, setBizFilter] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [newBiz, setNewBiz] = useState({ name: "", type: "restaurant" as "restaurant" | "shop" });
+  const [bizMessage, setBizMessage] = useState("");
   const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setV((o) => ({ ...o, [k]: e.target.value }));
     setMessage("");
@@ -62,6 +76,48 @@ export default function ReelForm({ initial, isNew, collections, canDelete, onSav
     setPinMessage(`Pin found: ${r.lat}, ${r.lng}`);
   }
 
+  // choosing a restaurant or shop: fill the place name if it is empty, and drop a location that does not belong to it
+  function pickBusiness(id: string) {
+    const b = businesses.find((x) => x.id === id);
+    setV((o) => {
+      const loc = locations.find((l) => l.id === o.location_id);
+      return {
+        ...o,
+        business_id: id,
+        place_name: o.place_name.trim() || !b ? o.place_name : b.name,
+        location_id: locationFits(loc, id) ? o.location_id : "",
+      };
+    });
+    setMessage("");
+  }
+
+  // choosing a location: copy its pin and emirate into the empty fields, and pick its restaurant or shop if none is chosen
+  function pickLocation(id: string) {
+    const l = locations.find((x) => x.id === id);
+    setV((o) => ({
+      ...o,
+      location_id: id,
+      business_id: o.business_id || l?.business_id || "",
+      emirate: o.emirate || l?.emirate || "",
+      maps_url: o.maps_url || l?.maps_url || "",
+      lat: o.lat || (l?.lat != null ? String(l.lat) : ""),
+      lng: o.lng || (l?.lng != null ? String(l.lng) : ""),
+    }));
+    setMessage("");
+  }
+
+  async function createBusiness() {
+    if (!supabase) return;
+    if (!newBiz.name.trim()) return setBizMessage("Type the name.");
+    const { data, error } = await supabase.from("businesses").insert({ name: newBiz.name.trim(), type: newBiz.type }).select("id, name, type, code").single();
+    if (error || !data) return setBizMessage(error?.message ?? "It did not save.");
+    onBusinessCreated(data as BizOption);
+    pickBusiness((data as BizOption).id);
+    setCreating(false);
+    setNewBiz({ name: "", type: "restaurant" });
+    setBizMessage(`Created ${(data as BizOption).name}. Its code is ${(data as BizOption).code}. Add Instagram, email and WhatsApp later from the Pin Desk home.`);
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const { dishes: clean, problem } = cleanDishes(dishes);
@@ -72,6 +128,9 @@ export default function ReelForm({ initial, isNew, collections, canDelete, onSav
     if ((lat != null && Math.abs(lat) > 90) || (lng != null && Math.abs(lng) > 180)) return setMessage("That pin is not on the map.");
     if (v.status === "pinned" && cannotPin) return setMessage(`Cannot mark Pinned. ${cannotPin}`);
     if (v.offer_start && v.offer_end && v.offer_end < v.offer_start) return setMessage("The offer ends before it starts.");
+    const postedProblem = postedOnProblem({ dishCount: clean.length, offerText: v.offer_text, postedOn: v.posted_on });
+    if (postedProblem) return setMessage(postedProblem);
+    if (!locationFits(locations.find((l) => l.id === v.location_id), v.business_id)) return setMessage("That location belongs to a different restaurant or shop.");
     if (v.maps_url.trim() && !/^https:\/\//i.test(v.maps_url.trim())) return setMessage("The Google Maps link must start with https://");
     setBusy(true);
     const t = (s: string) => (s.trim() === "" ? null : s.trim());
@@ -95,6 +154,9 @@ export default function ReelForm({ initial, isNew, collections, canDelete, onSav
       offer_end: t(v.offer_end),
       offer_hours: t(v.offer_hours),
       notes: t(v.notes),
+      business_id: v.business_id || null,
+      location_id: v.location_id || null,
+      posted_on: v.posted_on || null,
       status: v.status,
     });
     setBusy(false);
@@ -110,11 +172,63 @@ export default function ReelForm({ initial, isNew, collections, canDelete, onSav
         </a>
         {!isNew && (
           <p className="mt-1 text-sm text-mist">
-            Added by {initial.added_by ?? "-"}
+            Reel code {initial.code ?? "-"} · Added by {initial.added_by ?? "-"}
             {initial.status === "pinned" || initial.pinned_by ? ` · Pinned by ${initial.pinned_by ?? "-"}` : ""}
           </p>
         )}
       </div>
+
+      {/* links: a restaurant or shop, a location, or both */}
+      <fieldset className="grid gap-3 rounded-2xl bg-alt p-4 text-onpage">
+        <legend className="font-extrabold">Restaurant or shop, and location</legend>
+        <p className="text-sm font-bold">A reel can link to a restaurant or shop, to a location, or to both.</p>
+        <div>
+          <label className={label} htmlFor="rf-biz">Restaurant or shop</label>
+          <input aria-label="Find a restaurant or shop" placeholder="Type to find one" className={`${field} mb-2`} value={bizFilter} onChange={(e) => setBizFilter(e.target.value)} autoComplete="off" />
+          <select id="rf-biz" className={field} value={v.business_id} onChange={(e) => pickBusiness(e.target.value)}>
+            <option value="">None</option>
+            {businesses
+              .filter((b) => !bizFilter.trim() || b.name.toLowerCase().includes(bizFilter.trim().toLowerCase()) || b.id === v.business_id)
+              .map((b) => (
+                <option key={b.id} value={b.id}>{b.name} ({b.type === "shop" ? "Shop" : "Restaurant"})</option>
+              ))}
+          </select>
+          <button type="button" onClick={() => setCreating(!creating)} className="mt-2 min-h-11 rounded-full border-2 border-line px-5 font-extrabold">
+            {creating ? "Close" : "Create a new restaurant or shop"}
+          </button>
+          {bizMessage && <p role="status" className="mt-2 text-sm font-bold">{bizMessage}</p>}
+        </div>
+        {creating && (
+          <div className="grid gap-2 rounded-xl bg-paper p-3 text-charcoal">
+            <label className={label} htmlFor="rf-newbiz">New name</label>
+            <input id="rf-newbiz" className={field} value={newBiz.name} onChange={(e) => setNewBiz({ ...newBiz, name: e.target.value })} autoComplete="off" />
+            {similarNames(newBiz.name, businesses).length > 0 && (
+              <p role="status" className="text-sm font-bold">
+                Already saved with a similar name: {similarNames(newBiz.name, businesses).map((b) => b.name).join(", ")}. Pick it from the list above if it is the same place.
+              </p>
+            )}
+            <select aria-label="Type" className={field} value={newBiz.type} onChange={(e) => setNewBiz({ ...newBiz, type: e.target.value as "restaurant" | "shop" })}>
+              <option value="restaurant">Restaurant (food or drink)</option>
+              <option value="shop">Shop (not food)</option>
+            </select>
+            <button type="button" onClick={createBusiness} className="min-h-11 rounded-full bg-accent px-5 font-extrabold text-onaccent">Create</button>
+          </div>
+        )}
+        <div>
+          <label className={label} htmlFor="rf-loc">Location</label>
+          <select id="rf-loc" className={field} value={v.location_id} onChange={(e) => pickLocation(e.target.value)}>
+            <option value="">None</option>
+            {locationGroups(v.business_id, locations).map((g) => (
+              <optgroup key={g.title} label={g.title}>
+                {g.items.map((l) => (
+                  <option key={l.id} value={l.id}>{l.name}{l.is_building ? " (mall or hotel)" : ""}</option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+          <a href="/admin/add-location" target="_blank" rel="noopener noreferrer" className="mt-2 flex min-h-11 w-fit items-center rounded-full border-2 border-line px-5 font-extrabold">Add a new location</a>
+        </div>
+      </fieldset>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
@@ -196,7 +310,7 @@ export default function ReelForm({ initial, isNew, collections, canDelete, onSav
       </div>
 
       <div>
-        <label className={label} htmlFor="rf-creator">Creator (hidden from app users)</label>
+        <label className={label} htmlFor="rf-creator">Creator (team only, never shown to app users or the public)</label>
         <input id="rf-creator" className={field} value={v.creator_handle} onChange={set("creator_handle")} placeholder="@handle" />
       </div>
 
@@ -237,6 +351,11 @@ export default function ReelForm({ initial, isNew, collections, canDelete, onSav
           <label className={label} htmlFor="rf-oh">Offer hours</label>
           <input id="rf-oh" className={field} value={v.offer_hours} onChange={set("offer_hours")} placeholder="e.g. Mon to Fri, 12 to 4pm" />
         </div>
+      </div>
+
+      <div>
+        <label className={label} htmlFor="rf-posted">Posted on {dishes.length > 0 || v.offer_text.trim() ? "(needed)" : "(needed when there are items or a deal)"}</label>
+        <input id="rf-posted" type="date" className={field} value={v.posted_on} onChange={set("posted_on")} />
       </div>
 
       <div>

@@ -18,6 +18,10 @@ export type Reel = {
   lat: number | null;
   lng: number | null;
   creator_handle: string | null; // hidden from app users
+  code: string; // made by the database on Save; for the team only
+  business_id: string | null; // the restaurant or shop (optional)
+  location_id: string | null; // the location (optional)
+  posted_on: string | null; // the day the reel was posted
   dishes: Dish[];
   offer_text: string | null;
   offer_start: string | null;
@@ -32,7 +36,8 @@ export type Reel = {
 };
 
 // What we send when adding a reel. The database fills in the rest (id, added_by, pinned_by, dates).
-export type ReelInput = Omit<Reel, "id" | "added_by" | "pinned_by" | "created_at" | "updated_at">;
+export type ReelInput = Omit<Reel, "id" | "code" | "business_id" | "location_id" | "posted_on" | "added_by" | "pinned_by" | "created_at" | "updated_at"> &
+  Partial<Pick<Reel, "business_id" | "location_id" | "posted_on">>;
 
 export type ShareRequest = {
   link_key: string;
