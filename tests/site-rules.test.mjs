@@ -113,7 +113,7 @@ test("the site can be built as plain files for Cloudflare Pages", () => {
 });
 
 test("the dashboard is in the admin menu and staff never get money", () => {
-  assert.match(text("src/components/admin/AdminFrame.tsx"), /canOpenDashboard\(me\.role\) && tab\("\/admin\/dashboard", "Dashboard"\)/);
+  assert.match(text("src/components/admin/AdminFrame.tsx"), /tabs\.includes\("dashboard"\) && tab\("\/admin\/dashboard", "Dashboard"\)/);
   const cards = text("src/lib/dashboard/cards.ts");
   for (const id of ["earnings", "insider_total", "money_generated"]) assert.match(cards, new RegExp(`id: "${id}"[^\\n]*|id: "${id}",[\\s\\S]*?money: true`));
   assert.ok(!files.some((f) => f.includes("zz-preview")), "a temporary preview page was left behind");

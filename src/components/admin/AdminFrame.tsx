@@ -5,8 +5,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { canOpenDashboard } from "@/lib/dashboard/access";
-import { canOpenTeam, ROLE_LABEL } from "@/lib/teamRules";
+import { adminTabs } from "@/lib/adminTabs";
+import { titleFor } from "@/lib/pindeskTitle";
+import { ROLE_LABEL } from "@/lib/teamRules";
 import AdminLogin from "./AdminLogin";
 import { useAdmin } from "./AdminProvider";
 
@@ -64,6 +65,7 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
   if (!me.agreed) return <Confidential />;
 
   // "Pin Desk" is the home page and every Pin Desk screen under it (everything except Dashboard and Team)
+  const tabs = adminTabs(me.role);
   const inPinDesk = !path.startsWith("/admin/dashboard") && !path.startsWith("/admin/team");
   const tab = (href: string, text: string, active = path === href) => (
     <Link
@@ -80,12 +82,12 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 py-2">
           <span className="mr-2 text-xl font-extrabold text-heading">Spotted team</span>
           <nav aria-label="Admin" className="flex flex-wrap items-center gap-1">
-            {tab("/admin", "Pin Desk", inPinDesk)}
-            {canOpenDashboard(me.role) && tab("/admin/dashboard", "Dashboard")}
-            {canOpenTeam(me.role) && tab("/admin/team", "Team")}
+            {tabs.includes("pin") && tab("/admin", "Pin Desk", inPinDesk)}
+            {tabs.includes("dashboard") && tab("/admin/dashboard", "Dashboard")}
+            {tabs.includes("team") && tab("/admin/team", "Team")}
           </nav>
           <span className="ml-auto text-sm font-bold">
-            {me.name} ({ROLE_LABEL[me.role]})
+            {me.name} ({titleFor(me.name, ROLE_LABEL[me.role])})
           </span>
           <button type="button" onClick={signOut} className="min-h-11 rounded-full border-2 border-line px-5 font-extrabold text-heading">
             Sign out

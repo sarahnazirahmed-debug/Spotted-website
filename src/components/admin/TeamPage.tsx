@@ -4,6 +4,7 @@
 // remove a person, and the log of who did what. The main admin row has no buttons.
 // The website only decides which buttons to show. The database refuses anything that is not allowed.
 import { useCallback, useEffect, useState } from "react";
+import { titleFor } from "@/lib/pindeskTitle";
 import { canManage, canOpenTeam, rolesICanGive, ROLE_LABEL, type TeamRole } from "@/lib/teamRules";
 import { isEmail } from "@/lib/signupRules";
 import { useAdmin } from "./AdminProvider";
@@ -111,6 +112,7 @@ export default function TeamPage() {
                 <tr key={m.id} className="border-t border-line">
                   <td className="p-3">
                     <div className="font-extrabold">{m.name || "(no name)"}</div>
+                    <div className="text-sm font-bold">{titleFor(m.name, ROLE_LABEL[m.role])}</div>
                     <div className="text-sm text-mist">{m.email}</div>
                   </td>
                   <td className="p-3">
