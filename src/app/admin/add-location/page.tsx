@@ -1,5 +1,5 @@
-import AdminComingSoon from "@/components/admin/AdminComingSoon";
+import AddLocation from "@/components/admin/AddLocation";
 
 export default function Page() {
-  return <AdminComingSoon title="Add location" />;
+  return <AddLocation />;
 }
