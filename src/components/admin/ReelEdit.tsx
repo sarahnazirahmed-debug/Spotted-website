@@ -39,7 +39,7 @@ export default function ReelEdit() {
         supabase.from("locations").select("id, name, emirate, maps_url, lat, lng, is_building, business_id").order("name").limit(10000),
         supabase.from("reels").select("collection").not("collection", "is", null).limit(5000),
         supabase.from("reel_deals").select("id, title, included, conditions, end_date, reel_deal_prices(people, total_price_aed)").eq("reel_id", id),
-        supabase.from("reel_offers").select("id, title, discount, conditions, end_date").eq("reel_id", id),
+        supabase.from("reel_offers").select("*").eq("reel_id", id),
       ]);
       if (dead) return;
       if (!r.data) return setMissing(true);

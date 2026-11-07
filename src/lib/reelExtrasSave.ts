@@ -7,9 +7,17 @@ export type Extras = { deals: Deal[]; offers: Offer[]; removedDealIds: string[];
 
 export async function saveReelExtras(db: SupabaseClient, reelId: string, extras: Extras, oldDeals: Deal[]): Promise<string | null> {
   const fail = (what: string, message: string) => `${what} did not save (${message}).`;
+  let onlineNote: string | null = null;
   for (const o of extras.offers) {
     const row = { title: o.title, discount: o.discount, conditions: o.conditions, end_date: o.end_date };
-    const r = o.id ? await db.from("reel_offers").update(row).eq("id", o.id) : await db.from("reel_offers").insert({ ...row, reel_id: reelId });
+    const online = { where_kind: o.where_kind ?? "place", online_name: o.online_name ?? null, promo_code: o.promo_code ?? null, business_id: o.business_id ?? null };
+    const write = (values: Record<string, unknown>) => (o.id ? db.from("reel_offers").update(values).eq("id", o.id) : db.from("reel_offers").insert({ ...values, reel_id: reelId }));
+    let r = await write({ ...row, ...online });
+    // FAST CAPTURE: if the online fields are not in the database yet (pindesk_online.sql not run), save the offer without them.
+    if (r.error && /where_kind|online_name|promo_code|business_id|nearby_ok/.test(r.error.message)) {
+      r = await write(row);
+      if (!r.error) onlineNote = "the online details were not saved yet: run supabase/pindesk_online.sql in Supabase first.";
+    }
     if (r.error) return fail(`The offer "${o.title}"`, r.error.message);
   }
   for (const d of extras.deals) {
@@ -40,5 +48,5 @@ export async function saveReelExtras(db: SupabaseClient, reelId: string, extras:
     const del = await db.from("reel_offers").delete().in("id", extras.removedOfferIds).select("id");
     if (del.error || (del.data?.length ?? 0) < extras.removedOfferIds.length) return "only the main admin and associates can remove an offer.";
   }
-  return null;
+  return onlineNote;
 }

@@ -4,7 +4,7 @@ import type { Dish } from "@/lib/dishes";
 import { money, priceLine, type Deal, type Offer } from "@/lib/reelDeals";
 import { niceDay, SEEN_IN_A_REEL, timeAgo } from "@/lib/timeAgo";
 
-export default function ReelDetails({ postedOn, dishes, deals, offers }: { postedOn: string | null; dishes: Dish[]; deals: Deal[]; offers: Offer[] }) {
+export default function ReelDetails({ postedOn, dishes, deals, offers, businessNames }: { postedOn: string | null; dishes: Dish[]; deals: Deal[]; offers: Offer[]; businessNames?: Map<string, string> }) {
   const ago = postedOn ? timeAgo(postedOn) : "";
   const hasAny = dishes.length > 0 || deals.length > 0 || offers.length > 0;
   if (!postedOn && !hasAny) return null;
@@ -29,6 +29,9 @@ export default function ReelDetails({ postedOn, dishes, deals, offers }: { poste
         <div key={o.id ?? i} className="rounded-xl bg-alt p-2 text-onpage">
           <p className="font-extrabold">Offer: {o.title}</p>
           {o.discount && <p>{o.discount}</p>}
+          {o.where_kind === "online" && <p>Online{o.online_name ? `: ${o.online_name}` : ""} (not used for nearby reminders)</p>}
+          {o.promo_code && <p>Promo code: {o.promo_code}</p>}
+          {o.business_id && businessNames?.get(o.business_id) && <p>For: {businessNames.get(o.business_id)}</p>}
           {o.conditions && <p>Conditions: {o.conditions}</p>}
           {o.end_date && <p>Ends {niceDay(o.end_date)}</p>}
         </div>

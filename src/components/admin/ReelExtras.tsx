@@ -1,13 +1,15 @@
 "use client";
 
 // The "This reel has a deal" part of the reel form: two optional boxes, REEL DEAL and REEL OFFER. A reel can hold several of each.
-import { emptyDeal, emptyOffer, type DealDraft, type OfferDraft } from "@/lib/reelDeals";
+import { emptyDeal, emptyOffer, ONLINE_APPS, WHERE_LABEL, type DealDraft, type OfferDraft, type Where } from "@/lib/reelDeals";
+import type { BizOption } from "@/lib/reelPlace";
 
 const field = "min-h-11 w-full rounded-xl bg-paper px-3 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent";
 const label = "mb-1 block text-sm font-bold";
 const small = "min-h-11 rounded-full border-2 border-line px-5 font-extrabold";
 
-export default function ReelExtras({ open, setOpen, deals, setDeals, offers, setOffers }: {
+export default function ReelExtras({ open, setOpen, deals, setDeals, offers, setOffers, businesses }: {
+  businesses: BizOption[];
   open: boolean;
   setOpen: (o: boolean) => void;
   deals: DealDraft[];
@@ -78,6 +80,31 @@ export default function ReelExtras({ open, setOpen, deals, setDeals, offers, set
         <legend className="text-lg font-extrabold">Reel offer</legend>
         {offers.map((o, i) => (
           <div key={i} className="grid gap-3 rounded-xl bg-paper p-3 text-charcoal">
+            <div>
+              <label className={label} htmlFor={`offer-where-${i}`}>Where</label>
+              <select id={`offer-where-${i}`} className={field} value={o.where} onChange={(e) => upOffer(i, { where: e.target.value as Where })}>
+                {(Object.keys(WHERE_LABEL) as Where[]).map((w) => <option key={w} value={w}>{WHERE_LABEL[w]}</option>)}
+              </select>
+              {o.where === "online" && <p className="mt-1 text-sm font-bold">An online offer is never used for nearby reminders.</p>}
+            </div>
+            {o.where === "online" && (
+              <div>
+                <label className={label} htmlFor={`offer-app-${i}`}>App or website name</label>
+                <input id={`offer-app-${i}`} list={`offer-apps-${i}`} className={field} value={o.appName} onChange={(e) => upOffer(i, { appName: e.target.value })} maxLength={80} autoComplete="off" />
+                <datalist id={`offer-apps-${i}`}>{ONLINE_APPS.map((a) => <option key={a} value={a} />)}</datalist>
+              </div>
+            )}
+            <div>
+              <label className={label} htmlFor={`offer-promo-${i}`}>Promo code (optional)</label>
+              <input id={`offer-promo-${i}`} className={field} value={o.promo} onChange={(e) => upOffer(i, { promo: e.target.value })} maxLength={40} autoCapitalize="characters" autoComplete="off" />
+            </div>
+            <div>
+              <label className={label} htmlFor={`offer-biz-${i}`}>Linked restaurant or shop (optional)</label>
+              <select id={`offer-biz-${i}`} className={field} value={o.businessId} onChange={(e) => upOffer(i, { businessId: e.target.value })}>
+                <option value="">No place</option>
+                {businesses.map((b) => <option key={b.id} value={b.id}>{b.name} ({b.type === "shop" ? "Shop" : "Restaurant"})</option>)}
+              </select>
+            </div>
             <div>
               <label className={label} htmlFor={`offer-title-${i}`}>Offer {i + 1}: title</label>
               <input id={`offer-title-${i}`} className={field} value={o.title} onChange={(e) => upOffer(i, { title: e.target.value })} maxLength={160} />

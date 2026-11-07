@@ -139,7 +139,8 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
     if (dealResult.problem) return setMessage(dealResult.problem);
     const offerResult = cleanOffers(offerDrafts);
     if (offerResult.problem) return setMessage(offerResult.problem);
-    const postedProblem = postedOnProblem({ dishCount: clean.length, dealCount: dealResult.deals.length + offerResult.offers.length, postedOn: v.posted_on });
+    const postedProblem = postedOnProblem({ dishCount: clean.length, // an online offer never blocks a save, so it does not make "Posted on" required (fast capture)
+      dealCount: dealResult.deals.length + offerResult.offers.filter((o) => o.where_kind !== "online").length, postedOn: v.posted_on });
     if (postedProblem) return setMessage(postedProblem);
     if (!locationFits(locations.find((l) => l.id === v.location_id), v.business_id)) return setMessage("That location belongs to a different restaurant or shop.");
     if (v.maps_url.trim() && !/^https:\/\//i.test(v.maps_url.trim())) return setMessage("The Google Maps link must start with https://");
@@ -350,7 +351,7 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
       </fieldset>
 
       {/* a deal or an offer: several are allowed */}
-      <ReelExtras open={dealsOpen} setOpen={setDealsOpen} deals={dealDrafts} setDeals={setDealDrafts} offers={offerDrafts} setOffers={setOfferDrafts} />
+      <ReelExtras businesses={businesses} open={dealsOpen} setOpen={setDealsOpen} deals={dealDrafts} setDeals={setDealDrafts} offers={offerDrafts} setOffers={setOfferDrafts} />
 
       <div>
         <label className={label} htmlFor="rf-posted">Posted on (needed when the reel has items, a deal or an offer)</label>

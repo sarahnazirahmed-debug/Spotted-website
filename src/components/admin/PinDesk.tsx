@@ -51,7 +51,7 @@ export default function PinDesk() {
       supabase.from("businesses").select("id, name, type, code").order("name").limit(10000),
       supabase.from("locations").select("id, name, emirate, maps_url, lat, lng, is_building, business_id").order("name").limit(10000),
       supabase.from("reel_deals").select("id, reel_id, title, included, conditions, end_date, reel_deal_prices(people, total_price_aed)").limit(20000),
-      supabase.from("reel_offers").select("id, reel_id, title, discount, conditions, end_date").limit(20000),
+      supabase.from("reel_offers").select("*").limit(20000),
     ]);
     type DealRow = Omit<Deal, "prices"> & { reel_id: string; reel_deal_prices: Deal["prices"] };
     return {
@@ -98,6 +98,7 @@ export default function PinDesk() {
   const collections = useMemo(() => [...new Set(reels.map((r) => r.collection).filter((c): c is string => !!c))].sort(), [reels]);
   const emirates = useMemo(() => [...new Set([...EMIRATES, ...reels.map((r) => r.emirate).filter((e): e is string => !!e)])], [reels]);
 
+  const bizNames = useMemo(() => new Map(businesses.map((b) => [b.id, b.name])), [businesses]);
   const shown = reels.filter((r) => {
     if (tab !== "all" && tab !== "waiting" && r.status !== tab) return false;
     if (platform && r.platform !== platform) return false;
@@ -409,7 +410,7 @@ export default function PinDesk() {
                     {r.status === "pinned" ? ` · Pinned by ${r.pinned_by ?? "-"}` : ""}
                     {r.creator_handle ? ` · ${r.creator_handle}` : ""}
                   </p>
-                  <ReelDetails postedOn={r.posted_on} dishes={r.dishes ?? []} deals={deals.filter((d) => d.reel_id === r.id)} offers={offers.filter((o) => o.reel_id === r.id)} />
+                  <ReelDetails businessNames={bizNames} postedOn={r.posted_on} dishes={r.dishes ?? []} deals={deals.filter((d) => d.reel_id === r.id)} offers={offers.filter((o) => o.reel_id === r.id)} />
                   {r.lat == null && <p className="text-sm font-bold">No pin yet.</p>}
                 </div>
                 <div className="flex flex-wrap gap-2">
