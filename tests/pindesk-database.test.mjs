@@ -93,34 +93,22 @@ test("every new table that stamps rows fills added by from the log-in", async ()
   }
 });
 
-test("codes are made by the database, are unique (capital letters do not matter) and never change", async () => {
+test("codes are made by the database, never typed, and never change (the full code tests are in pindesk-codes.test.mjs)", async () => {
   const r = await as(db, P.assoc, async (d) => {
-    await d.query(biz("Auto One"));
-    await d.query(biz("Auto Two"));
+    await d.query("insert into public.businesses (name, type, code) values ('Typed Code Cafe', 'restaurant', 'MYCODE-1')");
     await d.query("insert into public.locations (name) values ('Loc Auto')");
     await d.query(reelSql("CODE1"));
-    const codes = (await d.query("select name, code from public.businesses where name like 'Auto %' order by name")).rows;
+    const biz1 = (await d.query("select code from public.businesses where name = 'Typed Code Cafe'")).rows[0].code;
     const loc = (await d.query("select code from public.locations where name = 'Loc Auto'")).rows[0].code;
     const reel = (await d.query("select code from public.reels where link_key = 'instagram/CODE1'")).rows[0].code;
-    await d.query("update public.businesses set code = 'HACKED-1' where name = 'Auto One'");
-    const after = (await d.query("select code from public.businesses where name = 'Auto One'")).rows[0].code;
-    return { codes, loc, reel, after };
+    await d.query("update public.businesses set code = 'HACKED-1' where name = 'Typed Code Cafe'");
+    const after = (await d.query("select code from public.businesses where name = 'Typed Code Cafe'")).rows[0].code;
+    return { biz1, loc, reel, after };
   });
-  assert.match(r.codes[0].code, /^BUS-\d{6}$/);
-  assert.notEqual(r.codes[0].code, r.codes[1].code);
-  assert.match(r.loc, /^LOC-\d{6}$/);
-  assert.match(r.reel, /^REEL-\d{6}$/);
-  assert.equal(r.after, r.codes[0].code, "a code changed");
-  // the same code twice (even in capitals) is refused
-  await db.exec(biz("Custom A", "code|'MYCODE-1'"));
-  assert.equal((await attempt(db, P.main, biz("Custom B", "code|'mycode-1'"))).ok, false);
-  assert.equal((await attempt(db, P.main, biz("Custom C", "code|'MYCODE-1'"))).ok, false);
-  await db.exec("insert into public.locations (name, code) values ('L1', 'SAME-1')");
-  assert.equal((await attempt(db, P.main, "insert into public.locations (name, code) values ('L2', 'same-1')")).ok, false);
-  await db.exec("insert into public.reels (url, link_key, platform, code) values ('https://www.instagram.com/reel/X1/', 'instagram/X1', 'instagram', 'RC-1')");
-  const dup = await attempt(db, P.main, "insert into public.reels (url, link_key, platform, code) values ('https://www.instagram.com/reel/X2/', 'instagram/X2', 'instagram', 'rc-1')");
-  assert.equal(dup.ok, false);
-  assert.equal((await attempt(db, P.main, biz("Bad code", "code|'!!'"))).ok, false);
+  assert.match(r.biz1, /^[A-HJ-NP-Z]{4}[2-9]{4}$/, "the typed code was used");
+  assert.match(r.loc, /^[A-HJ-NP-Z]{10}[2-9]{10}$/);
+  assert.match(r.reel, /^[A-HJ-NP-Z]{8}[2-9]{8}$/);
+  assert.equal(r.after, r.biz1, "a code changed");
 });
 
 // ---------------------------------------------------------------- businesses
@@ -209,7 +197,7 @@ test("a reel can be linked to a restaurant or shop and a location, both optional
       from public.businesses b, public.locations l where b.name = 'Reel Cafe' and l.name = 'Reel Cafe, Khalifa City'`);
     return (await d.query("select code, business_id is not null as has_b, location_id is not null as has_l, posted_on::text as posted_on from public.reels where link_key = 'instagram/LNK'")).rows[0];
   });
-  assert.match(r.code, /^REEL-/);
+  assert.match(r.code, /^[A-HJ-NP-Z]{8}[2-9]{8}$/);
   assert.equal(r.has_b, true);
   assert.equal(r.has_l, true);
   assert.equal(r.posted_on, "2026-10-01");

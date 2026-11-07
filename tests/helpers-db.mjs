@@ -18,7 +18,8 @@ const FAKE_SUPABASE = `
   alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
 `;
 
-export async function makeDb() {
+// skip: names of SQL files to leave out (used to test a migration on a database that has the older files only)
+export async function makeDb({ skip = [] } = {}) {
   const db = new PGlite();
   await db.exec(FAKE_SUPABASE);
   await db.exec(readFileSync("supabase/schema.sql", "utf8"));
@@ -26,6 +27,7 @@ export async function makeDb() {
   await db.exec(readFileSync("supabase/public_site.sql", "utf8"));
   await db.exec(readFileSync("supabase/dashboard.sql", "utf8"));
   await db.exec(readFileSync("supabase/pindesk.sql", "utf8"));
+  if (!skip.includes("pindesk_codes.sql")) await db.exec(readFileSync("supabase/pindesk_codes.sql", "utf8"));
   return db;
 }
 
