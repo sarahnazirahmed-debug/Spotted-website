@@ -13,7 +13,9 @@ import {
   similarNames,
   type BusinessType,
 } from "@/lib/businessRules";
+import { cleanOrder, emptyOrder, ORDER_COLUMN_WORDS, RUN_THE_FILE, type OrderDraft } from "@/lib/orderOnly";
 import { useAdmin } from "./AdminProvider";
+import OrderFields from "./OrderFields";
 
 type Known = { name: string; code: string; type: BusinessType };
 
@@ -26,10 +28,11 @@ const empty = { name: "", type: "" as BusinessType | "", kind: "", otherKind: ""
 export default function AddBusiness() {
   const { supabase } = useAdmin();
   const [v, setV] = useState(empty);
+  const [order, setOrder] = useState<OrderDraft>(emptyOrder());
   const [known, setKnown] = useState<Known[]>([]);
   const [problem, setProblem] = useState("");
   const [busy, setBusy] = useState(false);
-  const [saved, setSaved] = useState<{ code: string; name: string } | null>(null);
+  const [saved, setSaved] = useState<{ code: string; name: string; note?: string } | null>(null);
   const set = (k: keyof typeof empty, value: string) => setV((o) => ({ ...o, [k]: value }));
 
   // the names already saved, to warn about a similar one
@@ -54,24 +57,30 @@ export default function AddBusiness() {
     if (p || !supabase || !v.type) return;
     setBusy(true);
     const handle = cleanHandle(v.instagram);
-    const { data, error } = await supabase
-      .from("businesses")
-      .insert({
-        name: v.name.trim(),
-        type: v.type,
-        subtype: kindToSave(v.type, v.kind, v.otherKind),
-        instagram_handle: handle || null,
-        business_email: v.email.trim() || null,
-        business_whatsapp: v.whatsapp.trim() || null,
-      })
-      .select("code, name")
-      .single();
+    const base = {
+      name: v.name.trim(),
+      type: v.type,
+      subtype: kindToSave(v.type, v.kind, v.otherKind),
+      instagram_handle: handle || null,
+      business_email: v.email.trim() || null,
+      business_whatsapp: v.whatsapp.trim() || null,
+    };
+    const fields = cleanOrder(order);
+    const hasOrderData = fields.access_kind !== "place" || fields.order_instagram || fields.order_whatsapp || fields.order_website || fields.order_app || fields.deliver_emirates.length > 0 || fields.deliver_areas;
+    const add = (values: Record<string, unknown>) => supabase.from("businesses").insert(values).select("code, name").single();
+    let { data, error } = await add(hasOrderData ? { ...base, ...fields } : base);
+    let note: string | undefined;
+    // FAST CAPTURE: if the order-only fields are not in the database yet, save the business without them.
+    if (error && ORDER_COLUMN_WORDS.test(error.message)) {
+      ({ data, error } = await add(base));
+      if (!error) note = RUN_THE_FILE;
+    }
     setBusy(false);
     if (error || !data) {
       setProblem(error?.message ?? "It did not save. Please try again.");
       return;
     }
-    setSaved(data as { code: string; name: string });
+    setSaved({ ...(data as { code: string; name: string }), note });
   }
 
   if (saved)
@@ -79,6 +88,7 @@ export default function AddBusiness() {
       <div className="mx-auto grid max-w-2xl gap-6">
         <h1 className="text-4xl font-extrabold text-heading">Saved</h1>
         <p className="text-xl font-bold">{saved.name}</p>
+        {saved.note && <p role="status" className="font-bold text-heading">Saved, but {saved.note}</p>}
         <div className="rounded-3xl bg-panel p-6">
           <p className="text-sm font-bold text-ash">Code (for the team only)</p>
           <p className="mt-1 break-all text-4xl font-extrabold tracking-widest text-heading" aria-label="Code">{saved.code}</p>
@@ -90,6 +100,7 @@ export default function AddBusiness() {
             onClick={() => {
               setSaved(null);
               setV(empty);
+              setOrder(emptyOrder());
               setProblem("");
             }}
           >
@@ -142,6 +153,8 @@ export default function AddBusiness() {
           {v.type === "shop" ? "Shop = not food or drink." : "Restaurant = anything food or drink: restaurant, cafe, cafeteria, bakery, sweets, cloud kitchen, home kitchen."}
         </p>
       </fieldset>
+
+      <OrderFields value={order} onChange={setOrder} />
 
       {v.type && (
         <div>

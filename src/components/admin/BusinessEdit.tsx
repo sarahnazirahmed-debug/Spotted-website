@@ -7,13 +7,15 @@ import { useEffect, useState } from "react";
 import { businessChecklist, niceDateTime, type NotNeeded } from "@/lib/listRules";
 import { canMarkNotNeeded } from "@/lib/teamRules";
 import ClosedBadge from "./ClosedBadge";
+import OrderFields from "./OrderFields";
+import { cleanOrder, draftFromRow, emptyOrder, hasOrdering, ORDER_COLUMN_WORDS, RUN_THE_FILE, type OrderDraft, type OrderRow } from "@/lib/orderOnly";
 import { businessProblem, cleanHandle, KINDS, OTHER_KIND, kindToSave, type BusinessType } from "@/lib/businessRules";
 import { useAdmin } from "./AdminProvider";
 import ChangeHistory from "./ChangeHistory";
 import { field, label, outline, primary } from "./ui";
 
-type Row = { id: string; code: string; name: string; type: BusinessType; subtype: string | null; instagram_handle: string | null; business_email: string | null; business_whatsapp: string | null; permanently_closed: boolean; not_needed: NotNeeded | null; added_by: string | null; created_at: string };
-const NN = [["subtype", "Kind"], ["instagram_handle", "Instagram handle"], ["contact", "Business contact (email and WhatsApp)"], ["locations", "Locations"], ["reels", "Reels"]] as const;
+type Row = OrderRow & { id: string; code: string; name: string; type: BusinessType; subtype: string | null; instagram_handle: string | null; business_email: string | null; business_whatsapp: string | null; permanently_closed: boolean; not_needed: NotNeeded | null; added_by: string | null; created_at: string };
+const NN = [["subtype", "Kind"], ["instagram_handle", "Instagram handle"], ["contact", "Business contact (email and WhatsApp)"], ["locations", "Locations"], ["reels", "Reels"], ["how_to_order", "How to order"]] as const;
 
 export default function BusinessEdit() {
   const { supabase, me } = useAdmin();
@@ -22,6 +24,7 @@ export default function BusinessEdit() {
   const [id] = useState(() => new URLSearchParams(window.location.search).get("id") ?? "");
   const [row, setRow] = useState<Row | null>(null);
   const [missing, setMissing] = useState(false);
+  const [order, setOrder] = useState<OrderDraft>(emptyOrder());
   const [v, setV] = useState({ name: "", type: "restaurant" as BusinessType, kind: "", otherKind: "", instagram: "", email: "", whatsapp: "", closed: false, nn: {} as NotNeeded });
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -42,6 +45,7 @@ export default function BusinessEdit() {
       const r = data as Row;
       const known = KINDS[r.type].includes(r.subtype ?? "");
       setRow(r);
+      setOrder(draftFromRow(r));
       setV({ name: r.name, type: r.type, kind: r.subtype ? (known ? r.subtype : r.type === "shop" ? OTHER_KIND : r.subtype) : "", otherKind: r.subtype && !known && r.type === "shop" ? r.subtype : "", instagram: r.instagram_handle ?? "", email: r.business_email ?? "", whatsapp: r.business_whatsapp ?? "", closed: r.permanently_closed, nn: r.not_needed ?? {} });
     })();
     return () => {
@@ -53,15 +57,19 @@ export default function BusinessEdit() {
   if (!row) return <p>Loading...</p>;
 
   const set = (k: keyof typeof v, value: string | boolean) => setV((o) => ({ ...o, [k]: value }));
-  const markNN = (k: keyof NotNeeded, on: boolean) => setV((o) => ({ ...o, nn: { ...o.nn, [k]: on }, ...(on ? clear(k) : {}) }));
-  const clear = (k: keyof NotNeeded) => (k === "subtype" ? { kind: "", otherKind: "" } : k === "instagram_handle" ? { instagram: "" } : k === "contact" ? { email: "", whatsapp: "" } : {});
+  const markNN = (k: keyof NotNeeded, on: boolean) => {
+    if (k === "how_to_order" && on) setOrder((o) => ({ ...o, viaInstagram: false, viaWhatsapp: false, website: "", app: "" }));
+    markNNfields(k, on);
+  };
+  const markNNfields = (k: keyof NotNeeded, on: boolean) => setV((o) => ({ ...o, nn: { ...o.nn, [k]: on }, ...(on ? clear(k) : {}) }));
+  const clear = (k: keyof NotNeeded) => (k === "how_to_order" ? { } : k === "subtype" ? { kind: "", otherKind: "" } : k === "instagram_handle" ? { instagram: "" } : k === "contact" ? { email: "", whatsapp: "" } : {});
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const p = businessProblem({ ...v, instagram: v.instagram, email: v.email, whatsapp: v.whatsapp });
     if (p) return setMessage(p);
     setBusy(true);
-    const { error } = await supabase!.from("businesses").update({
+    const base = {
       name: v.name.trim(),
       type: v.type,
       subtype: kindToSave(v.type, v.kind, v.otherKind),
@@ -71,14 +79,25 @@ export default function BusinessEdit() {
       permanently_closed: v.closed,
       // only an admin may change "Not needed" (the database refuses anyone else)
       ...(mayMark ? { not_needed: Object.fromEntries(Object.entries(v.nn).filter(([, on]) => on === true)) } : {}),
-    }).eq("id", row!.id);
+    };
+    const fields = cleanOrder(order);
+    const columnsExist = row!.access_kind !== undefined; // the order-only fields are in the database
+    const hasOrderData = fields.access_kind !== "place" || fields.order_instagram || fields.order_whatsapp || fields.order_website || fields.order_app || fields.deliver_emirates.length > 0 || fields.deliver_areas;
+    const save1 = (values: Record<string, unknown>) => supabase!.from("businesses").update(values).eq("id", row!.id);
+    let { error } = await save1(columnsExist || hasOrderData ? { ...base, ...fields } : base);
+    let note = "Saved.";
+    // FAST CAPTURE: if the order-only fields are not in the database yet, save without them.
+    if (error && ORDER_COLUMN_WORDS.test(error.message)) {
+      ({ error } = await save1(base));
+      if (!error) note = `Saved, but ${RUN_THE_FILE}`;
+    }
     setBusy(false);
     if (error) return setMessage(error.message);
-    setMessage("Saved.");
+    setMessage(note);
     setVersion((n) => n + 1);
   }
 
-  const checks = businessChecklist({ name: v.name, type: v.type, instagram_handle: cleanHandle(v.instagram) || null, business_email: v.email.trim() || null, business_whatsapp: v.whatsapp.trim() || null, not_needed: v.nn }, counts);
+  const checks = businessChecklist({ name: v.name, type: v.type, instagram_handle: cleanHandle(v.instagram) || null, business_email: v.email.trim() || null, business_whatsapp: v.whatsapp.trim() || null, not_needed: v.nn, access_kind: order.access, order_instagram: order.viaInstagram, order_whatsapp: order.viaWhatsapp, order_website: order.website, order_app: order.app }, counts);
   const lacking = checks.filter((c) => c.state === "missing");
 
   return (
@@ -102,6 +121,8 @@ export default function BusinessEdit() {
             <option value="shop">Shop (not food)</option>
           </select>
         </div>
+        <OrderFields value={order} onChange={setOrder} />
+        {order.access === "order_only" && <p role="note" className="font-bold">An order-only place is never used for nearby reminders.</p>}
         <div>
           <label htmlFor="be-kind" className={label}>Kind</label>
           <select id="be-kind" className={field} value={v.kind} disabled={v.nn.subtype === true} onChange={(e) => set("kind", e.target.value)}>
@@ -131,7 +152,7 @@ export default function BusinessEdit() {
         <fieldset className="grid gap-2 rounded-2xl bg-alt p-4">
           <legend className="font-extrabold">Not needed</legend>
           <p className="text-sm font-bold">{mayMark ? "Tick a detail this place does not have. It then counts as done, and the box is emptied." : "Only the main admin and associates can mark a detail as Not needed."}</p>
-          {NN.map(([k, text]) => (
+          {NN.filter(([k]) => (k === "how_to_order" ? hasOrdering({ access_kind: order.access }) : true)).map(([k, text]) => (
             <label key={k} className="flex min-h-11 cursor-pointer items-center gap-3 font-bold">
               <input type="checkbox" className="size-6" disabled={!mayMark} checked={v.nn[k] === true} onChange={(e) => markNN(k, e.target.checked)} />
               {text} is not needed

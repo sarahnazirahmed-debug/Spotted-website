@@ -13,7 +13,7 @@ export const newestFirst = <T extends { created_at: string }>(rows: T[]): T[] =>
 export const matches = (text: string, query: string) => query.toLowerCase().split(/\s+/).filter(Boolean).every((w) => text.toLowerCase().includes(w));
 
 // Things an admin can mark "Not needed". (The first four are older: kind, Instagram, and the email and WhatsApp one by one.)
-export const NOT_NEEDED_KEYS = ["subtype", "instagram_handle", "business_email", "business_whatsapp", "contact", "locations", "reels"] as const;
+export const NOT_NEEDED_KEYS = ["subtype", "instagram_handle", "business_email", "business_whatsapp", "contact", "locations", "reels", "how_to_order"] as const;
 export type NotNeeded = Partial<Record<(typeof NOT_NEEDED_KEYS)[number], boolean>>;
 
 export type BusinessFacts = {
@@ -23,11 +23,18 @@ export type BusinessFacts = {
   business_email: string | null;
   business_whatsapp: string | null;
   not_needed: NotNeeded | null;
+  // "order only" places (home bakeries, home kitchens, cloud kitchens): see src/lib/orderOnly.ts
+  access_kind?: "place" | "order_only" | "both";
+  order_instagram?: boolean;
+  order_whatsapp?: boolean;
+  order_website?: string | null;
+  order_app?: string | null;
 };
 export type Check = { key: string; label: string; state: "filled" | "not_needed" | "missing" };
 
 // The six things a restaurant or shop needs for its tick. Each is filled in, or marked "Not needed" by an admin.
 //   name, type, Instagram handle, at least one location, at least one reel, a business contact (email or WhatsApp).
+// An ORDER-ONLY place needs "How to order" instead of a location. (A place with "Both" still needs a location.)
 export function businessChecklist(b: BusinessFacts, counts: { locations: number; reels: number }): Check[] {
   const nn = b.not_needed ?? {};
   const has = (v: string | null) => !!v?.trim();
@@ -36,7 +43,10 @@ export function businessChecklist(b: BusinessFacts, counts: { locations: number;
     { key: "name", label: "Name", state: state(has(b.name), false) },
     { key: "type", label: "Type", state: state(has(b.type), false) },
     { key: "instagram_handle", label: "Instagram handle", state: state(has(b.instagram_handle), nn.instagram_handle === true) },
-    { key: "locations", label: "At least one location", state: state(counts.locations > 0, nn.locations === true) },
+    // an order-only place has no place to visit: "How to order" takes the place of a location
+    b.access_kind === "order_only"
+      ? { key: "how_to_order", label: "How to order", state: state(!!(b.order_instagram || b.order_whatsapp || b.order_website?.trim() || b.order_app?.trim()), nn.how_to_order === true) }
+      : { key: "locations", label: "At least one location", state: state(counts.locations > 0, nn.locations === true) },
     { key: "reels", label: "At least one reel", state: state(counts.reels > 0, nn.reels === true) },
     { key: "contact", label: "A business contact (email or WhatsApp)", state: state(has(b.business_email) || has(b.business_whatsapp), nn.contact === true || (nn.business_email === true && nn.business_whatsapp === true)) },
   ];

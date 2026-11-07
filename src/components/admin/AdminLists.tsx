@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { businessChecklist, businessComplete, newestFirst, niceDateTime, yesNo, type NotNeeded } from "@/lib/listRules";
 import { niceDay } from "@/lib/timeAgo";
 import { useAdmin } from "./AdminProvider";
+import { ACCESS_LABEL, type Access } from "@/lib/orderOnly";
 import ListShell, { type ListRow } from "./ListShell";
 
 // ask the database for several lists at once, then put the answer on the page (the async function sets state after waiting)
@@ -45,11 +46,11 @@ export function LocationsList() {
   return <ListShell title="Locations" addHref="/admin/add-location" addLabel="Add location" rows={rows} loaded={data !== null} empty="No locations yet." />;
 }
 
-type Biz = { permanently_closed: boolean; id: string; code: string; name: string; type: "restaurant" | "shop"; subtype: string | null; instagram_handle: string | null; business_email: string | null; business_whatsapp: string | null; not_needed: NotNeeded | null; added_by: string | null; created_at: string };
+type Biz = { access_kind?: Access; order_instagram?: boolean; order_whatsapp?: boolean; order_website?: string | null; order_app?: string | null; permanently_closed: boolean; id: string; code: string; name: string; type: "restaurant" | "shop"; subtype: string | null; instagram_handle: string | null; business_email: string | null; business_whatsapp: string | null; not_needed: NotNeeded | null; added_by: string | null; created_at: string };
 export function RestaurantsList() {
   const data = useLoad(async (db) => {
     const [b, r, l] = await Promise.all([
-      db.from("businesses").select("id, code, name, type, subtype, instagram_handle, business_email, business_whatsapp, permanently_closed, not_needed, added_by, created_at").order("created_at", { ascending: false }).limit(10000),
+      db.from("businesses").select("*").order("created_at", { ascending: false }).limit(10000),
       db.from("reels").select("business_id").not("business_id", "is", null).limit(50000),
       db.from("locations").select("business_id").not("business_id", "is", null).limit(50000),
     ]);
@@ -65,12 +66,14 @@ export function RestaurantsList() {
     href: `/admin/restaurants/view?id=${b.id}`,
     editHref: `/admin/restaurants/edit?id=${b.id}`,
     title: b.name,
+    badge: b.access_kind === "order_only" ? "Order only" : undefined,
     closed: b.permanently_closed,
     ticked: businessComplete(b, counts(b.id)),
     search: `${b.name} ${b.code} ${b.type} ${b.added_by ?? ""}`,
     cells: [
       ["Code", b.code],
       ["Type", b.type === "shop" ? "Shop" : "Restaurant"],
+      ["How people get it", ACCESS_LABEL[b.access_kind ?? "place"]],
       ["Has a reel", yesNo(!!data?.withReel.has(b.id))],
       ["Has a location", yesNo(!!data?.withLocation.has(b.id))],
       ...(extra ?? []),
@@ -86,7 +89,7 @@ export function RestaurantsList() {
 export function IncompleteList() {
   const data = useLoad(async (db) => {
     const [b, r, l] = await Promise.all([
-      db.from("businesses").select("id, code, name, type, subtype, instagram_handle, business_email, business_whatsapp, permanently_closed, not_needed, added_by, created_at").order("created_at", { ascending: false }).limit(10000),
+      db.from("businesses").select("*").order("created_at", { ascending: false }).limit(10000),
       db.from("reels").select("business_id").not("business_id", "is", null).limit(50000),
       db.from("locations").select("business_id").not("business_id", "is", null).limit(50000),
     ]);
@@ -104,6 +107,7 @@ export function IncompleteList() {
       href: `/admin/restaurants/view?id=${b.id}`,
       editHref: `/admin/restaurants/edit?id=${b.id}`,
       title: b.name,
+      badge: b.access_kind === "order_only" ? "Order only" : undefined,
       closed: b.permanently_closed,
       search: `${b.name} ${b.code} ${b.type} ${missing.map((m) => m.label).join(" ")}`,
       cells: [["Missing", missing.map((m) => m.label).join(", ")], ["Code", b.code], ["Type", b.type === "shop" ? "Shop" : "Restaurant"], ["Added by", b.added_by ?? "-"], ["Added", niceDateTime(b.created_at)]] as ListRow["cells"],

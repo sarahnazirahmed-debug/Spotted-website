@@ -12,6 +12,7 @@ export type ListRow = {
   href: string; // the edit page
   title: string;
   editHref?: string; // when the title opens a page to look at, this opens the edit page
+  badge?: string; // a small label next to the name, for example "Order only"
   closed?: boolean; // "Permanently closed" next to the name
   ticked?: boolean; // shows a tick (a complete restaurant or shop)
   search: string; // all the words the search box looks in
@@ -47,6 +48,7 @@ export default function ListShell({ title, addHref, addLabel, rows, loaded, empt
           <li key={r.id} className="rounded-2xl bg-box p-4 text-onpanel">
             <h2 className="flex flex-wrap items-center gap-2 text-xl font-extrabold">
               <Link href={r.href} className="min-h-11 break-words underline focus-visible:outline-4 focus-visible:outline-offset-2">{r.title}</Link>
+              {r.badge && <span className="inline-flex min-h-7 items-center rounded-full bg-chip px-3 text-sm font-extrabold text-onchip">{r.badge}</span>}
               {r.closed && <ClosedBadge />}
               {r.ticked && (
                 <span className="inline-flex items-center gap-1 text-sm font-bold">

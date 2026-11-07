@@ -9,9 +9,10 @@ import { niceDay } from "@/lib/timeAgo";
 import { useAdmin } from "./AdminProvider";
 import ChangeHistory from "./ChangeHistory";
 import ClosedBadge from "./ClosedBadge";
+import { ACCESS_LABEL, hasOrdering, isOrderOnly, orderWays, type OrderRow } from "@/lib/orderOnly";
 import { outline, primary } from "./ui";
 
-type Biz = { id: string; code: string; name: string; type: "restaurant" | "shop"; subtype: string | null; instagram_handle: string | null; business_email: string | null; business_whatsapp: string | null; permanently_closed: boolean; not_needed: NotNeeded | null; added_by: string | null; created_at: string };
+type Biz = OrderRow & { id: string; code: string; name: string; type: "restaurant" | "shop"; subtype: string | null; instagram_handle: string | null; business_email: string | null; business_whatsapp: string | null; permanently_closed: boolean; not_needed: NotNeeded | null; added_by: string | null; created_at: string };
 type Loc = { id: string; code: string; name: string; emirate: string | null; is_building: boolean };
 type ReelRow = { id: string; code: string; url: string; place_name: string | null; posted_on: string | null };
 
@@ -44,7 +45,9 @@ export default function BusinessView() {
   if (!id || missing) return <p className="font-bold">That restaurant or shop was not found. <Link href="/admin/restaurants" className="underline">Back to the list</Link></p>;
   if (!data) return <p>Loading...</p>;
   const { b, locs, reels } = data;
-  const checks = businessChecklist(b, { locations: locs.length, reels: reels.length });
+  const checks = businessChecklist({ ...b, order_instagram: b.order_instagram, order_whatsapp: b.order_whatsapp }, { locations: locs.length, reels: reels.length });
+  const ways = orderWays(b, b.instagram_handle, b.business_whatsapp);
+  const orderOnly = isOrderOnly(b);
   const lacking = checks.filter((c) => c.state === "missing");
   const detail: Record<string, string> = {
     name: b.name,
@@ -53,6 +56,7 @@ export default function BusinessView() {
     locations: locs.length ? `${locs.length}` : "",
     reels: reels.length ? `${reels.length}` : "",
     contact: [b.business_email, b.business_whatsapp].filter(Boolean).join(" and "),
+    how_to_order: ways.join("; "),
   };
 
   return (
@@ -60,6 +64,7 @@ export default function BusinessView() {
       <header className="grid gap-2">
         <h1 className="flex flex-wrap items-center gap-3 text-4xl font-extrabold text-heading">
           {b.name}
+          {orderOnly && <span className="inline-flex min-h-7 items-center rounded-full bg-chip px-3 text-sm font-extrabold text-onchip">Order only</span>}
           {b.permanently_closed && <ClosedBadge />}
         </h1>
         <p className="font-bold">{b.type === "shop" ? "Shop" : "Restaurant"}{b.subtype ? `, ${b.subtype}` : ""}</p>
@@ -70,6 +75,21 @@ export default function BusinessView() {
           <Link href="/admin/pin?add=1" className={outline}>Add a reel</Link>
         </div>
       </header>
+
+      <section className="grid gap-2" aria-labelledby="bv-get">
+        <h2 id="bv-get" className="text-2xl font-extrabold text-heading">How people get it</h2>
+        <p className="font-bold">{ACCESS_LABEL[b.access_kind ?? "place"]}</p>
+        {hasOrdering(b) && (
+          <>
+            <p><span className="font-bold">How to order:</span> {ways.length ? ways.join("; ") : "not filled in yet"}</p>
+            <p>
+              <span className="font-bold">Where they deliver:</span>{" "}
+              {[...(b.deliver_emirates ?? []), b.deliver_areas].filter(Boolean).join(" · ") || "not filled in yet"}
+            </p>
+          </>
+        )}
+        {orderOnly && <p className="text-sm font-bold">An order-only place is never used for nearby reminders. No home address is stored.</p>}
+      </section>
 
       <section className="grid gap-2 rounded-2xl bg-panel p-4" aria-labelledby="bv-tick">
         <h2 id="bv-tick" className="flex items-center gap-2 text-2xl font-extrabold text-heading">
@@ -91,7 +111,7 @@ export default function BusinessView() {
 
       <section className="grid gap-2">
         <h2 className="text-2xl font-extrabold text-heading">Locations ({locs.length})</h2>
-        {locs.length === 0 && <p className="font-bold">No location yet.</p>}
+        {locs.length === 0 && <p className="font-bold">{orderOnly ? "No place to visit. That is fine for an order-only place." : "No location yet."}</p>}
         <ul className="grid gap-2">
           {locs.map((l) => (
             <li key={l.id} className="rounded-xl bg-box p-3 text-onpanel">

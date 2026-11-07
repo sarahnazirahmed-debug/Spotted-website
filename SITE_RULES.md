@@ -73,6 +73,7 @@ These rules are for the Spotted website (this folder). Follow them in every step
 - Exactly one main admin. Nobody can change or remove it.
 - `/admin/dashboard` is for the main admin and associates (everything) and staff (counts only: **never money**). Helpers do not see it. Money cards are marked `money: true` in `src/lib/dashboard/cards.ts`. Numbers with no real source yet are always labelled EXAMPLE on the page and in the Excel and PDF files.
 - Pin Desk codes (restaurant or shop 4 letters + 4 numbers, location 10 + 10, reel 8 + 8) are made by the database when the team presses Save, never typed. They never use O, 0, I or 1. They are for the team only and are never shown to app users or the public (`supabase/pindesk_codes.sql`).
+- **Never store or show a home address.** Order-only places (home bakeries, home kitchens, cloud kitchens) have no address field: only emirates and typed areas (`supabase/pindesk_order_only.sql`). Order-only places are never used for nearby reminders (`nearby_ok`).
 - The Pin Desk stores only reel links and place facts. Nothing about app users. The creator handle is for the team only and is never shown to app users or the public.
 
 ## 12. The public pages (business website)
