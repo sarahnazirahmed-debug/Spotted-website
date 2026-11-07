@@ -5,11 +5,14 @@ export default function PageHeader({
   title,
   lead,
   children,
+  aside,
 }: {
   chip: string;
   title: string;
   lead?: string;
   children?: React.ReactNode;
+  // Optional picture beside the words (the phone on the home page). Below the words on phones.
+  aside?: React.ReactNode;
 }) {
   return (
     <header className="relative overflow-hidden px-5 pb-16 pt-32 text-paper md:pb-24 md:pt-40">
@@ -17,11 +20,14 @@ export default function PageHeader({
         <span className="hero-glow hero-glow-a" />
         <span className="hero-glow hero-glow-b" />
       </div>
-      <div className="relative mx-auto max-w-3xl">
+      <div className={`relative mx-auto ${aside ? "grid max-w-5xl items-center gap-12 md:grid-cols-[1.3fr_1fr]" : "max-w-3xl"}`}>
+        <div>
         <span className="inline-block rounded-full bg-chip px-4 py-1 text-sm font-bold text-charcoal">{chip}</span>
         <h1 className="mt-5 whitespace-pre-line text-[clamp(2.2rem,8vw,4.6rem)] font-extrabold leading-[1.05]">{title}</h1>
         {lead && <p className="mt-5 max-w-xl text-lg leading-relaxed text-mist">{lead}</p>}
         {children}
+        </div>
+        {aside}
       </div>
     </header>
   );

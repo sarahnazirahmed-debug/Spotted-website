@@ -132,10 +132,10 @@ test("the landing header has the WhatsApp and Instagram buttons", () => {
   assert.doesNotMatch(social, /<svg/); // no real brand logos
 });
 
-test("the footer has exactly Privacy, Terms, Contact, About and FAQ, in that order, and the Contact page exists", () => {
+test("the footer has exactly Terms, Privacy policy and Confidentiality agreement (step 2), and the Contact page exists", () => {
   const f = read("src/components/Footer.tsx");
   const links = [...f.matchAll(/\[text\.(?:footer|nav)\.(\w+), "(\/[\w-]*)", FEATURES\.(\w+)\]/g)].map((m) => [m[1], m[2]]);
-  assert.deepEqual(links, [["privacy", "/privacy"], ["terms", "/terms"], ["contact", "/contact"], ["about", "/about"], ["faq", "/faq"]]);
+  assert.deepEqual(links, [["terms", "/terms"], ["privacyPolicy", "/privacy"], ["confidentiality", "/confidentiality"]]);
   assert.equal(en.footer.contact, "Contact");
   assert.ok(existsSync("src/app/contact/page.tsx"));
   assert.equal(FEATURES.contactPage, true);

@@ -18,8 +18,50 @@ export const en = {
     careers: "Careers",
     admin: "Admin",
     logIn: "Log in",
+    howItWorks: "How it works",
+    yourData: "Your data",
+    questions: "Questions",
+    getNotified: "Get notified",
     menu: "Site menu",
     comingSoonNote: (label: string) => `${label} is coming soon.`,
+  },
+
+  // The panel that opens from the three-bar menu button in the top bar.
+  menuPanel: {
+    spotted: "Spotted",
+    crew: "Spotted Crew",
+    crewLinks: [
+      { label: "Admin", note: "For the team" },
+      { label: "Staff", note: "For the team" },
+    ],
+    join: "Join Spotted",
+    joinLinks: [
+      { label: "Insiders", note: "For influencers", feature: "insiderPage", href: "/insider" },
+      { label: "Partners", note: "For restaurants and shops", feature: "businessPages", href: "/restaurants" },
+      { label: "Careers", note: "Work with the crew", feature: "careersPage", href: "/careers" },
+    ],
+    close: "Close menu",
+  },
+
+  // The phone picture in the hero: a calm loop (see src/components/site/PhoneLoop.tsx).
+  phone: {
+    label: "How Spotted works: you see a reel, save the place, and later get a reminder when you are near.",
+    reelCaption: "A cafe from a reel",
+    reelArea: "Khalifa City",
+    save: "Save this place",
+    saved: "Place saved",
+    savedNote: "It is on your list and your map.",
+    near: "Near you",
+    nearNote: "A place you saved is just around the corner.",
+    pause: "Pause the picture",
+    play: "Play the picture",
+  },
+
+  // Pages whose real text is coming from the lawyer-checked PDF.
+  placeholder: {
+    comingSoon: "Coming soon",
+    note: "This page will be published soon.",
+    confidentialityTitle: "Confidentiality agreement",
   },
 
   login: {
@@ -285,6 +327,9 @@ export const en = {
     privacy: "Privacy",
     terms: "Terms",
     careers: "Careers",
+    privacyPolicy: "Privacy policy",
+    confidentiality: "Confidentiality agreement",
+    email: "Email",
   },
 };
 

@@ -140,3 +140,58 @@ body {
 @media (hover: none) { .flip.flipped .flip-inner { transform: rotateY(180deg); } }
 /* mouse: hover flips it */
 @media (hover: hover) { .flip:hover .flip-inner { transform: rotateY(180deg); } }
+
+/* ---- The phone picture in the hero (src/components/site/PhoneLoop.tsx) ----
+   A calm 7 second loop: 1) a reel appears, 2) "Save this place" is tapped (a small ring pulses),
+   3) the screen changes to "Place saved" and a "Near you" reminder card slides up, 4) it fades and repeats.
+   The plain styles below ARE the final "Place saved" screen, so with Reduce Motion (or no animation)
+   the visitor sees only that screen, with no movement. The moving version is switched on only for
+   people who have NOT asked for reduced motion. */
+.phone-scene {
+  position: absolute;
+  inset: 0;
+}
+.phone-reel {
+  opacity: 0;
+}
+.phone-done {
+  opacity: 1;
+}
+.phone-ring {
+  opacity: 0;
+}
+@keyframes phone-reel-scene {
+  0%, 50% { opacity: 1; transform: translateY(0); }
+  56%, 92% { opacity: 0; transform: translateY(0); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes phone-done-scene {
+  0%, 54% { opacity: 0; }
+  60%, 92% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes phone-near-card {
+  0%, 64% { opacity: 0; transform: translateY(24px); }
+  72%, 100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes phone-ring-pulse {
+  0%, 34% { opacity: 0; transform: scale(0.7); }
+  37% { opacity: 0.9; transform: scale(0.9); }
+  48%, 100% { opacity: 0; transform: scale(1.7); }
+}
+@keyframes phone-button-tap {
+  0%, 34%, 42%, 100% { transform: scale(1); }
+  37% { transform: scale(0.95); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .phone-reel { animation: phone-reel-scene 7s ease-in-out infinite; }
+  .phone-done { animation: phone-done-scene 7s ease-in-out infinite; }
+  .phone-near { animation: phone-near-card 7s ease-out infinite; }
+  .phone-ring { animation: phone-ring-pulse 7s ease-out infinite; }
+  .phone-button { animation: phone-button-tap 7s ease-in-out infinite; }
+  /* a visitor can pause the picture with the button under it */
+  .phone-loop[data-paused="true"] .phone-scene,
+  .phone-loop[data-paused="true"] .phone-near,
+  .phone-loop[data-paused="true"] .phone-ring,
+  .phone-loop[data-paused="true"] .phone-button { animation-play-state: paused; }
+}

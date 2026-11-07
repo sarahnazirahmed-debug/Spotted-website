@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { FEATURES } from "@/config/features";
-import { PrivacyPage } from "@/components/pages/LegalPages";
+import { PrivacyPage, LegalPlaceholder } from "@/components/pages/LegalPages";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -10,5 +10,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   if (!FEATURES.legalPages) notFound();
+  // While the lawyer-checked PDF is not ready, the page is an empty "Coming soon" placeholder.
+  if (FEATURES.legalPlaceholders) return <LegalPlaceholder title="Privacy policy" />;
   return <PrivacyPage />;
 }

@@ -104,15 +104,15 @@ test("every country code in the picker is a real country name", () => {
 // ---- the text file and the switches ----
 test("the menu words are in the one text file, in the agreed order", () => {
   const nav = text("src/components/TopBar.tsx");
-  // (the new draft top bar: Home, Insiders, Partners, Careers, then Admin and Log in; see tests/login-route.test.mjs)
-  const order = ["n.home", "n.insiders", "n.partners", "n.careers"];
+  // (the new draft top bar: see tests/login-route.test.mjs and tests/landing-step2.test.mjs)
+  const order = ["n.howItWorks", "n.yourData", "n.questions", "n.insiders", "n.partners", "n.careers"];
   let at = -1;
   for (const k of order) {
     const i = nav.indexOf(`label: ${k}`);
     assert.ok(i > at, `${k} is missing or out of order in the top menu`);
     at = i;
   }
-  assert.match(nav, /LOG_IN[\s\S]*n\.logIn/);
+  assert.match(nav, /GET_NOTIFIED[\s\S]*n\.getNotified/);
   const en = text("src/content/en.ts");
   for (const w of ["Home", "Restaurants", "Shops", "Insiders", "Pricing", "How to join", "FAQ", "About", "Sign in", "Partners", "Careers", "Admin", "Log in"]) assert.ok(en.includes(`"${w}"`), `${w} missing from the text file`);
 });

@@ -4,9 +4,10 @@ import { LINKS, whatsappUrl } from "@/config/links";
 import { text } from "@/content";
 import { Icon } from "./Icons";
 
-export default function SocialButtons({ message, className = "" }: { message?: string; className?: string }) {
+// instagram={false}: show only the WhatsApp button (the footer does this).
+export default function SocialButtons({ message, className = "", instagram = true }: { message?: string; className?: string; instagram?: boolean }) {
   const wa = whatsappUrl(message);
-  const ig = LINKS.instagramUrl;
+  const ig = instagram ? LINKS.instagramUrl : "";
   if (!wa && !ig) return null;
   const base = "inline-flex min-h-12 items-center gap-2 rounded-full px-6 text-base font-extrabold transition active:scale-95";
   return (

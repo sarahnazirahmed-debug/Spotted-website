@@ -6,6 +6,7 @@ import { text } from "@/content";
 import { FEATURES } from "@/config/features";
 import { Icon, type IconName } from "./Icons";
 import LiveCounters from "./LiveCounters";
+import PhoneLoop from "./PhoneLoop";
 import PageShell, { Section } from "./PageShell";
 import SocialButtons from "./SocialButtons";
 import StoreButtons from "./StoreButtons";
@@ -21,6 +22,7 @@ export default function HomePage() {
       chip={h.chip}
       title={h.title}
       lead={h.lead}
+      aside={<PhoneLoop />}
       headerExtra={
         <>
           <SocialButtons className="mt-8" message="Hi Spotted!" />
@@ -28,7 +30,7 @@ export default function HomePage() {
         </>
       }
     >
-      <Section title={h.helpsTitle}>
+      <Section id="how-it-works" title={h.helpsTitle}>
         <div className="grid gap-5 md:grid-cols-3">
           {h.helps.map((x, i) => (
             <div key={x.title} className="rounded-3xl bg-box p-7 text-onpanel">

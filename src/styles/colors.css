@@ -35,7 +35,8 @@
   /* the top bar of the public pages (the new draft design: maroon and cream, no purple) */
   --maroon: #5c0f24;         /* top bar background */
   --cream: #faf7f2;          /* top bar text */
-  --rose-line: #e8a9b6;      /* thin line around the Log in button */
+  --rose-line: #e8a9b6;      /* thin lines on the top bar */
+  --dark-text: #1e0a10;      /* dark text on coral buttons */
 
 /* ---- 2. Drawings and the 3D banner (the illustration palette) ---- */
   --c-deep: var(--charcoal-deep);   /* night sky, shadows, dark outlines */
@@ -129,4 +130,5 @@
   --color-bar: var(--maroon);
   --color-onbar: var(--cream);
   --color-barline: var(--rose-line);
+  --color-darktext: var(--dark-text);
 }

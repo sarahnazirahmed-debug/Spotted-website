@@ -23,9 +23,9 @@ const text = (f) => readFileSync(f, "utf8");
 test("the unknown-email message is the agreed one, from the text file", () => {
   assert.match(text("src/content/en.ts"), /We could not find this email\. Apply to become an Insider or Partner\./);
 });
-test("the top bar has the agreed links in order, and Admin and Log in both open /login", () => {
+test("the top bar (step 2) has the agreed links in order, and Admin opens /login", () => {
   const bar = text("src/components/TopBar.tsx");
-  const order = ["n.home", "n.insiders", "n.partners", "n.careers"];
+  const order = ["n.howItWorks", "n.yourData", "n.questions", "n.insiders", "n.partners", "n.careers"];
   let at = -1;
   for (const k of order) {
     const i = bar.indexOf(`label: ${k}`);
@@ -33,7 +33,7 @@ test("the top bar has the agreed links in order, and Admin and Log in both open 
     at = i;
   }
   assert.match(bar, /label: n\.admin, href: "\/login"/);
-  assert.match(bar, /label: n\.logIn, href: "\/login"/);
+  assert.match(bar, /label: n\.getNotified/);
 });
 test("the admin pages send a visitor who is not logged in to /login", () => {
   assert.match(text("src/components/admin/AdminFrame.tsx"), /router\.replace\("\/login"\)/);

@@ -9,17 +9,19 @@ export default function PageShell({
   title,
   lead,
   headerExtra,
+  aside,
   children,
 }: {
   chip: string;
   title: string;
   lead?: string;
   headerExtra?: React.ReactNode;
+  aside?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <>
-      <PageHeader chip={chip} title={title} lead={lead}>
+      <PageHeader chip={chip} title={title} lead={lead} aside={aside}>
         {headerExtra}
       </PageHeader>
       <main>{children}</main>

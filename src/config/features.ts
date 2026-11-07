@@ -6,7 +6,7 @@
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "loginPage" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "loginPage" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "legalPlaceholders" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
@@ -42,6 +42,9 @@ export const FEATURES: Record<FeatureName, boolean> = {
   aboutPage: true,
   // The /privacy and /terms pages.
   legalPages: true,
+  // The /terms, /privacy and /confidentiality pages show an EMPTY "Coming soon" placeholder until the
+  // lawyer-checked PDF is ready. The draft texts stay in the code: switch OFF to show them again.
+  legalPlaceholders: true,
   // The footer with links to every page.
   footer: true,
   // The top bar that fades in when you scroll down (logo, links, Sign up / Log in).

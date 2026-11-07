@@ -2,6 +2,7 @@
 // PRIVACY: copied from the app's docs/PRIVACY_POLICY.md, plus a short section about this website.
 // TERMS: a short plain-language draft. Neither is legal advice. Have both reviewed before launch.
 import { CONTACT, FEATURES, LEGAL } from "@/config/features";
+import { text } from "@/content";
 import SiteChrome from "../SiteChrome";
 import Footer from "../Footer";
 import PageHeader from "./PageHeader";
@@ -36,6 +37,22 @@ function Shell({ chip, title, children }: { chip: string; title: string; childre
           <Draft show={LEGAL.draftNotice} date={LEGAL.lastUpdated} />
           {children}
         </Prose>
+      </main>
+      {FEATURES.footer && <Footer />}
+      <SiteChrome alwaysVisible />
+    </>
+  );
+}
+
+// An empty page with only "Coming soon", shown while the lawyer-checked PDF is not ready
+// (switch `legalPlaceholders` in features.ts). The draft texts below stay in the code.
+export function LegalPlaceholder({ title }: { title: string }) {
+  const t = text.placeholder;
+  return (
+    <>
+      <PageHeader chip={t.comingSoon} title={title} />
+      <main className="bg-page px-5 py-16 text-onpage md:py-24">
+        <p className="mx-auto max-w-3xl text-lg">{t.note}</p>
       </main>
       {FEATURES.footer && <Footer />}
       <SiteChrome alwaysVisible />
