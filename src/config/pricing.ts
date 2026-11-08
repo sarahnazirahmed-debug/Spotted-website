@@ -7,6 +7,17 @@
 // NOTE: the "included" lists are a first draft. Please check each line is something you really will
 // give, and change, add or remove lines freely.
 
+// PRICES ON THE PUBLIC WEBSITE (step 8): while PRICES_CONFIRMED is false, EVERY price shown to visitors says
+// "Price to confirm". The real numbers below stay here, ready. When Sarah gives the real prices, put them in this
+// file, change the next line to true, and every page shows the numbers. Pages must use priceLabel(), never print a price themselves.
+export const PRICES_CONFIRMED = false;
+export const PRICE_TO_CONFIRM = "Price to confirm";
+export const priceLabel = (aed: number | null): string =>
+  PRICES_CONFIRMED && aed !== null ? `AED ${aed.toLocaleString("en-US")}` : PRICE_TO_CONFIRM;
+
+// The partner decides their own reward, and it can never be more than this share (shown on the Partner page).
+export const REWARD_CAP_PERCENT = 25;
+
 export const FREE_MONTHS = 2; // the first 2 months are free
 export const YEARLY_MONTHS_FREE = 1; // pay yearly and get 1 month free (you pay for 11 months, not 12)
 
@@ -70,14 +81,14 @@ export const FOUNDING_FREE_PERIOD = "[6 or 12 months, still to be decided]";
 // (the kinds are in src/lib/businessRules.ts). Shop plans are named by how many benefits they have.
 // The yearly price is still to be decided: the page shows PARTNER_YEARLY_TBD for each card.
 export const PARTNER_YEARLY_TBD = "[TBD]";
-export type PartnerCard = { id: string; group: "restaurants" | "shops"; name: string; forWho?: string; priceAed: number };
+export type PartnerCard = { id: string; group: "restaurants" | "shops"; name: string; forWho?: string; priceAed: number; staffLogins: number | "unlimited" };
 export const PARTNER_PRICE_CARDS: PartnerCard[] = [
-  { id: "starter", group: "restaurants", name: "Starter", forWho: "Cafeterias", priceAed: 99 },
-  { id: "grow", group: "restaurants", name: "Grow", forWho: "Cafes, bakeries", priceAed: 149 },
-  { id: "main", group: "restaurants", name: "Main", forWho: "One cuisine", priceAed: 199 },
-  { id: "premium", group: "restaurants", name: "Premium", forWho: "Many cuisines", priceAed: 249 },
-  { id: "branches", group: "restaurants", name: "More than one branch", priceAed: 349 },
-  { id: "shop-8", group: "shops", name: "8 benefits", priceAed: 99 },
-  { id: "shop-14", group: "shops", name: "14 benefits", priceAed: 199 },
-  { id: "shop-20", group: "shops", name: "20+ benefits", priceAed: 299 },
+  { id: "starter", group: "restaurants", name: "Starter", forWho: "Cafeterias", priceAed: 99, staffLogins: 7 },
+  { id: "grow", group: "restaurants", name: "Grow", forWho: "Cafes, bakeries", priceAed: 149, staffLogins: 10 },
+  { id: "main", group: "restaurants", name: "Main", forWho: "One cuisine", priceAed: 199, staffLogins: 15 },
+  { id: "premium", group: "restaurants", name: "Premium", forWho: "Many cuisines", priceAed: 249, staffLogins: "unlimited" },
+  { id: "branches", group: "restaurants", name: "More than one branch", priceAed: 349, staffLogins: "unlimited" },
+  { id: "shop-8", group: "shops", name: "8 benefits", priceAed: 99, staffLogins: 7 },
+  { id: "shop-14", group: "shops", name: "14 benefits", priceAed: 199, staffLogins: 10 },
+  { id: "shop-20", group: "shops", name: "20+ benefits", priceAed: 299, staffLogins: "unlimited" },
 ];

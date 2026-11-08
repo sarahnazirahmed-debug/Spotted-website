@@ -124,11 +124,11 @@ test("the home page and partner pages take their words from the text file (no lo
   }
 });
 
-test("the switches are set as agreed: cloth banner and lamp OFF, careers ON (draft look), store buttons OFF", () => {
+test("the switches are set as agreed: cloth banner and lamp OFF, careers OFF (hidden, step 8), store buttons OFF", () => {
   const f = text("src/config/features.ts");
   assert.match(f, /hero: false/);
   assert.match(f, /themeLamp: false/);
-  assert.match(f, /careersPage: true/);
+  assert.match(f, /careersPage: false/);
   assert.match(f, /storeButtons: false/);
   assert.match(f, /liveCounters: true/);
   // the code for the hidden parts is still there

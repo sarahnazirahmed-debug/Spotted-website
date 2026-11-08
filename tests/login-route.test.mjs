@@ -38,7 +38,8 @@ test("the top bar (step 2) has the agreed links in order, and Admin opens /login
 test("the admin pages send a visitor who is not logged in to /login", () => {
   assert.match(text("src/components/admin/AdminFrame.tsx"), /router\.replace\("\/login"\)/);
 });
-test("the Insiders, Partners and Careers switches exist and are ON in the draft look", () => {
+test("the Insiders, Partners and Log in switches are ON, and Careers exists but is hidden (step 8)", () => {
   const f = text("src/config/features.ts");
-  for (const k of ["insiderPage", "businessPages", "careersPage", "loginPage"]) assert.match(f, new RegExp(`${k}: true`), k);
+  for (const k of ["insiderPage", "businessPages", "loginPage"]) assert.match(f, new RegExp(`${k}: true`), k);
+  assert.match(f, /careersPage: false/);
 });

@@ -2,7 +2,7 @@
 // and the "Founding Insiders" box (by invitation only). Words: src/content/en.ts (insiderPage).
 // Price and founding group: src/config/pricing.ts.
 import Link from "next/link";
-import { FOUNDING_FREE_PERIOD, FOUNDING_SPOTS, INSIDER_PLAN, yearlyPriceAed } from "@/config/pricing";
+import { FOUNDING_FREE_PERIOD, FOUNDING_SPOTS, INSIDER_PLAN, priceLabel, yearlyPriceAed } from "@/config/pricing";
 import { text } from "@/content";
 import { applyLink, partnerLink } from "@/config/routes";
 import ProfileLanding, { heading } from "./ProfileLanding";
@@ -12,7 +12,8 @@ const t = text.insiderPage;
 
 export default function InsiderLanding() {
   const price = INSIDER_PLAN.priceAed ?? 0;
-  const aed = (n: number) => `AED ${n.toLocaleString("en-US")}`;
+  // every price says "Price to confirm" until the real prices are given (PRICES_CONFIRMED in pricing.ts)
+  const aed = (n: number) => priceLabel(n);
   const deal = (
     <div className="max-w-2xl">
       <div className="rounded-2xl border border-rosesoft bg-cream p-7">

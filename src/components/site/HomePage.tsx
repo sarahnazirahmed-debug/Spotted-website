@@ -10,10 +10,16 @@ import PhoneLoop from "./PhoneLoop";
 import PageShell, { Section } from "./PageShell";
 import SocialButtons from "./SocialButtons";
 import StoreButtons from "./StoreButtons";
+import HomeLanding from "./HomeLanding";
 
 const HELP_ICONS: IconName[] = ["bookmark", "bell", "globe"];
 
+// `newLanding` ON (features.ts) = the new maroon and cream landing page. OFF = the older dark look below.
 export default function HomePage() {
+  return FEATURES.newLanding ? <HomeLanding /> : <OlderHomePage />;
+}
+
+function OlderHomePage() {
   const h = text.home;
   // the cards for restaurants, shops and Insiders show only while their pages are switched ON in features.ts
   const cards = h.forBusiness.filter((x) => (x.href === "/insider" ? FEATURES.insiderPage : FEATURES.businessPages));
