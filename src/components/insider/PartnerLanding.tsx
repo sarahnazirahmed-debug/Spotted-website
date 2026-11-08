@@ -8,7 +8,6 @@ import {
   PARTNER_INCLUDED,
   PARTNER_PRICE_CARDS,
   PRICE_TO_CONFIRM,
-  REWARD_CAP_PERCENT,
   priceLabel,
   type PartnerCard,
 } from "@/config/pricing";
@@ -21,7 +20,7 @@ const t = text.partnerPage;
 
 function PlanCard({ c, joinHref }: { c: PartnerCard; joinHref: string }) {
   // what "See more" shows: the lines every Partner plan has, this plan's staff logins, the free months, and the reward cap
-  const lines = [...PARTNER_INCLUDED, t.staffLogins(c.staffLogins), t.freeMonths(FREE_MONTHS), t.rewardLine(REWARD_CAP_PERCENT)];
+  const lines = [...PARTNER_INCLUDED, t.staffLogins(c.staffLogins), t.freeMonths(FREE_MONTHS), t.rewardLine];
   return (
     <li className="flex flex-col rounded-2xl border border-rosesoft bg-cream p-5">
       <p className="font-brand text-lg font-bold leading-snug">{c.name}</p>
@@ -84,7 +83,7 @@ export default function PartnerLanding() {
       </div>
       <div className="mt-8 max-w-2xl rounded-2xl border-2 border-maroon bg-cream px-6 py-5">
         <h3 className="font-brand text-xl font-bold text-maroon">{t.rewardTitle}</h3>
-        <p className="mt-2 text-base leading-relaxed">{t.rewardText(REWARD_CAP_PERCENT)}</p>
+        <p className="mt-2 text-base leading-relaxed">{t.rewardText}</p>
       </div>
       <p className="mt-6 max-w-2xl rounded-2xl border border-rose-line bg-pagebase px-5 py-4 text-base font-semibold leading-relaxed">
         {text.insiderPage.dealStrip}

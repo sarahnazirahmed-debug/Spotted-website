@@ -24,7 +24,7 @@ export default function Footer() {
           </p>
           <p className="mt-2 text-mist">{text.footer.tagline}</p>
           <p className="mb-3 mt-6 text-sm font-bold text-mist">{text.footer.follow}</p>
-          <SocialButtons instagram={false} />
+          <SocialButtons />
           {CONTACT.emailLive && (
             <a href={`mailto:${CONTACT.email}`} className="mt-4 inline-flex min-h-11 items-center font-bold underline">
               {CONTACT.email}

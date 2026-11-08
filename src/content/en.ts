@@ -145,8 +145,8 @@ export const en = {
     staffLogins: (n: number | "unlimited") => (n === "unlimited" ? "Unlimited staff logins" : `${n} staff logins`),
     freeMonths: (n: number) => `The first ${n} months are free`,
     rewardTitle: "Your reward, your choice",
-    rewardText: (percent: number) => `You decide the reward your customers earn. The most a reward can be is ${percent}%.`,
-    rewardLine: (percent: number) => `You choose your own reward, up to ${percent}%`,
+    rewardText: "You decide what your customers earn: a percentage off, a freebie, or anything else you like.",
+    rewardLine: "You choose your own reward: a percentage off or a freebie",
     dealRule: "Anything food or drink (restaurant, cafe, bakery, sweets, cloud or home kitchen) is a Restaurant. Everything else is a Shop.",
   },
 

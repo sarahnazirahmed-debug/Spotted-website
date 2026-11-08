@@ -1,7 +1,7 @@
 // A few simple icons (objects only: no people, no faces). They take their colour from the text colour.
 const common = { width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
 
-export type IconName = "bookmark" | "pin" | "globe" | "bell" | "qr" | "star" | "chart" | "arrow";
+export type IconName = "bookmark" | "pin" | "globe" | "bell" | "qr" | "star" | "chart" | "arrow" | "instagram";
 
 export function Icon({ name, size = 28 }: { name: IconName; size?: number }) {
   const p = { ...common, width: size, height: size };
@@ -47,6 +47,15 @@ export function Icon({ name, size = 28 }: { name: IconName; size?: number }) {
       return (
         <svg {...p}>
           <path d="M4 20V10M10 20V4M16 20v-8M22 20H2" />
+        </svg>
+      );
+    case "instagram":
+      // A simple camera outline (rounded square, ring, small dot). Drawn here, not the official artwork.
+      return (
+        <svg {...p}>
+          <rect x="3" y="3" width="18" height="18" rx="5" />
+          <circle cx="12" cy="12" r="4" />
+          <circle cx="17.5" cy="6.5" r="0.6" />
         </svg>
       );
     case "arrow":

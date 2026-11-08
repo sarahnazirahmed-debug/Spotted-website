@@ -46,7 +46,7 @@ test("the phone picture has no faces, eyes or people", () => {
 
 test("the footer: Terms, Privacy policy, Confidentiality agreement, WhatsApp, email (shown once it works)", () => {
   const f = read("src/components/Footer.tsx");
-  assert.match(f, /SocialButtons instagram=\{false\}/);
+  assert.match(f, /<SocialButtons \/>/); // WhatsApp word button and the Instagram icon
   assert.match(f, /CONTACT\.emailLive/);
   assert.equal(JSON.stringify(Object.keys(FEATURES).includes("legalPlaceholders")), "true");
 });

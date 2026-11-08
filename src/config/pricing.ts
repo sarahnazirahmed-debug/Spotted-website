@@ -16,7 +16,7 @@ export const priceLabel = (aed: number | null): string =>
   PRICES_CONFIRMED && aed !== null ? `AED ${aed.toLocaleString("en-US")}` : PRICE_TO_CONFIRM;
 
 // The partner decides their own reward, and it can never be more than this share (shown on the Partner page).
-export const REWARD_CAP_PERCENT = 25;
+// The partner decides the reward (a percentage off, a freebie, anything). There is no fixed limit on the page.
 
 export const FREE_MONTHS = 2; // the first 2 months are free
 export const YEARLY_MONTHS_FREE = 1; // pay yearly and get 1 month free (you pay for 11 months, not 12)

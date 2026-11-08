@@ -1,10 +1,10 @@
-// Step 8 (the public website): prices say "Price to confirm", two Partner tiers with "See more", the 25% reward cap,
+// Step 8 (the public website): prices say "Price to confirm", two Partner tiers with "See more", the reward is the partner's choice,
 // Careers hidden, the new landing page look, and the Join buttons going to the dashboard's forms. Run with: npm test
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { FEATURES } from "../src/config/features.ts";
-import { PARTNER_PRICE_CARDS, PRICES_CONFIRMED, PRICE_TO_CONFIRM, REWARD_CAP_PERCENT, priceLabel } from "../src/config/pricing.ts";
+import { PARTNER_PRICE_CARDS, PRICES_CONFIRMED, PRICE_TO_CONFIRM, priceLabel } from "../src/config/pricing.ts";
 
 const read = (f) => readFileSync(f, "utf8");
 const strip = (s) => s.replace(/^\s*\/\/.*$/gm, ""); // remove // comment lines
@@ -55,13 +55,14 @@ test("every plan card has a See more drop-down that opens on a tap (plain HTML, 
   assert.match(page, /min-h-11/); // a tap target of at least 44 pixels
 });
 
-test("the 25% reward cap is stated on the Partner page and inside every See more", () => {
-  assert.equal(REWARD_CAP_PERCENT, 25);
+test("the reward is the partner's choice: no fixed percentage limit is shown", () => {
   const page = read("src/components/insider/PartnerLanding.tsx");
-  assert.match(page, /REWARD_CAP_PERCENT/);
   assert.match(page, /t\.rewardTitle/);
-  assert.match(page, /t\.rewardLine\(REWARD_CAP_PERCENT\)/);
-  assert.match(read("src/content/en.ts"), /The most a reward can be is \$\{percent\}%/);
+  assert.match(page, /t\.rewardLine/);
+  assert.doesNotMatch(page, /REWARD_CAP/);
+  const words = read("src/content/en.ts");
+  assert.match(words, /percentage off, a freebie/);
+  assert.doesNotMatch(words, /The most a reward can be/);
 });
 
 test("Careers is hidden: switched OFF, with no menu link, and the code is kept", () => {

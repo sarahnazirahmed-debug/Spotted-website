@@ -1,10 +1,10 @@
 // WhatsApp and Instagram buttons. A button with no link (not set in .env.local) is not shown.
-// No real Instagram or WhatsApp logos here: just words and a plain arrow.
+// WhatsApp is a word button. Instagram is a round icon button (a simple camera drawing) that opens the Spotted Instagram page.
 import { LINKS, whatsappUrl } from "@/config/links";
 import { text } from "@/content";
 import { Icon } from "./Icons";
 
-// instagram={false}: show only the WhatsApp button (the footer does this).
+// instagram={false}: show only the WhatsApp button.
 export default function SocialButtons({ message, className = "", instagram = true }: { message?: string; className?: string; instagram?: boolean }) {
   const wa = whatsappUrl(message);
   const ig = instagram ? LINKS.instagramUrl : "";
@@ -19,9 +19,15 @@ export default function SocialButtons({ message, className = "", instagram = tru
         </a>
       )}
       {ig && (
-        <a href={ig} target="_blank" rel="noopener noreferrer" className={`${base} border-2 border-line text-heading`}>
-          {text.common.instagram}
-          <Icon name="arrow" size={18} />
+        <a
+          href={ig}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Spotted on Instagram"
+          title="Spotted on Instagram"
+          className="inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-line text-heading transition active:scale-95"
+        >
+          <Icon name="instagram" size={24} />
         </a>
       )}
     </div>
