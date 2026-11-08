@@ -67,8 +67,10 @@ export default function LoginForm() {
     const team = (Array.isArray(who) ? who[0] : who) != null;
     let kind: PartnerKind = null;
     if (!team) {
-      const { data: partner } = await supabase.from("partner_accounts").select("kind").maybeSingle();
-      kind = (partner?.kind as PartnerKind) ?? null;
+      // an approved Insider or Partner (made when the owner pressed Approve in the admin area)
+      const { data: access } = await supabase.rpc("my_access");
+      const row = Array.isArray(access) ? access[0] : access;
+      kind = row?.kind === "insider" ? "influencer" : row?.kind === "partner" ? "restaurant" : null;
     }
 
     const to = destinationFor(team, kind);

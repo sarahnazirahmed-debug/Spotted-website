@@ -16,6 +16,7 @@ type App = {
   business_name: string | null; business_type: string | null; website: string | null; emirate: string | null; branches: number | null; plan_interest: string | null;
   advertiser_permit_path: string | null; trade_licence_path: string | null; food_permit_path: string | null;
 };
+type Member = { id: string; email: string; kind: "insider" | "partner"; founding: boolean; status: "active" | "paused"; approved_at: string; free_until: string; paid_until: string | null };
 type Code = { id: string; code: string; note: string | null; created_by: string | null; created_at: string; used_at: string | null };
 
 const when = (iso: string) => new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
@@ -33,6 +34,8 @@ export default function ApplicationsPage() {
   const { supabase, me } = useAdmin();
   const [apps, setApps] = useState<App[]>([]);
   const [codes, setCodes] = useState<Code[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [months, setMonths] = useState<Record<string, string>>({});   // typed free months: per Founding application, and per member
   const [open, setOpen] = useState<string | null>(null);
   const [filter, setFilter] = useState<"All" | "New" | "Approved" | "Declined">("New");
   const [message, setMessage] = useState("");
@@ -41,16 +44,18 @@ export default function ApplicationsPage() {
 
   const fetchAll = useCallback(async () => {
     if (!supabase) return null;
-    const [a, c] = await Promise.all([
+    const [a, c, m] = await Promise.all([
       supabase.from("applications").select("*").order("created_at", { ascending: false }),
       supabase.from("invite_codes").select("*").order("created_at", { ascending: false }),
+      supabase.from("member_access").select("*").order("approved_at", { ascending: false }),
     ]);
-    return { apps: (a.data as App[]) ?? [], codes: (c.data as Code[]) ?? [] };
+    return { apps: (a.data as App[]) ?? [], codes: (c.data as Code[]) ?? [], members: (m.data as Member[]) ?? [] };
   }, [supabase]);
-  const apply = (d: { apps: App[]; codes: Code[] } | null) => {
+  const apply = (d: { apps: App[]; codes: Code[]; members: Member[] } | null) => {
     if (!d) return;
     setApps(d.apps);
     setCodes(d.codes);
+    setMembers(d.members);
     setLoaded(true);
   };
   const load = async () => apply(await fetchAll());
@@ -67,8 +72,28 @@ export default function ApplicationsPage() {
   if (!canOpenApplications(me?.role ?? null)) return <p className="text-lg">Your role cannot open Applications.</p>;
 
   async function setStatus(a: App, status: App["status"]) {
-    const { error } = await supabase!.from("applications").update({ status }).eq("id", a.id);
-    setMessage(error ? "The database did not allow that." : `${a.business_name || a.contact_name} is now ${status}.`);
+    // A Founding Insider needs the free months typed for that person before approving.
+    const founding = a.join_type === "founding" && status === "Approved";
+    let update: Record<string, unknown> = { status };
+    if (founding) {
+      const m = Number(months[a.id]);
+      if (!Number.isInteger(m) || m < 1 || m > 36) return setMessage("Please type the free months for this Founding Insider (1 to 36) before you approve.");
+      update = { status, founding_free_months: m };
+    }
+    const { error } = await supabase!.from("applications").update(update).eq("id", a.id);
+    setMessage(
+      error
+        ? error.message.includes("different kind") ? "This email already has a different kind of account." : "The database did not allow that."
+        : status === "Approved" ? `${a.business_name || a.contact_name} is approved. They can log in now with their email and a 6-digit code.` : `${a.business_name || a.contact_name} is now ${status}.`,
+    );
+    await load();
+  }
+
+  async function saveFreePeriod(m: Member) {
+    const n = Number(months[m.id]);
+    if (!Number.isInteger(n) || n < 0 || n > 36) return setMessage("Please type the free months as a number from 0 to 36.");
+    const { error } = await supabase!.rpc("set_free_period", { p_member: m.id, p_months: n });
+    setMessage(error ? "The database did not allow that." : `The free period of ${m.email} now ends ${n} months after the approval day.`);
     await load();
   }
 
@@ -162,6 +187,12 @@ export default function ApplicationsPage() {
                     {pdf("trade licence (PDF)", a.trade_licence_path)}
                     {pdf("food permit (PDF)", a.food_permit_path)}
                   </div>
+                  {a.join_type === "founding" && a.status !== "Approved" && (
+                    <label className="grid max-w-xs gap-1 text-sm font-bold">
+                      Free months for this Founding Insider (you decide, per person)
+                      <input type="number" min={1} max={36} className={field} value={months[a.id] ?? ""} onChange={(e) => setMonths({ ...months, [a.id]: e.target.value })} />
+                    </label>
+                  )}
                   <div className="flex flex-wrap gap-2">
                     <button type="button" disabled={a.status === "Approved"} onClick={() => setStatus(a, "Approved")} className="min-h-11 rounded-full bg-accent px-6 font-extrabold text-onaccent disabled:opacity-50">
                       Approve
@@ -181,6 +212,34 @@ export default function ApplicationsPage() {
           ))}
           {loaded && shown.length === 0 && <li className="text-lg">Nothing here yet.</li>}
           {!loaded && <li className="text-lg">Loading...</li>}
+        </ul>
+      </section>
+
+
+      <section>
+        <h2 className="text-2xl font-extrabold text-heading">Members</h2>
+        <p className="mt-1">Approved Insiders and Partners. Access stops when the free period ends, unless they have paid. Nothing is deleted.</p>
+        <ul className="mt-4 grid gap-2">
+          {members.map((m) => (
+            <li key={m.id} className="grid gap-2 rounded-xl bg-alt p-3 sm:grid-cols-[1fr_auto] sm:items-center">
+              <span>
+                <span className="font-extrabold">{m.email}</span>{" "}
+                <span className="text-sm">({m.kind === "insider" ? (m.founding ? "Founding Insider" : "Insider") : "Partner"}{m.status === "paused" ? ", paused" : ""})</span>
+                <span className="block text-sm">
+                  Free until {when(m.free_until)}
+                  {m.paid_until ? `, paid until ${when(m.paid_until)}` : ""}
+                  {new Date(m.free_until) < new Date() && !(m.paid_until && new Date(m.paid_until) > new Date()) ? " - access has stopped" : ""}
+                </span>
+              </span>
+              <span className="flex flex-wrap items-center gap-2">
+                <input aria-label={`Free months for ${m.email}`} type="number" min={0} max={36} placeholder="Free months" className={`${field} w-32`} value={months[m.id] ?? ""} onChange={(e) => setMonths({ ...months, [m.id]: e.target.value })} />
+                <button type="button" onClick={() => saveFreePeriod(m)} className="min-h-11 rounded-full border-2 border-line px-4 font-extrabold">
+                  Save free period
+                </button>
+              </span>
+            </li>
+          ))}
+          {loaded && members.length === 0 && <li className="text-sm">Nobody is approved yet.</li>}
         </ul>
       </section>
 
