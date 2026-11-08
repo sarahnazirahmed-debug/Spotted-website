@@ -3,7 +3,7 @@
 // three stars and an example of the stats. Creators who do not pay get nothing shown on the site.
 import Link from "next/link";
 import { FEATURES } from "@/config/features";
-import { INSIDER_PLAN, FREE_MONTHS } from "@/config/pricing";
+import { INSIDER_PLAN, FREE_MONTHS, priceLabel } from "@/config/pricing";
 import { text } from "@/content";
 import { Section } from "../site/PageShell";
 import PartnerPage from "../site/PartnerPage";
@@ -56,7 +56,7 @@ function Extras() {
       <Section alt>
         <div className="max-w-2xl rounded-3xl bg-box p-7 text-onpanel">
           <p className="text-2xl font-extrabold">
-            {INSIDER_PLAN.name}: AED {INSIDER_PLAN.priceAed} / month. First {FREE_MONTHS} months free.
+            {INSIDER_PLAN.name}: {priceLabel(INSIDER_PLAN.priceAed)} / month. First {FREE_MONTHS} months free.
           </p>
           <h3 className="mt-5 text-xl font-extrabold">{c.keepTitle}</h3>
           <p className="mt-2 text-lg leading-relaxed text-mist">{c.keepText}</p>

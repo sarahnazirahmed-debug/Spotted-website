@@ -96,7 +96,8 @@ test("the Insider and Partner buttons open the right version of the one Apply pa
   assert.equal(partnerLink("insider"), "/apply?type=insider");
   assert.equal(partnerLink("restaurants"), "/apply?type=partner");
   assert.match(read("src/components/insider/InsiderLanding.tsx"), /applyHref=\{partnerLink\("insider"\)\}/);
-  assert.match(read("src/components/insider/PartnerLanding.tsx"), /applyHref=\{partnerLink\("restaurants"\)\}/);
+  assert.match(read("src/components/insider/PartnerLanding.tsx"), /applyHref=\{joinHref\}/);
+  assert.match(read("src/components/insider/PartnerLanding.tsx"), /const joinHref = partnerLink\("restaurants"\)/);
 });
 
 test("the admin area has an Applications tab for the main admin and associates, and the email helper checks a secret", () => {

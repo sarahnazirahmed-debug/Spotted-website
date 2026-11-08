@@ -128,8 +128,9 @@ test("the landing header has the WhatsApp and Instagram buttons", () => {
   assert.match(header, /<SocialButtons/);
   const social = read("src/components/site/SocialButtons.tsx");
   assert.match(social, /text\.common\.whatsapp/);
-  assert.match(social, /text\.common\.instagram/);
-  assert.doesNotMatch(social, /<svg/); // no real brand logos
+  assert.match(social, /name="instagram"/); // Instagram is our own simple round camera icon (you asked for it in Step 8)
+  assert.match(social, /aria-label="Spotted on Instagram"/);
+  assert.doesNotMatch(social, /<svg/); // the drawing lives in Icons.tsx, not pasted brand artwork
 });
 
 test("the footer has exactly Terms, Privacy policy and Confidentiality agreement (step 2), and the Contact page exists", () => {

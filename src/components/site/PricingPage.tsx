@@ -11,6 +11,8 @@ import {
   RESTAURANT_PLANS,
   SHOP_PLANS,
   yearlyPriceAed,
+  priceLabel,
+  PRICES_CONFIRMED,
   type Plan,
 } from "@/config/pricing";
 import { text } from "@/content";
@@ -38,8 +40,8 @@ function PlanCard({ plan, yearly, includeShared, href }: { plan: Plan; yearly: b
           t.custom
         ) : (
           <>
-            AED {price.toLocaleString("en")}
-            <span className="text-lg font-bold text-mist"> {yearly ? t.perYear : t.perMonth}</span>
+            {priceLabel(price)}
+            {PRICES_CONFIRMED && <span className="text-lg font-bold text-mist"> {yearly ? t.perYear : t.perMonth}</span>}
           </>
         )}
       </p>

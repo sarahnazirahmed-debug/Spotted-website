@@ -11,7 +11,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PARTNER_PRICE_CARDS } from "@/config/pricing";
+import { PARTNER_PRICE_CARDS, priceLabel } from "@/config/pricing";
 import { text } from "@/content";
 import { getSupabase } from "@/lib/supabase";
 import {
@@ -289,9 +289,9 @@ export default function ApplyForm() {
             <select id="plan" className={input} value={par.plan} onChange={setP("plan")}>
               <option value="">{t.planNotSure}</option>
               {PARTNER_PRICE_CARDS.map((c) => (
-                <option key={c.id} value={`${c.name}${c.forWho ? ` (${c.forWho})` : ""} - AED ${c.priceAed}`}>
+                <option key={c.id} value={`${c.name}${c.forWho ? ` (${c.forWho})` : ""} - ${priceLabel(c.priceAed)}`}>
                   {c.name}
-                  {c.forWho ? ` (${c.forWho})` : ""} - AED {c.priceAed}
+                  {c.forWho ? ` (${c.forWho})` : ""} - {priceLabel(c.priceAed)}
                 </option>
               ))}
             </select>

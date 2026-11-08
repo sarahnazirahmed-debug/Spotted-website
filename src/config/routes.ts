@@ -4,8 +4,16 @@
 // Otherwise they go to the page itself, and while that page is OFF they go to the Contact page.
 import { FEATURES } from "./features.ts";
 
+// The Join forms live in the dashboard app (Step 6 there): applications go straight to the team's review,
+// the 60-day journey and the mail trail. NEXT_PUBLIC_JOIN_URL is the dashboard app's web address,
+// for example https://dashboard.example.com (no slash at the end). While it is empty, the buttons use this site's own
+// Apply page, so nothing is broken before the dashboard has an address.
+export const JOIN_URL = (process.env.NEXT_PUBLIC_JOIN_URL ?? "").trim().replace(/\/+$/, "");
+
+export const joinLink = (kind: "insider" | "partner"): string | null => (JOIN_URL ? `${JOIN_URL}/#/join/${kind}` : null);
+
 export const applyLink = (kind: "insider" | "partner", how?: "founding"): string =>
-  `/apply?type=${kind}${how ? `&how=${how}` : ""}`;
+  joinLink(kind) ?? `/apply?type=${kind}${how ? `&how=${how}` : ""}`;
 
 export const partnerLink = (page: "restaurants" | "shops" | "insider"): string => {
   if (page === "insider") {
