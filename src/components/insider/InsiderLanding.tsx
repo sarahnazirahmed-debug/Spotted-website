@@ -1,8 +1,11 @@
 // The Insider page (step 3): the shared template (ProfileLanding) with the Insider words, the AED 249 deal,
 // and the "Founding Insiders" box (by invitation only). Words: src/content/en.ts (insiderPage).
 // Price and founding group: src/config/pricing.ts.
+"use client";
+
 import Link from "next/link";
-import { FOUNDING_FREE_PERIOD, FOUNDING_SPOTS, INSIDER_PLAN, priceLabel, yearlyPriceAed } from "@/config/pricing";
+import { useSiteSettings } from "@/lib/siteSettings";
+import { FOUNDING_FREE_PERIOD, FOUNDING_SPOTS, priceLabel, yearlyPriceAed } from "@/config/pricing";
 import { text } from "@/content";
 import { applyLink, partnerLink } from "@/config/routes";
 import ProfileLanding, { heading } from "./ProfileLanding";
@@ -11,9 +14,8 @@ import { FEATURES } from "@/config/features";
 const t = text.insiderPage;
 
 export default function InsiderLanding() {
-  const price = INSIDER_PLAN.priceAed ?? 0;
-  // every price says "Price to confirm" until the real prices are given (PRICES_CONFIRMED in pricing.ts)
-  const aed = (n: number) => priceLabel(n);
+  const price = useSiteSettings().prices.insider ?? null; // typed on the Pin Desk; empty = "Price to confirm"
+  const aed = (n: number | null) => priceLabel(n);
   const deal = (
     <div className="max-w-2xl">
       <div className="rounded-2xl border border-rosesoft bg-cream p-7">
@@ -21,7 +23,7 @@ export default function InsiderLanding() {
           {aed(price)} <span className="font-bar text-lg font-semibold text-mutedtext">{t.dealMonthly}</span>
         </p>
         <p className="mt-3 text-lg">
-          <strong>{aed(yearlyPriceAed(price))}</strong> {t.dealYearly} ({t.dealYearlyNote})
+          <strong>{aed(price === null ? null : yearlyPriceAed(price))}</strong> {t.dealYearly} ({t.dealYearlyNote})
         </p>
       </div>
       <p className="mt-4 rounded-2xl border border-rose-line bg-pagebase px-5 py-4 text-base font-semibold leading-relaxed">{t.dealStrip}</p>

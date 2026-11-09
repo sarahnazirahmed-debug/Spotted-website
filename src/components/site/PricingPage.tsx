@@ -12,20 +12,25 @@ import {
   SHOP_PLANS,
   yearlyPriceAed,
   priceLabel,
-  PRICES_CONFIRMED,
+  planPriceKey,
   type Plan,
+  type PriceGroup,
 } from "@/config/pricing";
+import { useSiteSettings } from "@/lib/siteSettings";
 import { text } from "@/content";
 import { Icon } from "./Icons";
 
-function PlanCard({ plan, yearly, includeShared, href }: { plan: Plan; yearly: boolean; includeShared: boolean; href: string }) {
+function PlanCard({ plan, group, yearly, includeShared, href }: { plan: Plan; group: PriceGroup; yearly: boolean; includeShared: boolean; href: string }) {
   const t = text.pricing;
+  const settings = useSiteSettings();
   const lines = [
     ...(includeShared ? PARTNER_INCLUDED : []),
     ...(plan.staffLogins !== null ? [t.staff(plan.staffLogins)] : []),
     ...plan.included,
   ];
-  const price = plan.priceAed === null ? null : yearly ? yearlyPriceAed(plan.priceAed) : plan.priceAed;
+  const custom = plan.priceAed === null; // hotels: talk to us
+  const monthly = custom ? null : settings.prices[planPriceKey(group, plan.id)] ?? null; // typed on the Pin Desk
+  const price = monthly === null ? null : yearly ? yearlyPriceAed(monthly) : monthly;
   return (
     <div className="flex flex-col rounded-3xl bg-box p-7 text-onpanel">
       <div className="flex flex-wrap items-center gap-2">
@@ -36,12 +41,12 @@ function PlanCard({ plan, yearly, includeShared, href }: { plan: Plan; yearly: b
       </div>
       <p className="mt-1 text-base text-mist">{plan.forWho}</p>
       <p className="mt-4 text-4xl font-extrabold">
-        {price === null ? (
+        {custom ? (
           t.custom
         ) : (
           <>
             {priceLabel(price)}
-            {PRICES_CONFIRMED && <span className="text-lg font-bold text-mist"> {yearly ? t.perYear : t.perMonth}</span>}
+            {price !== null && <span className="text-lg font-bold text-mist"> {yearly ? t.perYear : t.perMonth}</span>}
           </>
         )}
       </p>
@@ -57,7 +62,7 @@ function PlanCard({ plan, yearly, includeShared, href }: { plan: Plan; yearly: b
         ))}
       </ul>
       <Link href={href} className="mt-6 flex min-h-12 items-center justify-center rounded-full bg-btn px-6 font-extrabold text-onbtn transition active:scale-95">
-        {plan.priceAed === null ? t.talk : text.common.getInTouch}
+        {custom ? t.talk : text.common.getInTouch}
       </Link>
     </div>
   );
@@ -88,20 +93,20 @@ export default function PricingPage() {
       <h2 className={heading}>{t.restaurantsTitle}</h2>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {RESTAURANT_PLANS.map((p) => (
-          <PlanCard key={p.id} plan={p} yearly={yearly} includeShared={p.priceAed !== null} href={partnerLink("restaurants")} />
+          <PlanCard key={p.id} plan={p} group="restaurants" yearly={yearly} includeShared={p.priceAed !== null} href={partnerLink("restaurants")} />
         ))}
       </div>
 
       <h2 className={heading}>{t.shopsTitle}</h2>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {SHOP_PLANS.map((p) => (
-          <PlanCard key={p.id} plan={p} yearly={yearly} includeShared href={partnerLink("shops")} />
+          <PlanCard key={p.id} plan={p} group="shops" yearly={yearly} includeShared href={partnerLink("shops")} />
         ))}
       </div>
 
       <h2 className={heading}>{t.insiderTitle}</h2>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <PlanCard plan={INSIDER_PLAN} yearly={yearly} includeShared={false} href={partnerLink("insider")} />
+        <PlanCard plan={INSIDER_PLAN} group="insider" yearly={yearly} includeShared={false} href={partnerLink("insider")} />
       </div>
 
       <p className="mt-10 max-w-3xl text-base">{t.staffExplain}</p>

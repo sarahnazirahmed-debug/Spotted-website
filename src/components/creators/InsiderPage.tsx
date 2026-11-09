@@ -1,7 +1,10 @@
 // The /insider page: "Spotted Insider", the PAID plan for creators (price and the free months are in
 // src/config/pricing.ts). It uses the same design as Restaurants and Shops (PartnerPage), plus the
 // three stars and an example of the stats. Creators who do not pay get nothing shown on the site.
+"use client";
+
 import Link from "next/link";
+import { useSiteSettings } from "@/lib/siteSettings";
 import { FEATURES } from "@/config/features";
 import { INSIDER_PLAN, FREE_MONTHS, priceLabel } from "@/config/pricing";
 import { text } from "@/content";
@@ -20,6 +23,7 @@ const MAX = Math.max(...REELS.map((r) => r.saved));
 
 function Extras() {
   const c = text.partner.insiders;
+  const insiderPrice = useSiteSettings().prices.insider ?? null; // typed on the Pin Desk; empty = "Price to confirm"
   return (
     <>
       <Section title={c.examplesTitle}>
@@ -56,7 +60,7 @@ function Extras() {
       <Section alt>
         <div className="max-w-2xl rounded-3xl bg-box p-7 text-onpanel">
           <p className="text-2xl font-extrabold">
-            {INSIDER_PLAN.name}: {priceLabel(INSIDER_PLAN.priceAed)} / month. First {FREE_MONTHS} months free.
+            {INSIDER_PLAN.name}: {priceLabel(insiderPrice)} / month. First {FREE_MONTHS} months free.
           </p>
           <h3 className="mt-5 text-xl font-extrabold">{c.keepTitle}</h3>
           <p className="mt-2 text-lg leading-relaxed text-mist">{c.keepText}</p>

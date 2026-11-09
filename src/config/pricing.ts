@@ -7,13 +7,25 @@
 // NOTE: the "included" lists are a first draft. Please check each line is something you really will
 // give, and change, add or remove lines freely.
 
-// PRICES ON THE PUBLIC WEBSITE (step 8): while PRICES_CONFIRMED is false, EVERY price shown to visitors says
-// "Price to confirm". The real numbers below stay here, ready. When Sarah gives the real prices, put them in this
-// file, change the next line to true, and every page shows the numbers. Pages must use priceLabel(), never print a price themselves.
-export const PRICES_CONFIRMED = false;
+// PRICES ON THE PUBLIC WEBSITE: Sarah types them on the Pin Desk (dashboard, Website settings). The website reads them
+// (src/lib/siteSettings.ts), and a plan with no price typed says "Price to confirm". The numbers written further down in
+// this file (priceAed) are NOT shown to visitors any more: they only tell the page whether a plan has a price at all
+// (null = "talk to us"). Pages must use priceLabel() with a price from the settings, never print a price themselves.
 export const PRICE_TO_CONFIRM = "Price to confirm";
-export const priceLabel = (aed: number | null): string =>
-  PRICES_CONFIRMED && aed !== null ? `AED ${aed.toLocaleString("en-US")}` : PRICE_TO_CONFIRM;
+export const priceLabel = (aed: number | null): string => (aed !== null ? `AED ${aed.toLocaleString("en-US")}` : PRICE_TO_CONFIRM);
+
+// The name of each plan's price box on the Pin Desk.
+export type PriceGroup = "restaurants" | "shops" | "insider";
+export function planPriceKey(group: PriceGroup, id: string): string {
+  if (group === "insider") return "insider";
+  if (group === "restaurants") return `restaurants.${id === "multi-branch" ? "branches" : id}`;
+  return `shops.${id}`;
+}
+// (the small cards on the Partner page use their own ids)
+export function cardPriceKey(c: { group: "restaurants" | "shops"; id: string }): string {
+  if (c.group === "restaurants") return `restaurants.${c.id}`;
+  return c.id === "shop-8" ? "shops.starter" : c.id === "shop-14" ? "shops.plus" : "shops.pro";
+}
 
 // The partner decides their own reward, and it can never be more than this share (shown on the Partner page).
 // The partner decides the reward (a percentage off, a freebie, anything). There is no fixed limit on the page.
