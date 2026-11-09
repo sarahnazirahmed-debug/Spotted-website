@@ -1,14 +1,18 @@
 // The Spotted Partner page (step 8): the shared template (ProfileLanding) with the Partner words, TWO TIERS
 // (Restaurants and Shops), a card for every plan with a "See more" drop-down, the reward cap, and the pink
-// "First 2 months free" strip. Every price says "Price to confirm" until the real prices are given
-// (PRICES_CONFIRMED in src/config/pricing.ts). Words: src/content/en.ts (partnerPage). Prices: src/config/pricing.ts.
+// "First 2 months free" strip. Prices come from the Pin Desk; a plan with no price typed says "Price to confirm". Words: src/content/en.ts (partnerPage). Prices: src/config/pricing.ts.
+"use client";
+
 import Link from "next/link";
+import { useSiteSettings } from "@/lib/siteSettings";
 import {
   FREE_MONTHS,
   PARTNER_INCLUDED,
   PARTNER_PRICE_CARDS,
   PRICE_TO_CONFIRM,
+  cardPriceKey,
   priceLabel,
+  yearlyPriceAed,
   type PartnerCard,
 } from "@/config/pricing";
 import { text } from "@/content";
@@ -19,16 +23,17 @@ import ProfileLanding, { coralButton } from "./ProfileLanding";
 const t = text.partnerPage;
 
 function PlanCard({ c, joinHref }: { c: PartnerCard; joinHref: string }) {
+  const monthly = useSiteSettings().prices[cardPriceKey(c)] ?? null; // typed on the Pin Desk; empty = "Price to confirm"
   // what "See more" shows: the lines every Partner plan has, this plan's staff logins, the free months, and the reward cap
   const lines = [...PARTNER_INCLUDED, t.staffLogins(c.staffLogins), t.freeMonths(FREE_MONTHS), t.rewardLine];
   return (
     <li className="flex flex-col rounded-2xl border border-rosesoft bg-cream p-5">
       <p className="font-brand text-lg font-bold leading-snug">{c.name}</p>
       {c.forWho && <p className="text-sm font-semibold text-mutedtext">{c.forWho}</p>}
-      <p className="mt-4 font-brand text-xl font-bold text-maroon">{priceLabel(c.priceAed)}</p>
+      <p className="mt-4 font-brand text-xl font-bold text-maroon">{priceLabel(monthly)}</p>
       <p className="text-xs font-semibold text-mutedtext">{t.dealMonthly}</p>
       <p className="mt-2 text-sm font-semibold">
-        {PRICE_TO_CONFIRM} <span className="text-xs text-mutedtext">{t.dealYearly}</span>
+        {monthly === null ? PRICE_TO_CONFIRM : priceLabel(yearlyPriceAed(monthly))} <span className="text-xs text-mutedtext">{t.dealYearly}</span>
       </p>
       <Link href={joinHref} className={`${coralButton} mt-4 !min-h-11 !px-5 text-sm`}>
         {t.joinPlan}

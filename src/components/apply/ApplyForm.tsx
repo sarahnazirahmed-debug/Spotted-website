@@ -11,7 +11,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PARTNER_PRICE_CARDS, priceLabel } from "@/config/pricing";
+import { PARTNER_PRICE_CARDS, cardPriceKey, priceLabel } from "@/config/pricing";
+import { useSiteSettings } from "@/lib/siteSettings";
 import { text } from "@/content";
 import { getSupabase } from "@/lib/supabase";
 import {
@@ -72,6 +73,7 @@ function PdfField({ id, label, file, onFile }: { id: string; label: string; file
 }
 
 export default function ApplyForm() {
+  const sitePrices = useSiteSettings().prices; // plan prices typed on the Pin Desk
   const router = useRouter();
   const params = useSearchParams();
   const kind = params.get("type") === "partner" ? "partner" : "insider";
@@ -288,12 +290,15 @@ export default function ApplyForm() {
           <Field id="plan" label={t.plan} optional>
             <select id="plan" className={input} value={par.plan} onChange={setP("plan")}>
               <option value="">{t.planNotSure}</option>
-              {PARTNER_PRICE_CARDS.map((c) => (
-                <option key={c.id} value={`${c.name}${c.forWho ? ` (${c.forWho})` : ""} - ${priceLabel(c.priceAed)}`}>
-                  {c.name}
-                  {c.forWho ? ` (${c.forWho})` : ""} - {priceLabel(c.priceAed)}
-                </option>
-              ))}
+              {PARTNER_PRICE_CARDS.map((c) => {
+                const label = priceLabel(sitePrices[cardPriceKey(c)] ?? null); // typed on the Pin Desk
+                return (
+                  <option key={c.id} value={`${c.name}${c.forWho ? ` (${c.forWho})` : ""} - ${label}`}>
+                    {c.name}
+                    {c.forWho ? ` (${c.forWho})` : ""} - {label}
+                  </option>
+                );
+              })}
             </select>
           </Field>
           <PdfField id="pLicence" label={t.tradeLicenceRequired} file={files.licence} onFile={(f) => setFiles((o) => ({ ...o, licence: f }))} />

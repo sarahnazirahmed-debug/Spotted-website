@@ -1,19 +1,37 @@
-// Step 8 (the public website): prices say "Price to confirm", two Partner tiers with "See more", the reward is the partner's choice,
+// Step 8 (the public website): prices come from the Pin Desk settings and say "Price to confirm" until typed, two Partner tiers with "See more", the reward is the partner's choice,
 // Careers hidden, the new landing page look, and the Join buttons going to the dashboard's forms. Run with: npm test
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { FEATURES } from "../src/config/features.ts";
-import { PARTNER_PRICE_CARDS, PRICES_CONFIRMED, PRICE_TO_CONFIRM, priceLabel } from "../src/config/pricing.ts";
+import { PARTNER_PRICE_CARDS, PRICE_TO_CONFIRM, priceLabel, planPriceKey, cardPriceKey } from "../src/config/pricing.ts";
 
 const read = (f) => readFileSync(f, "utf8");
 const strip = (s) => s.replace(/^\s*\/\/.*$/gm, ""); // remove // comment lines
 
-test("until the real prices are given, every price says Price to confirm", () => {
-  assert.equal(PRICES_CONFIRMED, false);
+test("a plan with no price typed on the Pin Desk says Price to confirm; a typed price shows as AED", () => {
   assert.equal(PRICE_TO_CONFIRM, "Price to confirm");
-  for (const n of [99, 149, 199, 249, 299, 349, 0]) assert.equal(priceLabel(n), "Price to confirm");
   assert.equal(priceLabel(null), "Price to confirm");
+  assert.equal(priceLabel(149), "AED 149");
+  assert.equal(priceLabel(1099), "AED 1,099");
+});
+
+test("every plan on the website maps to a price box on the Pin Desk, and the keys match the dashboard", () => {
+  const keys = ["restaurants.starter", "restaurants.grow", "restaurants.main", "restaurants.premium", "restaurants.branches", "shops.starter", "shops.plus", "shops.pro", "insider"];
+  const used = new Set([
+    ...PARTNER_PRICE_CARDS.map((c) => cardPriceKey(c)),
+    planPriceKey("restaurants", "starter"), planPriceKey("restaurants", "grow"), planPriceKey("restaurants", "main"), planPriceKey("restaurants", "premium"), planPriceKey("restaurants", "multi-branch"),
+    planPriceKey("shops", "starter"), planPriceKey("shops", "plus"), planPriceKey("shops", "pro"), planPriceKey("insider", "insider"),
+  ]);
+  assert.deepEqual([...used].sort(), [...keys].sort());
+});
+
+test("the website reads prices and links from the settings, never from typed numbers", () => {
+  for (const f of ["src/components/insider/PartnerLanding.tsx", "src/components/insider/InsiderLanding.tsx", "src/components/creators/InsiderPage.tsx", "src/components/site/PricingPage.tsx", "src/components/apply/ApplyForm.tsx", "src/components/site/SocialButtons.tsx"]) {
+    assert.match(read(f), /useSiteSettings\(\)/, `${f} does not read the settings`);
+  }
+  assert.match(read("src/lib/siteSettings.ts"), /public_site_settings/);
+  assert.doesNotMatch(read("src/config/pricing.ts"), /export const PRICES_CONFIRMED/);
 });
 
 test("no public page prints a price by itself: they all use priceLabel()", () => {

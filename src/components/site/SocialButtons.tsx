@@ -1,13 +1,19 @@
-// WhatsApp and Instagram buttons. A button with no link (not set in .env.local) is not shown.
+"use client";
+
+// WhatsApp and Instagram buttons. A button with no link is not shown. The links come from the Pin Desk (Website settings);
+// the .env.local values are only the backup.
 // WhatsApp is a word button. Instagram is a round icon button (a simple camera drawing) that opens the Spotted Instagram page.
 import { LINKS, whatsappUrl } from "@/config/links";
+import { useSiteSettings } from "@/lib/siteSettings";
 import { text } from "@/content";
 import { Icon } from "./Icons";
 
 // instagram={false}: show only the WhatsApp button.
 export default function SocialButtons({ message, className = "", instagram = true }: { message?: string; className?: string; instagram?: boolean }) {
-  const wa = whatsappUrl(message);
-  const ig = instagram ? LINKS.instagramUrl : "";
+  const settings = useSiteSettings();
+  const number = settings.whatsapp_number || LINKS.whatsappNumber;
+  const wa = number ? `https://wa.me/${number}${message ? `?text=${encodeURIComponent(message)}` : ""}` : whatsappUrl(message);
+  const ig = instagram ? settings.instagram_url || LINKS.instagramUrl : "";
   if (!wa && !ig) return null;
   const base = "inline-flex min-h-12 items-center gap-2 rounded-full px-6 text-base font-extrabold transition active:scale-95";
   return (
