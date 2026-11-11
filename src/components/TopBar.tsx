@@ -2,13 +2,12 @@
 
 // The top bar for all public pages (maroon, cream text).
 //   Left:   the Spotted bookmark and the word Spotted.
-//   Links:  How it works, Your data, Questions, Insiders, Partners, Careers (wide screens).
-//   Right:  a small Admin link and a three-bar menu button.
-// The three-bar menu opens a panel with two groups:
-//   "Spotted Crew": Admin, Staff (both open the one Log in page, /login)
-//   "Join Spotted": Insiders (For influencers), Partners (For restaurants and shops), Careers (Work with the crew)
-// On small screens the panel also holds the main links, because the bar has no room for them.
-// The page you are on is underlined in coral. A link whose page is switched OFF in features.ts
+//   Links:  How it works, FAQs, Insiders, Partners (wide screens). Careers is added ONLY when careersPage is ON in
+//           features.ts; with the switch OFF there is no Careers link and no "coming soon" note anywhere.
+//   Right (wide screens): two buttons: "Log in" (thin rose border, opens /login) and "Sign up" (coral, opens /signup).
+//   The three-bar menu button shows only on small screens. Its panel holds the same four links plus Log in and Sign up.
+// There is NO Admin or Staff link anywhere on the public site (the /admin address still works when typed).
+// The page you are on is underlined in coral. A link or button whose page is switched OFF in features.ts
 // shows a small "coming soon" note instead.
 // alwaysVisible: show the bar from the start. When it is false (the old animated home page), the bar
 // is hidden on the landing section and fades in as the visitor scrolls down.
@@ -21,17 +20,16 @@ import { text } from "@/content";
 type LinkItem = { label: string; href: string; feature?: FeatureName };
 
 const n = text.nav;
-const m = text.menuPanel;
 const LINKS: LinkItem[] = [
   { label: n.howItWorks, href: "/#how-it-works" },
-  { label: n.yourData, href: "/privacy", feature: "legalPages" },
-  { label: n.questions, href: "/faq", feature: "faqPage" },
+  { label: n.faqs, href: "/faq", feature: "faqPage" },
   { label: n.insiders, href: "/insider", feature: "insiderPage" },
   { label: n.partners, href: "/partners", feature: "businessPages" },
-  { label: n.careers, href: "/careers", feature: "careersPage" },
 ];
-// Admin and Staff both open the one Log in page. People never need to type /admin.
-const ADMIN: LinkItem = { label: n.admin, href: "/login", feature: "loginPage" };
+// Careers is shown ONLY while its switch is ON (the page code is kept, so it can be switched back on later).
+const CAREERS: LinkItem = { label: n.careers, href: "/careers", feature: "careersPage" };
+const LOG_IN: LinkItem = { label: n.logIn, href: "/login", feature: "loginPage" };
+const SIGN_UP: LinkItem = { label: n.signUp, href: "/signup", feature: "accounts" };
 
 // Partners covers the Partner page and also the older Restaurants and Shops pages.
 const PARTNER_PATHS = ["/partners", "/restaurants", "/shops"];
@@ -95,9 +93,10 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
     };
   }, [open]);
 
-  // Only the six main links get the coral underline (Admin and Staff both open /login).
+  // The main links get the coral underline for the page you are on.
+  const links = FEATURES.careersPage ? [...LINKS, CAREERS] : LINKS;
   const isCurrent = (item: LinkItem) =>
-    item.href.startsWith("/#") || item === ADMIN
+    item.href.startsWith("/#")
       ? false
       : item.href === "/partners"
         ? PARTNER_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))
@@ -133,36 +132,31 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
     );
   }
 
-  // One row in the menu panel: the name and a small line under it.
-  function panelRow(label: string, note2: string, href: string, on: boolean) {
-    const cls =
-      "flex min-h-11 flex-col justify-center rounded-xl px-3 py-1 text-onbar transition hover:bg-onbar/10 focus-visible:outline-2 focus-visible:outline-coral";
-    const inner = (
-      <>
-        <span className="font-bar text-base font-semibold">{label}</span>
-        <span className="font-bar text-xs font-medium text-barline">{note2}</span>
-      </>
-    );
-    return on ? (
-      <Link key={label} href={href} className={cls} onClick={close}>
-        {inner}
-      </Link>
-    ) : (
+  // The two buttons: Log in (thin rose border) and Sign up (coral). A page switched OFF shows the small note instead of a link.
+  function authButton(l: LinkItem, kind: "login" | "signup", extra = "", onGo?: () => void) {
+    const cls = `flex min-h-11 items-center justify-center rounded-full px-5 font-bar text-sm font-bold transition active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral ${
+      kind === "signup" ? "bg-coral text-darktext" : "border border-rose-line text-onbar hover:border-coral hover:text-coral"
+    } ${extra}`;
+    if (isOn(l))
+      return (
+        <Link key={l.label} href={l.href} className={cls} onClick={onGo}>
+          {l.label}
+        </Link>
+      );
+    return (
       <button
-        key={label}
+        key={l.label}
         type="button"
-        className={`${cls} text-left`}
+        className={cls}
         onClick={() => {
-          close();
-          setNote(n.comingSoonNote(label));
+          onGo?.();
+          setNote(n.comingSoonNote(l.label));
         }}
       >
-        {inner}
+        {l.label}
       </button>
     );
   }
-
-  const groupTitle = "px-3 pb-1 pt-3 font-bar text-xs font-bold uppercase tracking-wide text-barline";
 
   return (
     <header
@@ -179,11 +173,14 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
         </Link>
 
         <nav aria-label="Main" className="ml-2 hidden items-center gap-0.5 xl:flex">
-          {LINKS.map((l) => item(l))}
+          {links.map((l) => item(l))}
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <span className="hidden md:flex">{item(ADMIN, "!text-xs !font-medium opacity-80")}</span>
+          <div className="hidden items-center gap-2 xl:flex">
+            {authButton(LOG_IN, "login")}
+            {authButton(SIGN_UP, "signup")}
+          </div>
           <button
             ref={menuButton}
             type="button"
@@ -191,7 +188,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
             aria-expanded={open}
             aria-controls="site-menu"
             onClick={() => setOpen((o) => !o)}
-            className="flex size-11 items-center justify-center rounded-full text-onbar focus-visible:outline-2 focus-visible:outline-coral"
+            className="flex size-11 items-center justify-center rounded-full text-onbar focus-visible:outline-2 focus-visible:outline-coral xl:hidden"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
               <path d="M4 7h16M4 12h16M4 17h16" />
@@ -203,18 +200,15 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
       {open && (
         <div
           id="site-menu"
-          className="absolute right-4 top-full mt-1 max-h-[80dvh] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-barline/50 bg-bar p-2 shadow-xl"
+          className="absolute right-4 top-full mt-1 max-h-[80dvh] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-barline/50 bg-bar p-2 shadow-xl xl:hidden"
         >
           <nav aria-label={n.menu} className="flex flex-col">
-            {/* the main links, only where the bar itself has no room for them */}
-            <div className="xl:hidden">
-              <p className={groupTitle}>{m.spotted}</p>
-              {LINKS.map((l) => item(l, "text-base !px-3", close))}
+            {/* the same links as the bar, plus Log in and Sign up (small screens only) */}
+            {links.map((l) => item(l, "text-base !px-3", close))}
+            <div className="mt-2 grid gap-2 px-1 pb-1">
+              {authButton(LOG_IN, "login", "", close)}
+              {authButton(SIGN_UP, "signup", "", close)}
             </div>
-            <p className={groupTitle}>{m.crew}</p>
-            {m.crewLinks.map((c) => panelRow(c.label, c.note, "/login", isOn(ADMIN)))}
-            <p className={groupTitle}>{m.join}</p>
-            {m.joinLinks.map((j) => panelRow(j.label, j.note, j.href, FEATURES[j.feature as FeatureName]))}
           </nav>
         </div>
       )}

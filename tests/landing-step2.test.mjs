@@ -7,20 +7,24 @@ import { FEATURES } from "../src/config/features.ts";
 const read = (f) => readFileSync(f, "utf8");
 const en = read("src/content/en.ts");
 
-test("the menu panel has the two groups with the agreed names and lines", () => {
-  for (const w of ["Spotted Crew", "Join Spotted", '"Admin"', '"Staff"', "For influencers", "For restaurants and shops", "Work with the crew"]) assert.ok(en.includes(w), `${w} missing`);
+test("the three-bar menu (small screens only) holds the same links plus Log in and Sign up, and no Crew or Join groups", () => {
+  for (const w of ["Spotted Crew", "Work with the crew", "menuPanel"]) assert.ok(!en.includes(w), `${w} should be gone`);
   const bar = read("src/components/TopBar.tsx");
-  assert.match(bar, /m\.crew/);
-  assert.match(bar, /m\.join/);
+  assert.match(bar, /authButton\(LOG_IN/);
+  assert.match(bar, /authButton\(SIGN_UP/);
+  assert.match(bar, /size-11[^"]*xl:hidden/); // the three-bar button is hidden on wide screens
   assert.match(bar, /aria-expanded=\{open\}/); // the three-bar button says whether the panel is open
   assert.match(bar, /Escape/); // it closes with the keyboard
 });
 
-test("the top bar has a small Admin link and no Get notified button", () => {
+test("the top bar has Log in and Sign up buttons, no Get notified, and no Admin or Staff link anywhere", () => {
   const bar = read("src/components/TopBar.tsx");
   assert.doesNotMatch(bar, /Get notified|GET_NOTIFIED/);
   assert.doesNotMatch(read("src/content/en.ts"), /getNotified/);
-  assert.match(bar, /item\(ADMIN/);
+  assert.doesNotMatch(bar.replace(/^\s*\/\/.*$/gm, ""), /ADMIN|"Admin"|"Staff"/);
+  assert.doesNotMatch(read("src/content/en.ts"), /admin: "Admin"/);
+  assert.match(bar, /bg-coral text-darktext/); // Sign up is coral
+  assert.match(bar, /border border-rose-line/); // Log in has a thin rose border
 });
 
 test("the phone loop: about 7 seconds, repeats, and Reduce Motion shows only the final Place saved screen", () => {

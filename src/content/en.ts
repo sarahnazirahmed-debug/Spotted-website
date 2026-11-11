@@ -16,11 +16,10 @@ export const en = {
     signIn: "Sign in",
     partners: "Partners",
     careers: "Careers",
-    admin: "Admin",
     logIn: "Log in",
+    signUp: "Sign up",
     howItWorks: "How it works",
-    yourData: "Your data",
-    questions: "Questions",
+    faqs: "FAQs",
     menu: "Site menu",
     comingSoonNote: (label: string) => `${label} is coming soon.`,
   },
@@ -266,23 +265,6 @@ export const en = {
     live: "Live",
     notLive: "Not live",
     failed: "Something went wrong. Please try again.",
-  },
-
-  // The panel that opens from the three-bar menu button in the top bar.
-  menuPanel: {
-    spotted: "Spotted",
-    crew: "Spotted Crew",
-    crewLinks: [
-      { label: "Admin", note: "For the team" },
-      { label: "Staff", note: "For the team" },
-    ],
-    join: "Join Spotted",
-    joinLinks: [
-      { label: "Insiders", note: "For influencers", feature: "insiderPage", href: "/insider" },
-      { label: "Partners", note: "For restaurants and shops", feature: "businessPages", href: "/partners" },
-      { label: "Careers", note: "Work with the crew", feature: "careersPage", href: "/careers" },
-    ],
-    close: "Close menu",
   },
 
   // The phone picture in the hero: a calm loop (see src/components/site/PhoneLoop.tsx).
