@@ -68,3 +68,33 @@ test("no emoji in the new files", () => {
   const emoji = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
   for (const f of ["src/components/TopBar.tsx", "src/components/site/PhoneLoop.tsx", "src/content/en.ts", "src/components/Footer.tsx"]) assert.doesNotMatch(read(f), emoji, f);
 });
+
+test("the logo sits at the far left edge of the window (not in a centred box), is a little bigger, and the bar keeps its height", () => {
+  const bar = read("src/components/TopBar.tsx").replace(/^\s*\/\/.*$/gm, "");
+  assert.doesNotMatch(bar, /mx-auto[^"]*max-w-6xl/); // no centred container
+  assert.match(bar, /flex h-16 w-full items-center gap-3 px-3/); // full width, 4rem high as before, small gap from the edge
+  assert.match(bar, /font-brand text-2xl font-bold/); // the word is text-2xl
+  assert.match(bar, /svg width="26" height="31"/); // the bookmark is scaled up to match
+});
+
+test("every top bar link and both buttons share the press animation, and it respects Reduce Motion", () => {
+  const bar = read("src/components/TopBar.tsx").replace(/^\s*\/\/.*$/gm, "");
+  assert.equal((bar.match(/motion-safe:active:scale-95/g) ?? []).length >= 3, true); // links, the two buttons, the logo
+  assert.match(bar, /const base =\s*"[^"]*transition motion-safe:active:scale-95/);
+  assert.doesNotMatch(bar, /[^:-]active:scale-95/); // never without motion-safe
+  assert.match(bar, /underline decoration-coral/); // the coral underline for the current page stays
+});
+
+test("the Insider and Partner top section has no small label and no buttons; the closing band keeps the one apply button", () => {
+  const raw = read("src/components/insider/ProfileLanding.tsx");
+  const code = raw.replace(/^\s*\/\/.*$/gm, "");
+  const hero = code.slice(code.indexOf("<header"), code.indexOf("</header>"));
+  assert.doesNotMatch(hero, /t\.hero\.label|t\.hero\.account|coralButton|<Link/); // no label, no buttons in the top section
+  assert.match(hero, /t\.hero\.lead/); // the intro text stays
+  const band = code.slice(code.indexOf('id="get-in-touch"'));
+  assert.match(band, /coralButton/);
+  assert.match(band, /t\.hero\.apply/);
+  assert.equal((code.match(/t\.hero\.apply/g) ?? []).length, 1); // the ONLY apply button
+  const en = read("src/content/en.ts");
+  assert.doesNotMatch(en, /I already have an account|label: "For influencers"|label: "For restaurants and shops"/);
+});

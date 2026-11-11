@@ -29,7 +29,7 @@ test("the seven sections are in the agreed order", () => {
 
 test("the agreed words are in the text file", () => {
   for (const w of [
-    "For influencers", "Spotted Insider", "Make your reels work harder", "Become an Insider", "I already have an account",
+    "Spotted Insider", "Make your reels work harder", "Become an Insider",
     "Why become an Insider", "See what your reels do", "Your reels live in the app", "Restaurants can see you", "One simple dashboard",
     "What you need to apply", "UAE Advertiser Permit", "Instagram and TikTok are counted first, other platforms are saved for later.",
     "Your application", "Upload PDF", "Your dashboard, on any screen", "Example layout only.", "The deal",
