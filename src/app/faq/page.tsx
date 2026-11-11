@@ -5,6 +5,7 @@ import { FEATURES } from "@/config/features";
 import { text } from "@/content";
 import PageShell, { Section } from "@/components/site/PageShell";
 import SocialButtons from "@/components/site/SocialButtons";
+import IfInstagram from "@/components/site/IfInstagram";
 
 export const metadata: Metadata = { title: "FAQ", description: "Questions and answers about Spotted." };
 
@@ -27,8 +28,10 @@ export default function Page() {
             {t.removeLink}
           </Link>
         )}
-        <h2 className="mb-4 mt-12 text-2xl font-extrabold text-heading">{t.talkTitle}</h2>
-        <SocialButtons message="Hi Spotted! I have a question." />
+        <IfInstagram>
+          <h2 className="mb-4 mt-12 text-2xl font-extrabold text-heading">{t.talkTitle}</h2>
+          <SocialButtons />
+        </IfInstagram>
       </Section>
     </PageShell>
   );

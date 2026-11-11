@@ -11,6 +11,7 @@ import { Icon, type IconName } from "./Icons";
 import LiveCounters from "./LiveCounters";
 import PhoneLoop from "./PhoneLoop";
 import SocialButtons from "./SocialButtons";
+import IfInstagram from "./IfInstagram";
 import StoreButtons from "./StoreButtons";
 import { Section, coralButton } from "../insider/ProfileLanding";
 
@@ -45,7 +46,7 @@ export default function HomeLanding() {
                 </Link>
               )}
             </div>
-            <SocialButtons className="mt-8" message="Hi Spotted!" />
+            <SocialButtons className="mt-8" />
             <StoreButtons />
           </div>
           <PhoneLoop />
@@ -110,13 +111,15 @@ export default function HomeLanding() {
         </Section>
 
         {/* 5. TALK TO US */}
-        <section className="bg-maroon px-5 py-14 text-cream">
-          <div className="mx-auto max-w-5xl">
-            <h2 className="font-brand text-[clamp(1.7rem,4.5vw,2.6rem)] font-bold leading-tight">{h.talkTitle}</h2>
-            <p className="mb-6 mt-3 max-w-2xl text-lg leading-relaxed text-cream/90">{h.talkLead}</p>
-            <SocialButtons message="Hi Spotted! I have a question." />
-          </div>
-        </section>
+        <IfInstagram>
+          <section className="bg-maroon px-5 py-14 text-cream">
+            <div className="mx-auto max-w-5xl">
+              <h2 className="font-brand text-[clamp(1.7rem,4.5vw,2.6rem)] font-bold leading-tight">{h.talkTitle}</h2>
+              <p className="mb-6 mt-3 max-w-2xl text-lg leading-relaxed text-cream/90">{h.talkLead}</p>
+              <SocialButtons />
+            </div>
+          </section>
+        </IfInstagram>
       </main>
 
       {FEATURES.footer && <Footer />}

@@ -16,9 +16,10 @@ test("the menu panel has the two groups with the agreed names and lines", () => 
   assert.match(bar, /Escape/); // it closes with the keyboard
 });
 
-test("the top bar has a coral Get notified button and a small Admin link", () => {
+test("the top bar has a small Admin link and no Get notified button", () => {
   const bar = read("src/components/TopBar.tsx");
-  assert.match(bar, /bg-coral[^"]*text-darktext/);
+  assert.doesNotMatch(bar, /Get notified|GET_NOTIFIED/);
+  assert.doesNotMatch(read("src/content/en.ts"), /getNotified/);
   assert.match(bar, /item\(ADMIN/);
 });
 

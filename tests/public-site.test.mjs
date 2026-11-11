@@ -112,7 +112,7 @@ test("the menu words are in the one text file, in the agreed order", () => {
     assert.ok(i > at, `${k} is missing or out of order in the top menu`);
     at = i;
   }
-  assert.match(nav, /GET_NOTIFIED[\s\S]*n\.getNotified/);
+  assert.doesNotMatch(nav, /GET_NOTIFIED/); // no Get notified button
   const en = text("src/content/en.ts");
   for (const w of ["Home", "Restaurants", "Shops", "Insiders", "Pricing", "How to join", "FAQ", "About", "Sign in", "Partners", "Careers", "Admin", "Log in"]) assert.ok(en.includes(`"${w}"`), `${w} missing from the text file`);
 });

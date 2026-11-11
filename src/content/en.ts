@@ -21,7 +21,6 @@ export const en = {
     howItWorks: "How it works",
     yourData: "Your data",
     questions: "Questions",
-    getNotified: "Get notified",
     menu: "Site menu",
     comingSoonNote: (label: string) => `${label} is coming soon.`,
   },

@@ -3,7 +3,7 @@
 // The top bar for all public pages (maroon, cream text).
 //   Left:   the Spotted bookmark and the word Spotted.
 //   Links:  How it works, Your data, Questions, Insiders, Partners, Careers (wide screens).
-//   Right:  a coral "Get notified" button, a small Admin link, and a three-bar menu button.
+//   Right:  a small Admin link and a three-bar menu button.
 // The three-bar menu opens a panel with two groups:
 //   "Spotted Crew": Admin, Staff (both open the one Log in page, /login)
 //   "Join Spotted": Insiders (For influencers), Partners (For restaurants and shops), Careers (Work with the crew)
@@ -32,7 +32,6 @@ const LINKS: LinkItem[] = [
 ];
 // Admin and Staff both open the one Log in page. People never need to type /admin.
 const ADMIN: LinkItem = { label: n.admin, href: "/login", feature: "loginPage" };
-const GET_NOTIFIED: LinkItem = { label: n.getNotified, href: "/contact", feature: "contactPage" };
 
 // Partners covers the Partner page and also the older Restaurants and Shops pages.
 const PARTNER_PATHS = ["/partners", "/restaurants", "/shops"];
@@ -184,14 +183,6 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          {isOn(GET_NOTIFIED) && (
-            <Link
-              href={GET_NOTIFIED.href}
-              className="flex min-h-11 items-center rounded-full bg-coral px-5 font-bar text-sm font-bold text-darktext transition active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-onbar"
-            >
-              {GET_NOTIFIED.label}
-            </Link>
-          )}
           <span className="hidden md:flex">{item(ADMIN, "!text-xs !font-medium opacity-80")}</span>
           <button
             ref={menuButton}

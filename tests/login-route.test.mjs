@@ -33,7 +33,7 @@ test("the top bar (step 2) has the agreed links in order, and Admin opens /login
     at = i;
   }
   assert.match(bar, /label: n\.admin, href: "\/login"/);
-  assert.match(bar, /label: n\.getNotified/);
+  assert.doesNotMatch(bar, /getNotified|GET_NOTIFIED/); // there is no Get notified button any more
 });
 test("the admin pages send a visitor who is not logged in to /login", () => {
   assert.match(text("src/components/admin/AdminFrame.tsx"), /router\.replace\("\/login"\)/);

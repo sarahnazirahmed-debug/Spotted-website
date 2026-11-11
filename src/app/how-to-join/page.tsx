@@ -38,9 +38,7 @@ export default function Page() {
           <Steps title={t.partnersTitle} steps={t.partnersSteps} href={partnerLink("restaurants")} />
           <Steps title={t.insidersTitle} steps={t.insidersSteps} href={partnerLink("insider")} />
         </div>
-        <div className="mt-8">
-          <SocialButtons message="Hi Spotted! I would like to join." />
-        </div>
+        <SocialButtons className="mt-8" />
       </Section>
     </PageShell>
   );

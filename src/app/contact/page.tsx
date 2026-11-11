@@ -4,6 +4,7 @@ import { CONTACT, FEATURES } from "@/config/features";
 import { text } from "@/content";
 import PageShell, { Section } from "@/components/site/PageShell";
 import SocialButtons from "@/components/site/SocialButtons";
+import IfInstagram from "@/components/site/IfInstagram";
 
 export const metadata: Metadata = {
   title: "Contact Spotted",
@@ -15,8 +16,9 @@ export default function Page() {
   const c = text.contact;
   return (
     <PageShell chip={c.chip} title={c.title} lead={c.lead}>
+      <IfInstagram also={CONTACT.emailLive}>
       <Section>
-        <SocialButtons message="Hi Spotted!" />
+        <SocialButtons />
         {CONTACT.emailLive && (
           <p className="mt-6 text-lg">
             {c.emailLabel}:{" "}
@@ -26,6 +28,7 @@ export default function Page() {
           </p>
         )}
       </Section>
+      </IfInstagram>
     </PageShell>
   );
 }

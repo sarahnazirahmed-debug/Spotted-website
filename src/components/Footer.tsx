@@ -1,12 +1,13 @@
-// The footer: Terms, Privacy policy, Confidentiality agreement, the WhatsApp button, and the contact email (once it exists).
+// The footer: Terms, Privacy policy, Confidentiality agreement, the Instagram button (once the address is set), and the contact email (once it exists).
 import Link from "next/link";
 import { CONTACT, FEATURES } from "@/config/features";
 import { text } from "@/content";
 import SocialButtons from "./site/SocialButtons";
+import IfInstagram from "./site/IfInstagram";
 
 export default function Footer() {
   // The footer has three page links: Terms, Privacy policy, Confidentiality agreement.
-  // Then WhatsApp and the email (the email shows only once the mailbox works: CONTACT.emailLive in features.ts).
+  // Then Instagram and the email (the email shows only once the mailbox works: CONTACT.emailLive in features.ts).
   const links: [string, string, boolean][] = [
     [text.footer.terms, "/terms", FEATURES.legalPages],
     [text.footer.privacyPolicy, "/privacy", FEATURES.legalPages],
@@ -23,8 +24,10 @@ export default function Footer() {
             Spotted
           </p>
           <p className="mt-2 text-mist">{text.footer.tagline}</p>
-          <p className="mb-3 mt-6 text-sm font-bold text-mist">{text.footer.follow}</p>
-          <SocialButtons />
+          <IfInstagram>
+            <p className="mb-3 mt-6 text-sm font-bold text-mist">{text.footer.follow}</p>
+            <SocialButtons />
+          </IfInstagram>
           {CONTACT.emailLive && (
             <a href={`mailto:${CONTACT.email}`} className="mt-4 inline-flex min-h-11 items-center font-bold underline">
               {CONTACT.email}
