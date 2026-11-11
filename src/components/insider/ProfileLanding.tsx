@@ -1,5 +1,5 @@
 // The shared template for the Insider page and the Spotted Partner page (same structure, different words).
-// Sections, in this order:
+// Sections, in this order (the hero has just the title and the intro text: the ONLY apply button is in the closing band, 7):
 //   1. Hero   2. Why become ...   3. What you need to apply   4. Your dashboard, on any screen
 //   5. The deal   6. (optional extra box, e.g. Founding Insiders)   7. Closing maroon band
 // The words come from src/content/en.ts (insiderPage or partnerPage). The `deal` and `extra` parts are given by each page.
@@ -14,7 +14,7 @@ import FlipCards from "./FlipCards";
 
 export type LandingCopy = ApplyCopy & {
   draft: string;
-  hero: { label: string; title: string; lead: string; apply: string; account: string };
+  hero: { title: string; lead: string; apply: string }; // apply = the words on the coral button in the closing maroon band
   whyTitle: string;
   flipHint: string;
   cards: { title: string; text: string; stars: boolean }[];
@@ -39,7 +39,7 @@ export function Section({ id, title, children, tint = false }: { id?: string; ti
   );
 }
 
-// applyHref: where the "Become an ..." buttons go (the Apply form, or the Contact page while the Apply page is OFF).
+// applyHref: where the "Become an ..." button (closing maroon band) goes (the Apply form, or the Contact page while the Apply page is OFF).
 export default function ProfileLanding({ t, deal, extra, applyHref }: { t: LandingCopy; deal: React.ReactNode; extra?: React.ReactNode; applyHref: string }) {
   return (
     <div className="font-bar">
@@ -50,22 +50,8 @@ export default function ProfileLanding({ t, deal, extra, applyHref }: { t: Landi
         )}
         <div className="mx-auto grid max-w-5xl items-center gap-12 md:grid-cols-[1.3fr_1fr]">
           <div>
-            <span className="inline-block rounded-full border border-rose-line px-4 py-1 text-sm font-semibold">{t.hero.label}</span>
-            <h1 className="mt-5 font-brand text-[clamp(2.4rem,8vw,4.4rem)] font-bold leading-[1.05]">{t.hero.title}</h1>
+            <h1 className="font-brand text-[clamp(2.4rem,8vw,4.4rem)] font-bold leading-[1.05]">{t.hero.title}</h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-cream/90">{t.hero.lead}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href={applyHref} className={coralButton}>
-                {t.hero.apply}
-              </Link>
-              {FEATURES.loginPage && (
-                <Link
-                  href="/login"
-                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-rose-line px-7 text-base font-semibold text-cream transition hover:border-coral hover:text-coral focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral"
-                >
-                  {t.hero.account}
-                </Link>
-              )}
-            </div>
           </div>
           <PhoneLoop />
         </div>

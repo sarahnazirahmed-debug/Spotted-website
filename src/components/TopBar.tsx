@@ -1,12 +1,15 @@
 "use client";
 
 // The top bar for all public pages (maroon, cream text).
-//   Left:   the Spotted bookmark and the word Spotted.
+//   Left:   the Spotted bookmark and the word Spotted, at the far left edge of the window (a small gap), NOT inside a centred box.
 //   Links:  How it works, FAQs, Insiders, Partners (wide screens). Careers is added ONLY when careersPage is ON in
 //           features.ts; with the switch OFF there is no Careers link and no "coming soon" note anywhere.
-//   Right (wide screens): two buttons: "Log in" (thin rose border, opens /login) and "Sign up" (coral, opens /signup).
+//   Right (wide screens, far right): two buttons: "Log in" (thin rose border, opens /login) and "Sign up" (coral, opens /signup).
 //   The three-bar menu button shows only on small screens. Its panel holds the same four links plus Log in and Sign up.
 // There is NO Admin or Staff link anywhere on the public site (the /admin address still works when typed).
+// Every link and both buttons share the same press animation as the coral "Become an Insider" button: a smooth
+// transition that shrinks the item slightly while it is pressed (active:scale-95). With Reduce Motion turned on
+// there is no movement (motion-safe).
 // The page you are on is underlined in coral. A link or button whose page is switched OFF in features.ts
 // shows a small "coming soon" note instead.
 // alwaysVisible: show the bar from the start. When it is false (the old animated home page), the bar
@@ -105,7 +108,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
   const close = () => setOpen(false);
 
   const base =
-    "flex min-h-11 items-center rounded-xl px-2 font-bar text-sm font-semibold text-onbar transition hover:text-coral focus-visible:outline-2 focus-visible:outline-coral";
+    "flex min-h-11 items-center rounded-xl px-2 font-bar text-sm font-semibold text-onbar transition motion-safe:active:scale-95 hover:text-coral focus-visible:outline-2 focus-visible:outline-coral";
   const underline = "underline decoration-coral decoration-2 underline-offset-8";
 
   // A real link when the page is ON; a button with a small note when it is switched OFF.
@@ -134,7 +137,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
 
   // The two buttons: Log in (thin rose border) and Sign up (coral). A page switched OFF shows the small note instead of a link.
   function authButton(l: LinkItem, kind: "login" | "signup", extra = "", onGo?: () => void) {
-    const cls = `flex min-h-11 items-center justify-center rounded-full px-5 font-bar text-sm font-bold transition active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral ${
+    const cls = `flex min-h-11 items-center justify-center rounded-full px-5 font-bar text-sm font-bold transition motion-safe:active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral ${
       kind === "signup" ? "bg-coral text-darktext" : "border border-rose-line text-onbar hover:border-coral hover:text-coral"
     } ${extra}`;
     if (isOn(l))
@@ -164,9 +167,9 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
       style={alwaysVisible ? undefined : { opacity: 0, pointerEvents: "none" }}
       className="fixed inset-x-0 top-0 z-30 bg-bar text-onbar"
     >
-      <div className={`mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 ${FEATURES.themeLamp ? "xl:pr-[8.5rem]" : ""}`}>
-        <Link href="/" aria-label="Spotted, home" className="flex min-h-11 items-center gap-2 font-brand text-xl font-bold text-onbar focus-visible:outline-2 focus-visible:outline-coral">
-          <svg width="22" height="26" viewBox="0 0 24 28" aria-hidden="true">
+      <div className={`flex h-16 w-full items-center gap-3 px-3 ${FEATURES.themeLamp ? "xl:pr-[8.5rem]" : ""}`}>
+        <Link href="/" aria-label="Spotted, home" className="flex min-h-11 items-center gap-2 font-brand text-2xl font-bold text-onbar transition motion-safe:active:scale-95 focus-visible:outline-2 focus-visible:outline-coral">
+          <svg width="26" height="31" viewBox="0 0 24 28" aria-hidden="true">
             <path d="M3 1h18v26l-9-7-9 7z" fill="var(--coral)" />
           </svg>
           Spotted

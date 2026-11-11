@@ -28,11 +28,9 @@ export const en = {
   insiderPage: {
     draft: "Design draft",
     hero: {
-      label: "For influencers",
       title: "Spotted Insider",
       lead: "Make your reels work harder. See how many people save and visit the places you recommend, and let restaurants and shops find you.",
       apply: "Become an Insider",
-      account: "I already have an account",
     },
     whyTitle: "Why become an Insider",
     flipHint: "Tap to read more",
@@ -90,11 +88,9 @@ export const en = {
   partnerPage: {
     draft: "Design draft",
     hero: {
-      label: "For restaurants and shops",
       title: "Spotted Partner",
       lead: "Let people find you from the reels they already love. See who saved your place, run your own offers, and know which influencers bring you customers.",
       apply: "Become a Partner",
-      account: "I already have an account",
     },
     whyTitle: "Why become a Partner",
     flipHint: "Tap to read more",

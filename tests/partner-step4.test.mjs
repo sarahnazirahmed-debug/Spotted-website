@@ -29,7 +29,7 @@ test("anything food or drink is a Restaurant, everything else is a Shop", () => 
 
 test("the agreed words are in the text file", () => {
   for (const w of [
-    "Spotted Partner", "For restaurants and shops", "Let people find you from the reels they already love. See who saved your place, run your own offers, and know which influencers bring you customers.",
+    "Spotted Partner", "Let people find you from the reels they already love. See who saved your place, run your own offers, and know which influencers bring you customers.",
     "Become a Partner", "People save you from reels", "See your numbers", "Saves, visits and sales recorded through Spotted, by day, week and month.",
     "Your own offers", "Add or remove offers and items any time.", "Know your influencers", "UAE trade licence", "Branches and areas (never a home address)",
     "Add an offer", "Anything food or drink (restaurant, cafe, bakery, sweets, cloud or home kitchen) is a Restaurant. Everything else is a Shop.",
