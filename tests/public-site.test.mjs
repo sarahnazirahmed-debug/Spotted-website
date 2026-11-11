@@ -105,7 +105,7 @@ test("every country code in the picker is a real country name", () => {
 test("the menu words are in the one text file, in the agreed order", () => {
   const nav = text("src/components/TopBar.tsx");
   // (the new draft top bar: see tests/login-route.test.mjs and tests/landing-step2.test.mjs)
-  const order = ["n.howItWorks", "n.yourData", "n.questions", "n.insiders", "n.partners", "n.careers"];
+  const order = ["n.howItWorks", "n.faqs", "n.insiders", "n.partners"];
   let at = -1;
   for (const k of order) {
     const i = nav.indexOf(`label: ${k}`);
@@ -113,8 +113,10 @@ test("the menu words are in the one text file, in the agreed order", () => {
     at = i;
   }
   assert.doesNotMatch(nav, /GET_NOTIFIED/); // no Get notified button
+  assert.match(nav, /FEATURES\.careersPage \? \[\.\.\.LINKS, CAREERS\] : LINKS/); // Careers only while its switch is ON (no note when OFF)
+  assert.match(text("src/config/features.ts"), /careersPage: false/); // the switch stays OFF
   const en = text("src/content/en.ts");
-  for (const w of ["Home", "Restaurants", "Shops", "Insiders", "Pricing", "How to join", "FAQ", "About", "Sign in", "Partners", "Careers", "Admin", "Log in"]) assert.ok(en.includes(`"${w}"`), `${w} missing from the text file`);
+  for (const w of ["Home", "Restaurants", "Shops", "Insiders", "Pricing", "How to join", "FAQ", "About", "Sign in", "Partners", "Careers", "Log in", "Sign up", "FAQs"]) assert.ok(en.includes(`"${w}"`), `${w} missing from the text file`);
 });
 
 test("the home page and partner pages take their words from the text file (no long sentences inside the page code)", () => {

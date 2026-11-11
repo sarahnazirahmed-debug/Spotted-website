@@ -23,16 +23,18 @@ const text = (f) => readFileSync(f, "utf8");
 test("the unknown-email message is the agreed one, from the text file", () => {
   assert.match(text("src/content/en.ts"), /We could not find this email\. Apply to become an Insider or Partner\./);
 });
-test("the top bar (step 2) has the agreed links in order, and Admin opens /login", () => {
+test("the top bar has the four links in order, Log in opens /login and Sign up opens /signup", () => {
   const bar = text("src/components/TopBar.tsx");
-  const order = ["n.howItWorks", "n.yourData", "n.questions", "n.insiders", "n.partners", "n.careers"];
+  const order = ["n.howItWorks", "n.faqs", "n.insiders", "n.partners"];
   let at = -1;
   for (const k of order) {
     const i = bar.indexOf(`label: ${k}`);
     assert.ok(i > at, `${k} missing or out of order`);
     at = i;
   }
-  assert.match(bar, /label: n\.admin, href: "\/login"/);
+  assert.match(bar, /label: n\.logIn, href: "\/login"/);
+  assert.match(bar, /label: n\.signUp, href: "\/signup"/);
+  assert.doesNotMatch(bar, /yourData|n\.admin/);
   assert.doesNotMatch(bar, /getNotified|GET_NOTIFIED/); // there is no Get notified button any more
 });
 test("the admin pages send a visitor who is not logged in to /login", () => {
