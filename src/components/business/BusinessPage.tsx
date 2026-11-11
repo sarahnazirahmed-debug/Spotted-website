@@ -7,7 +7,6 @@ import Footer from "../Footer";
 import SiteChrome from "../SiteChrome";
 import Directory from "./Directory";
 import BusinessForm from "./BusinessForm";
-import ContactCta from "../ContactCta";
 import { COPY } from "./copy";
 import { placesFor, type Kind } from "./data";
 
@@ -38,27 +37,17 @@ export default function BusinessPage({ kind }: { kind: Kind }) {
           </div>
         </section>
 
-        <section id="waitlist" className="bg-alt px-5 py-20 text-onpage md:py-28">
-          <div className="mx-auto max-w-2xl rounded-3xl bg-panel p-8 text-paper md:p-12">
-            {FEATURES.businessWaitlist ? (
-              <>
-                <h2 className="text-[clamp(1.8rem,6vw,3rem)] font-extrabold leading-tight">Join the waitlist.</h2>
-                <p className="mb-6 mt-3 text-lg text-mist">
-                  Tell us about your {c.singular}. We will get in touch before Spotted opens.
-                </p>
-                <BusinessForm kind={kind} />
-              </>
-            ) : (
-              <>
-                <h2 className="text-[clamp(1.8rem,6vw,3rem)] font-extrabold leading-tight">Talk to us.</h2>
-                <p className="mb-6 mt-3 text-lg text-mist">
-                  Tell us about your {c.singular} on WhatsApp. We will get in touch before Spotted opens.
-                </p>
-                <ContactCta text={`Hi Spotted! I have a ${c.singular} and I would like to hear more.`} />
-              </>
-            )}
-          </div>
-        </section>
+        {FEATURES.businessWaitlist && (
+          <section id="waitlist" className="bg-alt px-5 py-20 text-onpage md:py-28">
+            <div className="mx-auto max-w-2xl rounded-3xl bg-panel p-8 text-paper md:p-12">
+              <h2 className="text-[clamp(1.8rem,6vw,3rem)] font-extrabold leading-tight">Join the waitlist.</h2>
+              <p className="mb-6 mt-3 text-lg text-mist">
+                Tell us about your {c.singular}. We will get in touch before Spotted opens.
+              </p>
+              <BusinessForm kind={kind} />
+            </div>
+          </section>
+        )}
       </main>
       {FEATURES.footer && <Footer />}
       <SiteChrome />

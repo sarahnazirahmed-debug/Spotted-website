@@ -6,12 +6,12 @@ import { FEATURES } from "@/config/features";
 import { text } from "@/content";
 import Directory from "../business/Directory";
 import { placesFor } from "../business/data";
-import ContactCta from "../ContactCta";
 import ContactForm from "./ContactForm";
 import { Icon, type IconName } from "./Icons";
 import { Section } from "./PageShell";
 import PageShell from "./PageShell";
 import SocialButtons from "./SocialButtons";
+import IfInstagram from "./IfInstagram";
 
 export type PartnerKind = "restaurants" | "shops" | "insiders";
 
@@ -51,16 +51,18 @@ export default function PartnerPage({ kind, extra }: { kind: PartnerKind; extra?
       <Section id="get-in-touch" title={p.comingSoonTitle}>
         <div className="mx-auto max-w-2xl rounded-3xl bg-panel p-8 text-onpanel md:p-10">
           <p className="text-lg leading-relaxed text-mist">{p.comingSoonText}</p>
-          <h3 className="mb-5 mt-6 text-2xl font-extrabold">{text.form.title}</h3>
-          {FEATURES.getInTouch ? (
-            <ContactForm kind={c.form.kind} businessLabel={c.form.business} />
-          ) : (
-            <ContactCta text={`Hi Spotted! I would like to talk about ${kind}.`} />
+          {FEATURES.getInTouch && (
+            <>
+              <h3 className="mb-5 mt-6 text-2xl font-extrabold">{text.form.title}</h3>
+              <ContactForm kind={c.form.kind} businessLabel={c.form.business} />
+            </>
           )}
-          <div className="mt-6">
-            <p className="mb-3 text-sm font-bold text-mist">{text.form.or}</p>
-            <SocialButtons message={`Hi Spotted! I would like to talk about ${kind}.`} />
-          </div>
+          <IfInstagram>
+            <div className="mt-6">
+              <p className="mb-3 text-sm font-bold text-mist">{text.form.or}</p>
+              <SocialButtons />
+            </div>
+          </IfInstagram>
           <Link href="/pricing" className="mt-6 inline-flex min-h-11 items-center font-bold underline">
             {p.pricingLink}
           </Link>

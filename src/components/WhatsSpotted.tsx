@@ -3,9 +3,6 @@
 // The animations are CSS loops in globals.css. With Reduce Motion they stop and show a still picture.
 // Only promise what the app really does at launch (see SPEC.md): save from a reel, saved list,
 // map, nearby alerts (200 m, 300 m, 500 m or 1 km), settings.
-import Waitlist from "./Waitlist";
-import ContactCta from "./ContactCta";
-import { FEATURES } from "@/config/features";
 
 const H2 = "text-[clamp(2rem,6.4vw,3.8rem)] font-extrabold leading-[1.05] text-heading";
 const CHIP = "inline-block rounded-full bg-chip px-4 py-1 text-sm font-bold text-charcoal";
@@ -204,26 +201,6 @@ export default function WhatsSpotted() {
             </p>
           </div>
           <MapArt />
-        </div>
-      </section>
-
-      {/* 5. Notify me */}
-      <section id="waitlist" className="bg-page px-5 py-20 text-onpage md:py-28">
-        <div className="mx-auto max-w-2xl rounded-3xl bg-panel p-8 text-center text-paper md:p-12">
-          <h2 className="text-[clamp(2rem,7vw,3.4rem)] font-extrabold leading-tight">Be the first to know.</h2>
-          {FEATURES.waitlist ? (
-            <>
-              <p className="mb-6 mt-3 text-lg text-mist">Leave your email and we will tell you when Spotted opens.</p>
-              <Waitlist label="Notify me" />
-            </>
-          ) : (
-            <>
-              <p className="mb-6 mt-3 text-lg text-mist">Message us on WhatsApp and we will tell you when Spotted opens.</p>
-              <div className="flex justify-center">
-                <ContactCta text="Hi Spotted! Please tell me when the app opens." label="Notify me on WhatsApp" />
-              </div>
-            </>
-          )}
         </div>
       </section>
     </main>

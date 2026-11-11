@@ -122,12 +122,15 @@ test("landing headline and line are exactly as asked", () => {
   assert.match(read("src/components/pages/PageHeader.tsx"), /whitespace-pre-line/); // the headline breaks after the question
 });
 
-test("the landing header has the WhatsApp and Instagram buttons", () => {
+test("the landing header has the Instagram button, and the only WhatsApp button is the small round one in the corner", () => {
   const home = read("src/components/site/HomePage.tsx");
   const header = home.slice(home.indexOf("headerExtra"), home.indexOf("<Section"));
   assert.match(header, /<SocialButtons/);
   const social = read("src/components/site/SocialButtons.tsx");
-  assert.match(social, /text\.common\.whatsapp/);
+  assert.doesNotMatch(social.replace(/^\s*\/\/.*$/gm, ""), /whatsapp|wa\.me/i); // no big WhatsApp button (comments do not count)
+  assert.match(read("src/components/WhatsApp.tsx"), /wa\.me|whatsapp/i); // the small round one stays
+  for (const f of ["src/components/Footer.tsx", "src/components/site/PartnerPage.tsx", "src/components/business/BusinessPage.tsx", "src/components/WhatsSpotted.tsx"]) assert.doesNotMatch(read(f), /ContactCta/, `${f} still has a big WhatsApp button`);
+  assert.doesNotMatch(read("src/components/WhatsSpotted.tsx"), /Notify me|Waitlist/); // the Notify me section is gone
   assert.match(social, /name="instagram"/); // Instagram is our own simple round camera icon (you asked for it in Step 8)
   assert.match(social, /aria-label="Spotted on Instagram"/);
   assert.doesNotMatch(social, /<svg/); // the drawing lives in Icons.tsx, not pasted brand artwork

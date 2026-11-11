@@ -1,41 +1,28 @@
 "use client";
 
-// WhatsApp and Instagram buttons. A button with no link is not shown. The links come from the Pin Desk (Website settings);
-// the .env.local values are only the backup.
-// WhatsApp is a word button. Instagram is a round icon button (a simple camera drawing) that opens the Spotted Instagram page.
-import { LINKS, whatsappUrl } from "@/config/links";
+// The Instagram button (a round icon: our own simple camera drawing) that opens the Spotted Instagram page.
+// There is no big WhatsApp button any more: the only WhatsApp button on the site is the small round one in the
+// bottom-right corner (src/components/WhatsApp.tsx). The address comes from the Pin Desk (Website settings);
+// the .env.local value is only the backup. With no address, nothing is shown.
+import { LINKS } from "@/config/links";
 import { useSiteSettings } from "@/lib/siteSettings";
-import { text } from "@/content";
 import { Icon } from "./Icons";
 
-// instagram={false}: show only the WhatsApp button.
-export default function SocialButtons({ message, className = "", instagram = true }: { message?: string; className?: string; instagram?: boolean }) {
-  const settings = useSiteSettings();
-  const number = settings.whatsapp_number || LINKS.whatsappNumber;
-  const wa = number ? `https://wa.me/${number}${message ? `?text=${encodeURIComponent(message)}` : ""}` : whatsappUrl(message);
-  const ig = instagram ? settings.instagram_url || LINKS.instagramUrl : "";
-  if (!wa && !ig) return null;
-  const base = "inline-flex min-h-12 items-center gap-2 rounded-full px-6 text-base font-extrabold transition active:scale-95";
+export default function SocialButtons({ className = "" }: { className?: string }) {
+  const ig = useSiteSettings().instagram_url || LINKS.instagramUrl;
+  if (!ig) return null;
   return (
     <div className={`flex flex-wrap gap-3 ${className}`}>
-      {wa && (
-        <a href={wa} target="_blank" rel="noopener noreferrer" className={`${base} bg-whatsapp text-charcoal`}>
-          {text.common.whatsapp}
-          <Icon name="arrow" size={18} />
-        </a>
-      )}
-      {ig && (
-        <a
-          href={ig}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Spotted on Instagram"
-          title="Spotted on Instagram"
-          className="inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-line text-heading transition active:scale-95"
-        >
-          <Icon name="instagram" size={24} />
-        </a>
-      )}
+      <a
+        href={ig}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Spotted on Instagram"
+        title="Spotted on Instagram"
+        className="inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-line text-heading transition active:scale-95"
+      >
+        <Icon name="instagram" size={24} />
+      </a>
     </div>
   );
 }

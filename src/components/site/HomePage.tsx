@@ -9,6 +9,7 @@ import LiveCounters from "./LiveCounters";
 import PhoneLoop from "./PhoneLoop";
 import PageShell, { Section } from "./PageShell";
 import SocialButtons from "./SocialButtons";
+import IfInstagram from "./IfInstagram";
 import StoreButtons from "./StoreButtons";
 import HomeLanding from "./HomeLanding";
 
@@ -31,7 +32,7 @@ function OlderHomePage() {
       aside={<PhoneLoop />}
       headerExtra={
         <>
-          <SocialButtons className="mt-8" message="Hi Spotted!" />
+          <SocialButtons className="mt-8" />
           <StoreButtons />
         </>
       }
@@ -71,10 +72,12 @@ function OlderHomePage() {
       </Section>
       )}
 
-      <Section title={h.talkTitle} alt>
-        <p className="mb-6 max-w-2xl text-xl leading-relaxed">{h.talkLead}</p>
-        <SocialButtons message="Hi Spotted! I have a question." />
-      </Section>
+      <IfInstagram>
+        <Section title={h.talkTitle} alt>
+          <p className="mb-6 max-w-2xl text-xl leading-relaxed">{h.talkLead}</p>
+          <SocialButtons />
+        </Section>
+      </IfInstagram>
     </PageShell>
   );
 }
