@@ -17,7 +17,7 @@ export const inputCls =
   "min-h-12 w-full rounded-xl border border-rosesoft bg-pagebase px-4 text-base text-darktext outline-none focus:border-maroonink focus:ring-4 focus:ring-coral/40";
 export const labelCls = "mb-1 block text-sm font-semibold";
 export const addButton =
-  "inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-7 font-bar text-base font-bold text-oncoral transition active:scale-95 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-maroon";
+  "inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-7 font-bar text-base font-bold text-oncoral transition motion-safe:active:scale-95 disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-maroon";
 export const removeButton =
   "min-h-11 rounded-full border border-rosesoft px-4 font-bar text-sm font-bold text-maroonink hover:bg-pinktint focus-visible:outline-2 focus-visible:outline-coral";
 

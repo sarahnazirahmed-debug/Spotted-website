@@ -79,7 +79,7 @@ export default function Waitlist({ label = "Join the waitlist", list = "visitors
       <button
         type="submit"
         disabled={state === "sending"}
-        className="min-h-12 rounded-full bg-paper px-7 font-extrabold text-charcoal transition active:scale-95 disabled:opacity-60"
+        className="min-h-12 rounded-full bg-paper px-7 font-extrabold text-charcoal transition motion-safe:active:scale-95 disabled:opacity-60"
       >
         {state === "sending" ? "Sending..." : label}
       </button>

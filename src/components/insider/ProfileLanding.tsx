@@ -25,7 +25,7 @@ export type LandingCopy = ApplyCopy & {
 };
 
 export const coralButton =
-  "inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-7 font-bar text-base font-bold text-oncoral transition active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream";
+  "inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-7 font-bar text-base font-bold text-oncoral transition motion-safe:active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream";
 export const heading = "font-brand text-[clamp(1.7rem,4.5vw,2.6rem)] font-bold leading-tight text-darktext";
 
 export function Section({ id, title, children, tint = false }: { id?: string; title: string; children: React.ReactNode; tint?: boolean }) {

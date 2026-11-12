@@ -8,7 +8,7 @@ export default function ContactCta({ text, label = "Message us on WhatsApp" }: {
       href={`https://wa.me/${number}?text=${encodeURIComponent(text)}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex min-h-12 w-fit items-center justify-center rounded-full bg-whatsapp px-7 text-base font-extrabold text-charcoal transition active:scale-95"
+      className="flex min-h-12 w-fit items-center justify-center rounded-full bg-whatsapp px-7 text-base font-extrabold text-charcoal transition motion-safe:active:scale-95"
     >
       {label}
     </a>

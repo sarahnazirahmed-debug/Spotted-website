@@ -84,7 +84,7 @@ export default function ContactForm({ kind, businessLabel }: { kind: Kind; busin
       <button
         type="submit"
         disabled={state === "sending"}
-        className="min-h-12 rounded-full bg-accent px-7 font-extrabold text-onaccent transition active:scale-95 disabled:opacity-60 sm:col-span-2"
+        className="min-h-12 rounded-full bg-accent px-7 font-extrabold text-onaccent transition motion-safe:active:scale-95 disabled:opacity-60 sm:col-span-2"
       >
         {state === "sending" ? t.sending : t.submit}
       </button>

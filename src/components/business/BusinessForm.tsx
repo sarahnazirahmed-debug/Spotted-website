@@ -105,7 +105,7 @@ export default function BusinessForm({ kind }: { kind: Kind }) {
       <button
         type="submit"
         disabled={state === "sending"}
-        className="min-h-12 rounded-full bg-paper px-7 font-extrabold text-charcoal transition active:scale-95 disabled:opacity-60 sm:col-span-2"
+        className="min-h-12 rounded-full bg-paper px-7 font-extrabold text-charcoal transition motion-safe:active:scale-95 disabled:opacity-60 sm:col-span-2"
       >
         {state === "sending" ? "Sending..." : "Join the waitlist"}
       </button>

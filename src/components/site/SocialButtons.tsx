@@ -19,7 +19,7 @@ export default function SocialButtons({ className = "" }: { className?: string }
         rel="noopener noreferrer"
         aria-label="Spotted on Instagram"
         title="Spotted on Instagram"
-        className="inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-line text-heading transition active:scale-95"
+        className="inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-line text-heading transition motion-safe:active:scale-95"
       >
         <Icon name="instagram" size={24} />
       </a>

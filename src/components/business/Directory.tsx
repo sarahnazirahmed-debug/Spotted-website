@@ -67,7 +67,7 @@ function CurvedRow({ places }: { places: Place[] }) {
                 {d === 0 && (
                   <Link
                     href={`/${p.kind}/${p.id}`}
-                    className="mt-3 flex min-h-11 items-center justify-center rounded-full bg-paper text-base font-extrabold text-charcoal transition active:scale-95"
+                    className="mt-3 flex min-h-11 items-center justify-center rounded-full bg-paper text-base font-extrabold text-charcoal transition motion-safe:active:scale-95"
                   >
                     View place
                   </Link>

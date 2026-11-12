@@ -16,7 +16,7 @@ export default function StoreButtons() {
         <a
           key={name}
           href={href}
-          className="flex min-h-14 items-center rounded-full bg-btn px-8 text-lg font-extrabold text-onbtn transition active:scale-95"
+          className="flex min-h-14 items-center rounded-full bg-btn px-8 text-lg font-extrabold text-onbtn transition motion-safe:active:scale-95"
         >
           {name}
         </a>

@@ -66,7 +66,7 @@ export default function RemoveReelsForm() {
           <input tabIndex={-1} autoComplete="off" value={v.website} onChange={set("website")} />
         </label>
       </div>
-      <button type="submit" disabled={state === "sending"} className="min-h-12 rounded-full bg-accent px-7 font-extrabold text-onaccent transition active:scale-95 disabled:opacity-60">
+      <button type="submit" disabled={state === "sending"} className="min-h-12 rounded-full bg-accent px-7 font-extrabold text-onaccent transition motion-safe:active:scale-95 disabled:opacity-60">
         {state === "sending" ? t.sending : t.submit}
       </button>
       {message && (

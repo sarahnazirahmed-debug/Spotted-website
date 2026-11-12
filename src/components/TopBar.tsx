@@ -8,7 +8,7 @@
 //   Below 1024px (the lg breakpoint) the links and buttons give way to the three-bar menu button. Its panel holds the same four links plus Log in and Sign up.
 // There is NO Admin or Staff link anywhere on the public site (the /admin address still works when typed).
 // Every link and both buttons share the same press animation as the coral "Become an Insider" button: a smooth
-// transition that shrinks the item slightly while it is pressed (active:scale-95). With Reduce Motion turned on
+// transition that shrinks the item slightly while it is pressed (motion-safe:active:scale-95). With Reduce Motion turned on
 // there is no movement (motion-safe).
 // The page you are on is underlined in coral. A link or button whose page is switched OFF in features.ts
 // shows a small "coming soon" note instead.

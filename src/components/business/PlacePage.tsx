@@ -62,7 +62,7 @@ export default function PlacePage({ place }: { place: Place }) {
                 href={directions}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex min-h-11 items-center rounded-full bg-paper px-6 font-extrabold text-charcoal transition active:scale-95"
+                className="flex min-h-11 items-center rounded-full bg-paper px-6 font-extrabold text-charcoal transition motion-safe:active:scale-95"
               >
                 Directions
               </a>
@@ -113,7 +113,7 @@ export default function PlacePage({ place }: { place: Place }) {
 
           <a
             href={`spotted://place/${place.id}`}
-            className="mt-14 flex min-h-14 items-center justify-center rounded-full bg-panel px-8 text-lg font-extrabold text-paper transition active:scale-95"
+            className="mt-14 flex min-h-14 items-center justify-center rounded-full bg-panel px-8 text-lg font-extrabold text-paper transition motion-safe:active:scale-95"
           >
             Open in Spotted app
           </a>

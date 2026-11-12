@@ -44,7 +44,7 @@ export default function FlashCard({ place, layout }: { place: Place; layout: "li
           </div>
           <Link
             href={`/${place.kind}/${place.id}`}
-            className="flex min-h-11 items-center justify-center rounded-full bg-paper px-5 text-base font-extrabold text-charcoal transition active:scale-95"
+            className="flex min-h-11 items-center justify-center rounded-full bg-paper px-5 text-base font-extrabold text-charcoal transition motion-safe:active:scale-95"
           >
             View place
           </Link>

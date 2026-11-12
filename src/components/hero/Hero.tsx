@@ -81,7 +81,7 @@ export default function Hero({ label: labelProp, line2 }: { label?: string; line
   const showStill = !(use3d && ready);
   const out = LAUNCH.status === "outNow";
   const storeBtn =
-    "pointer-events-auto flex min-h-12 items-center rounded-full bg-paper px-6 text-base font-extrabold text-charcoal transition active:scale-95";
+    "pointer-events-auto flex min-h-12 items-center rounded-full bg-paper px-6 text-base font-extrabold text-charcoal transition motion-safe:active:scale-95";
 
   return (
     <section id="top" className="relative min-h-dvh overflow-hidden text-paper">

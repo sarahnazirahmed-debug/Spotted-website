@@ -9,7 +9,7 @@ import type { CodeState } from "@/lib/codeEntry";
 import { useAdmin } from "./AdminProvider";
 
 const field = "min-h-12 w-full rounded-2xl bg-paper px-5 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent";
-const button = "min-h-12 w-full rounded-full bg-accent px-7 font-extrabold text-onaccent transition active:scale-95 disabled:opacity-60";
+const button = "min-h-12 w-full rounded-full bg-accent px-7 font-extrabold text-onaccent transition motion-safe:active:scale-95 disabled:opacity-60";
 
 export default function AdminLogin() {
   const { sendCode, verify } = useAdmin();

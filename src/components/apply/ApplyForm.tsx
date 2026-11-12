@@ -347,7 +347,7 @@ export default function ApplyForm() {
         disabled={busy}
         aria-disabled={!allTicked}
         className={`inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-7 font-bar text-base font-bold text-oncoral transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-maroon ${
-          allTicked ? "active:scale-95" : "opacity-50"
+          allTicked ? "motion-safe:active:scale-95" : "opacity-50"
         }`}
       >
         {busy ? t.sending : t.send}

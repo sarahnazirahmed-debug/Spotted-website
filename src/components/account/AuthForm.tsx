@@ -19,7 +19,7 @@ const field =
   "min-h-12 w-full rounded-2xl bg-paper px-5 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent";
 const label = "mb-1 block text-sm font-bold text-paper";
 const primary =
-  "min-h-12 w-full rounded-full bg-paper px-7 font-extrabold text-charcoal transition active:scale-95 disabled:opacity-60";
+  "min-h-12 w-full rounded-full bg-paper px-7 font-extrabold text-charcoal transition motion-safe:active:scale-95 disabled:opacity-60";
 
 function StoreButtons() {
   const out = LAUNCH.status === "outNow";

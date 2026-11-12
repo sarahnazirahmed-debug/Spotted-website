@@ -61,7 +61,7 @@ function PlanCard({ plan, group, yearly, includeShared, href }: { plan: Plan; gr
           </li>
         ))}
       </ul>
-      <Link href={href} className="mt-6 flex min-h-12 items-center justify-center rounded-full bg-btn px-6 font-extrabold text-onbtn transition active:scale-95">
+      <Link href={href} className="mt-6 flex min-h-12 items-center justify-center rounded-full bg-btn px-6 font-extrabold text-onbtn transition motion-safe:active:scale-95">
         {custom ? t.talk : text.common.getInTouch}
       </Link>
     </div>
