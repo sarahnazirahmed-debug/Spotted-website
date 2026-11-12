@@ -25,7 +25,7 @@ export default function Page() {
           <p className="mt-4 text-lg leading-relaxed">{t.body}</p>
           <Link
             href="/"
-            className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-7 font-bar text-base font-bold text-darktext focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-maroon"
+            className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-7 font-bar text-base font-bold text-oncoral focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-maroon"
           >
             {t.home}
           </Link>

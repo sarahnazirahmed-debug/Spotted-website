@@ -1,7 +1,7 @@
 // A few simple icons (objects only: no people, no faces). They take their colour from the text colour.
 const common = { width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
 
-export type IconName = "bookmark" | "pin" | "globe" | "bell" | "qr" | "star" | "chart" | "arrow" | "instagram" | "check" | "range";
+export type IconName = "bookmark" | "pin" | "globe" | "bell" | "qr" | "star" | "chart" | "arrow" | "instagram" | "check" | "range" | "sun" | "moon";
 
 export function Icon({ name, size = 28 }: { name: IconName; size?: number }) {
   const p = { ...common, width: size, height: size };
@@ -69,6 +69,21 @@ export function Icon({ name, size = 28 }: { name: IconName; size?: number }) {
       return (
         <svg {...p}>
           <path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4" />
+        </svg>
+      );
+    case "sun":
+      // a sun: a small disc with eight short rays (an object, not a face)
+      return (
+        <svg {...p}>
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2.500v2.500M12 19v2.500M2.500 12H5M19 12h2.500M5.300 5.300l1.800 1.800M16.900 16.900l1.800 1.800M5.300 18.700l1.800-1.800M16.900 7.100l1.800-1.800" />
+        </svg>
+      );
+    case "moon":
+      // a crescent moon
+      return (
+        <svg {...p}>
+          <path d="M20 14.500A8.500 8.500 0 1 1 9.500 4a7 7 0 0 0 10.500 10.500z" />
         </svg>
       );
     case "arrow":

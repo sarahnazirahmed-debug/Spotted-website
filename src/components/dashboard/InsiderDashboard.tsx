@@ -102,11 +102,11 @@ export default function InsiderDashboard() {
           {reels.map((r) => (
             <li key={r.id} className={`${card} flex flex-wrap items-center justify-between gap-3`}>
               <div className="min-w-0">
-                <a href={r.url} target="_blank" rel="noopener noreferrer" className="block break-all font-semibold text-maroon underline">{r.url}</a>
+                <a href={r.url} target="_blank" rel="noopener noreferrer" className="block break-all font-semibold text-maroonink underline">{r.url}</a>
                 <p className="mt-1 text-sm text-mutedtext">
                   {[r.place_name, r.posted_on && new Date(r.posted_on).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })].filter(Boolean).join(" - ")}
                 </p>
-                <span className={`mt-2 inline-block rounded-full px-3 py-0.5 text-xs font-bold ${r.status === "waiting" ? "bg-pinktint text-maroon" : "bg-maroon text-cream"}`}>
+                <span className={`mt-2 inline-block rounded-full px-3 py-0.5 text-xs font-bold ${r.status === "waiting" ? "bg-pinktint text-maroonink" : "bg-maroon text-cream"}`}>
                   {r.status === "waiting" ? t.waiting : t.checked}
                 </span>
               </div>

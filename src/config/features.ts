@@ -50,8 +50,8 @@ export const FEATURES: Record<FeatureName, boolean> = {
   footer: true,
   // The top bar that fades in when you scroll down (logo, links, Sign up / Log in).
   topBar: true,
-  // The pull-string lamp (top right) that switches between light and dark.
-  // (OFF for now. The site stays in the dark theme until it is switched back on.)
+  // The old pull-string lamp (RETIRED: the sun/moon button in the top bar switches the theme now).
+  // Kept OFF. The lamp code stays in the project, but nothing shows it.
   themeLamp: false,
   // The "Join the waitlist" email form for visitors, and the careers email form.
   // OFF for now (no place to save emails yet): the pages show a WhatsApp message button instead.

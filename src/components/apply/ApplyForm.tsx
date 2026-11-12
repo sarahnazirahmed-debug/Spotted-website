@@ -22,7 +22,7 @@ import {
 
 const t = text.apply;
 const input =
-  "min-h-12 w-full rounded-xl border border-rosesoft bg-cream px-4 text-base text-darktext outline-none focus:border-maroon focus:ring-4 focus:ring-coral/40";
+  "min-h-12 w-full rounded-xl border border-rosesoft bg-card px-4 text-base text-darktext outline-none focus:border-maroonink focus:ring-4 focus:ring-coral/40";
 const labelCls = "mb-1 block text-sm font-semibold text-darktext";
 const hint = "mt-1 text-xs font-medium text-mutedtext";
 
@@ -57,7 +57,7 @@ function PdfField({ id, label, file, onFile }: { id: string; label: string; file
       </label>
       <label
         htmlFor={id}
-        className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-xl border border-dashed border-rose-line bg-pinktint px-4 text-sm font-semibold text-maroon focus-within:ring-4 focus-within:ring-coral/40"
+        className="flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-xl border border-dashed border-rose-line bg-pinktint px-4 text-sm font-semibold text-maroonink focus-within:ring-4 focus-within:ring-coral/40"
       >
         <span>{file ? `${t.fileChosen} ${file.name}` : t.chooseFile}</span>
         <input id={id} type="file" accept="application/pdf,.pdf" onChange={choose} className="sr-only" />
@@ -179,7 +179,7 @@ export default function ApplyForm() {
       />
       <span>
         {label}{" "}
-        <Link href={href} target="_blank" className="font-semibold text-maroon underline">
+        <Link href={href} target="_blank" className="font-semibold text-maroonink underline">
           ({href.slice(1)})
         </Link>
       </span>
@@ -336,13 +336,13 @@ export default function ApplyForm() {
         type="submit"
         disabled={busy}
         aria-disabled={!allTicked}
-        className={`inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-7 font-bar text-base font-bold text-darktext transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-maroon ${
+        className={`inline-flex min-h-12 items-center justify-center rounded-full bg-coral px-7 font-bar text-base font-bold text-oncoral transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-maroon ${
           allTicked ? "active:scale-95" : "opacity-50"
         }`}
       >
         {busy ? t.sending : t.send}
       </button>
-      <Link href={other.href} className="text-center text-sm font-semibold text-maroon underline">
+      <Link href={other.href} className="text-center text-sm font-semibold text-maroonink underline">
         {other.label}
       </Link>
     </form>

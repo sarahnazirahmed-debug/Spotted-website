@@ -23,7 +23,7 @@ test("the top bar has Log in and Sign up buttons, no Get notified, and no Admin 
   assert.doesNotMatch(read("src/content/en.ts"), /getNotified/);
   assert.doesNotMatch(bar.replace(/^\s*\/\/.*$/gm, ""), /ADMIN|"Admin"|"Staff"/);
   assert.doesNotMatch(read("src/content/en.ts"), /admin: "Admin"/);
-  assert.match(bar, /bg-coral text-darktext/); // Sign up is coral
+  assert.match(bar, /bg-coral text-oncoral/); // Sign up is coral
   assert.match(bar, /border border-rose-line/); // Log in has a thin rose border
 });
 

@@ -2,50 +2,46 @@
    THE ONE COLOURS FILE.
    Every colour on the website lives here, with a name. Nothing else in the project may contain a
    colour code (a test checks this). To change the look, change the values in this file only.
+   NO PURPLE anywhere: the brand is maroon, rose, blush and coral.
 
-   THE BRAND COLOURS are plum and coral. The six brand colours are written ONCE, just below, as
-   plum-deep, plum, plum-mid, rose, blush and coral. Every other colour name in this file is made from them,
-   so changing one of the six changes the whole site.
+   Two themes: LIGHT (cream pages, maroon bars) and DARK (deep maroon pages). The theme follows the
+   visitor's device setting until they press the sun/moon button; their choice is then remembered.
    ============================================================================================ */
 
-/* ---- 1. The palette: named colours ---- */
+/* ---- 1. The palette: named colours (these never change with the theme) ---- */
 :root {
-  /* the six brand colours */
-  --plum-deep: #1a0f2e;      /* deepest plum: page background, dark text on light */
-  --plum: #3b1b4f;           /* plum: cards and panels */
-  --plum-mid: #7a2e6f;       /* mid plum: lines and quiet text on light pages */
-  --rose: #d6598f;           /* rose: lines on dark pages */
-  --blush: #f4d7d4;          /* blush: the soft white (text on dark, light pages) */
-  --coral: #ff6b6b;          /* coral: the one bright accent (buttons, pins, bookmarks) */
-
-  /* the working names (everything below is made from the six above) */
-  --paper: var(--blush);                                              /* soft white */
-  --paper-warm: var(--blush);                                         /* soft white (lit windows, glows) */
-  --stone: color-mix(in srgb, var(--blush) 80%, var(--rose));         /* a little deeper blush (alternate sections on light pages, chips) */
-  --mist: color-mix(in srgb, var(--blush) 70%, var(--plum-mid));      /* light text on dark surfaces */
-  --ash: color-mix(in srgb, var(--blush) 50%, var(--plum-mid));       /* quiet text and lines (the light theme changes it below) */
-  --graphite: var(--plum);                                            /* cards on dark pages */
-  --charcoal-soft: color-mix(in srgb, var(--plum-deep) 50%, var(--plum)); /* alternate sections on dark pages */
-  --charcoal: var(--plum-deep);                                       /* main dark colour, and text on light pages */
-  --charcoal-deep: var(--plum-deep);                                  /* deepest dark (night sky, shadows) */
-  --ember: var(--coral);                                              /* the one bright accent */
+  --brand-maroon: #5c0f24;   /* maroon: top bar and bands in the light theme, cards in the light theme's dark panels */
+  --rose: #d6598f;           /* rose */
+  --rose-line: #e8a9b6;      /* rose line: thin lines on maroon, and the soft text in the dark theme */
+  --blush: #f4d7d4;          /* blush: soft pink-white text on dark surfaces */
+  --soft-pink: #fdeff1;      /* soft pink: strips and tags in the light theme */
+  --coral: #ff6b6b;          /* coral: buttons, pins, bookmarks */
+  --ink: #1e0a10;            /* near-black maroon: dark text, and the dark theme's page */
+  --cocoa: #2e1219;          /* dark theme: cards */
+  --wine: #3a0e1b;           /* dark theme: top bar and bands */
+  --cream: #faf7f2;          /* soft white text on maroon, and light cards */
+  --page-light: #fbf7f6;     /* the light theme's page */
+  --muted-light: #6b4a53;    /* quieter text on the light theme */
+  --rose-soft-light: #ebd3d8;/* soft lines round cards on the light theme */
   --leaf: #2bb673;           /* only for green stars and growth */
   --whatsapp: #25d366;       /* only on the WhatsApp button */
-
-  /* the top bar of the public pages (the new draft design: maroon and cream, no purple) */
-  --maroon: #5c0f24;         /* top bar background */
-  --cream: #faf7f2;          /* top bar text */
-  --rose-line: #e8a9b6;      /* thin lines on the top bar */
-  --dark-text: #1e0a10;      /* dark text on coral buttons, and normal text on the light draft pages */
-  --muted-text: #6b4a53;     /* quieter text on the light draft pages */
-  --pink-tint: #fdeff1;      /* soft pink strips and tags */
-  --rose-soft: #ebd3d8;      /* soft lines around cards on the light draft pages */
-  --page-base: #fbf7f6;      /* the light page colour of the draft design */
   --visit-green: #1f7a4d;    /* green stars: visits */
   --sales-yellow: #b7791f;   /* yellow stars: sales */
-  --problem-red: #b42318;    /* red: the tick-box message on the Apply page, and private problem reports (team only) */
 
-/* ---- 2. Drawings and the 3D banner (the illustration palette) ---- */
+  /* the working names (all made from the colours above) */
+  --paper: var(--blush);                                          /* soft white */
+  --paper-warm: var(--blush);                                     /* soft white (lit windows, glows) */
+  --stone: color-mix(in srgb, var(--blush) 80%, var(--rose));     /* a little deeper blush (chips) */
+  --mist: var(--rose-line);                                       /* soft text on dark surfaces */
+  --graphite: var(--cocoa);                                       /* dark cards */
+  --charcoal-soft: color-mix(in srgb, var(--ink) 50%, var(--cocoa)); /* alternate dark strips */
+  --charcoal: var(--ink);                                         /* main dark colour, and dark text on light controls */
+  --charcoal-deep: var(--ink);                                    /* deepest dark */
+  --ember: var(--coral);                                          /* the one bright accent */
+  --dark-on-coral: var(--ink);                                    /* text on coral buttons, in both themes */
+  --rose-line-fixed: var(--rose-line);                            /* thin lines on bars, in both themes */
+
+  /* ---- 2. Drawings and the 3D banner (the illustration palette) ---- */
   --c-deep: var(--charcoal-deep);   /* night sky, shadows, dark outlines */
   --c-main: var(--graphite);        /* buildings, phones, main surfaces */
   --c-soft: var(--mist);            /* light surfaces, lamp posts, hem stitching */
@@ -60,48 +56,85 @@
   --star-visited: var(--mist);      /* someone visited but did not order */
   --star-ordered: var(--leaf);      /* someone visited and ordered */
 
-  /* ---- 4. Buttons that are the same in light and dark ---- */
+  /* ---- 4. Buttons and tags that are the same in light and dark ---- */
   --btn: var(--paper);              /* a soft white button ... */
-  --on-btn: var(--charcoal);        /* ... with charcoal words */
+  --on-btn: var(--charcoal);        /* ... with dark words */
   --chip: var(--stone);             /* small tags ... */
   --on-chip: var(--charcoal);       /* ... and their words */
-  --accent: var(--ember);
+  --accent: var(--ember);           /* the main button colour: coral */
   --on-accent: var(--charcoal);
   --lamp-handle: var(--ember);
   --lamp-string: var(--mist);
+  --on-panel: var(--cream);         /* text on cards and panels, in both themes */
 }
 
-/* ---- 5. Theme: dark is the default, the lamp switches to light ---- */
+/* ---- 5. The two themes. DARK is written first (it is the base); LIGHT overrides it. ----
+   Choosing: a saved choice wins; otherwise the device setting. The page head sets <html data-theme="light|dark">.
+   (If scripts are off, the device setting still works through the media query at the end of this block.) */
 :root,
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --page: var(--charcoal);          /* page background */
-  --on-page: var(--paper);          /* normal text */
-  --heading: var(--paper);          /* headings */
-  --alt: var(--charcoal-soft);      /* every second section */
-  --box: var(--graphite);           /* cards */
-  --panel: var(--graphite);         /* big panels and forms */
-  --footer: var(--plum);
-  --line: var(--rose);              /* borders and lines */
+  --page-base: var(--ink);                                          /* page background */
+  --pink-tint: color-mix(in srgb, var(--ink) 55%, var(--cocoa));    /* strips between sections */
+  --card: var(--cocoa);                                             /* cards */
+  --maroon: var(--wine);                                            /* top bar and bands */
+  --maroon-ink: var(--rose-line);                                   /* headings, links and outlines that were maroon */
+  --dark-text: var(--cream);                                        /* normal text */
+  --muted-text: var(--rose-line);                                   /* soft text */
+  --rose-soft: color-mix(in srgb, var(--cocoa) 72%, var(--rose-line)); /* soft lines round cards */
+  --problem-red: var(--coral);                                      /* problem messages */
+  --page: var(--page-base);
+  --on-page: var(--dark-text);
+  --heading: var(--dark-text);
+  --alt: var(--pink-tint);
+  --box: var(--cocoa);
+  --panel: var(--cocoa);
+  --footer: var(--wine);
+  --line: color-mix(in srgb, var(--rose-line) 55%, var(--ink));
+  --ash: var(--muted-text);
 }
 :root[data-theme="light"] {
   color-scheme: light;
-  --page: var(--paper);
-  --on-page: var(--charcoal);
-  --heading: var(--charcoal);
-  --alt: var(--stone);
-  --box: var(--charcoal);
-  --panel: var(--charcoal);
-  --footer: var(--charcoal);
-  --line: var(--plum-mid);
-  --ash: var(--plum-mid);           /* quiet text on the light page */
+  --page-base: var(--page-light);
+  --pink-tint: var(--soft-pink);
+  --card: var(--cream);
+  --maroon: var(--brand-maroon);
+  --maroon-ink: var(--brand-maroon);
+  --dark-text: var(--ink);
+  --muted-text: var(--muted-light);
+  --rose-soft: var(--rose-soft-light);
+  --problem-red: #b42318;
+  --page: var(--page-base);
+  --on-page: var(--dark-text);
+  --heading: var(--dark-text);
+  --alt: var(--pink-tint);
+  --box: var(--brand-maroon);
+  --panel: var(--brand-maroon);
+  --footer: var(--brand-maroon);
+  --line: color-mix(in srgb, var(--brand-maroon) 55%, var(--page-light));
+  --ash: var(--muted-text);
 }
-/* text on panels and cards is soft white in both themes */
-:root {
-  --on-panel: var(--paper);
+/* no scripts: follow the device setting */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --page-base: var(--page-light);
+    --pink-tint: var(--soft-pink);
+    --card: var(--cream);
+    --maroon: var(--brand-maroon);
+    --maroon-ink: var(--brand-maroon);
+    --dark-text: var(--ink);
+    --muted-text: var(--muted-light);
+    --rose-soft: var(--rose-soft-light);
+    --problem-red: #b42318;
+    --box: var(--brand-maroon);
+    --panel: var(--brand-maroon);
+    --footer: var(--brand-maroon);
+    --line: color-mix(in srgb, var(--brand-maroon) 55%, var(--page-light));
+  }
 }
 
-/* ---- 6. Names for the CSS classes (bg-page, text-heading, bg-panel, ...) ---- */
+/* ---- 6. Names for the CSS classes (bg-page, text-heading, bg-card, ...) ---- */
 @theme inline {
   --color-page: var(--page);
   --color-onpage: var(--on-page);
@@ -128,15 +161,14 @@
   --color-ember: var(--ember);
   --color-leaf: var(--leaf);
   --color-whatsapp: var(--whatsapp);
-  --color-plum-deep: var(--plum-deep);
-  --color-plum: var(--plum);
-  --color-plum-mid: var(--plum-mid);
   --color-rose: var(--rose);
   --color-blush: var(--blush);
   --color-coral: var(--coral);
+  --color-oncoral: var(--dark-on-coral);
+  --color-card: var(--card);
   --color-bar: var(--maroon);
   --color-onbar: var(--cream);
-  --color-barline: var(--rose-line);
+  --color-barline: var(--rose-line-fixed);
   --color-darktext: var(--dark-text);
   --color-mutedtext: var(--muted-text);
   --color-pinktint: var(--pink-tint);
@@ -144,6 +176,7 @@
   --color-pagebase: var(--page-base);
   --color-cream: var(--cream);
   --color-maroon: var(--maroon);
+  --color-maroonink: var(--maroon-ink);
   --color-visit: var(--visit-green);
   --color-sales: var(--sales-yellow);
   --color-problem: var(--problem-red);

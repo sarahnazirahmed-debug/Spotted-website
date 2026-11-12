@@ -30,13 +30,13 @@ export default function DashboardDrawing({ t }: { t: DashCopy }) {
             <div className="grid gap-3 p-3">
               <div className="grid grid-cols-3 gap-2">
                 {t.cards.map((c) => (
-                  <div key={c} className="rounded-lg border border-rosesoft bg-cream p-2">
+                  <div key={c} className="rounded-lg border border-rosesoft bg-card p-2">
                     <p className="text-[0.6rem] font-semibold text-mutedtext sm:text-xs">{c}</p>
                     <p className="font-brand text-lg font-bold sm:text-2xl">-</p>
                   </div>
                 ))}
               </div>
-              <div className="rounded-lg border border-rosesoft bg-cream p-2">
+              <div className="rounded-lg border border-rosesoft bg-card p-2">
                 <p className="text-[0.6rem] font-semibold text-mutedtext sm:text-xs">{t.chartTitle}</p>
                 <div className="mt-1 flex h-16 items-end gap-1.5 sm:h-20">
                   {BARS.map((h, i) => (
@@ -59,7 +59,7 @@ export default function DashboardDrawing({ t }: { t: DashCopy }) {
         <div className="mx-auto h-3 w-[104%] -translate-x-[2%] rounded-b-2xl bg-darktext/80" />
 
         {/* the tablet in front */}
-        <div className="absolute -bottom-0 right-2 w-[46%] rotate-0 rounded-2xl border-[5px] border-maroon bg-cream p-3 shadow-2xl sm:right-6">
+        <div className="absolute -bottom-0 right-2 w-[46%] rotate-0 rounded-2xl border-[5px] border-maroonink bg-card p-3 shadow-2xl sm:right-6">
           <p className="font-brand text-xs font-bold sm:text-sm">{t.addReel}</p>
           <ul className="mt-2 grid gap-1.5">
             {t.fields.map((f) => (
@@ -69,7 +69,7 @@ export default function DashboardDrawing({ t }: { t: DashCopy }) {
               </li>
             ))}
           </ul>
-          <span className="mt-2 block rounded-full bg-coral py-1 text-center text-[0.6rem] font-bold text-darktext sm:text-xs">{t.save}</span>
+          <span className="mt-2 block rounded-full bg-coral py-1 text-center text-[0.6rem] font-bold text-oncoral sm:text-xs">{t.save}</span>
         </div>
       </div>
       <figcaption className="mt-2 text-center text-sm font-semibold text-mutedtext">{t.note}</figcaption>

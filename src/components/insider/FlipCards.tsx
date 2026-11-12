@@ -24,10 +24,10 @@ export default function FlipCards({ cards, hint }: { cards: Card[]; hint: string
               aria-pressed={back}
               onClick={() => toggle(i)}
               className={`flex min-h-48 w-full flex-col rounded-2xl border p-6 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral ${
-                back ? "border-maroon bg-maroon text-cream" : "border-rosesoft bg-cream text-darktext hover:border-rose-line"
+                back ? "border-maroonink bg-maroon text-cream" : "border-rosesoft bg-card text-darktext hover:border-rose-line"
               }`}
             >
-              <span className={`flex size-11 items-center justify-center rounded-xl ${back ? "bg-coral text-darktext" : "bg-pinktint text-maroon"}`}>
+              <span className={`flex size-11 items-center justify-center rounded-xl ${back ? "bg-coral text-oncoral" : "bg-pinktint text-maroonink"}`}>
                 <Icon name={ICONS[i]} size={22} />
               </span>
               <span className="mt-4 font-brand text-xl font-bold leading-snug">{c.title}</span>

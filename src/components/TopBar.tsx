@@ -19,6 +19,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FEATURES, type FeatureName } from "@/config/features";
 import { text } from "@/content";
+import ThemeToggle from "./ThemeToggle";
 
 type LinkItem = { label: string; href: string; feature?: FeatureName };
 
@@ -146,7 +147,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
   // The two buttons: Log in (thin rose border) and Sign up (coral). A page switched OFF shows the small note instead of a link.
   function authButton(l: LinkItem, kind: "login" | "signup", extra = "", onGo?: () => void) {
     const cls = `flex min-h-11 items-center justify-center rounded-full px-5 font-bar text-sm font-bold transition motion-safe:active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral ${
-      kind === "signup" ? "bg-coral text-darktext" : "border border-rose-line text-onbar hover:border-coral hover:text-coral"
+      kind === "signup" ? "bg-coral text-oncoral" : "border border-rose-line text-onbar hover:border-coral hover:text-coral"
     } ${extra}`;
     if (isOn(l))
       return (
@@ -175,7 +176,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
       style={alwaysVisible ? undefined : { opacity: 0, pointerEvents: "none" }}
       className="fixed inset-x-0 top-0 z-30 bg-bar text-onbar"
     >
-      <div className={`flex h-16 w-full items-center gap-3 px-3 lg:grid lg:grid-cols-[1fr_auto_1fr] ${FEATURES.themeLamp ? "lg:pr-[8.5rem]" : ""}`}>
+      <div className={`flex h-16 w-full items-center gap-3 px-3 lg:grid lg:grid-cols-[1fr_auto_1fr]`}>
         <Link href="/" aria-label="Spotted, home" className="flex min-h-11 items-center gap-2 font-brand text-2xl font-bold text-onbar transition motion-safe:active:scale-95 focus-visible:outline-2 focus-visible:outline-coral lg:justify-self-start">
           <svg width="26" height="31" viewBox="0 0 24 28" aria-hidden="true">
             <path d="M3 1h18v26l-9-7-9 7z" fill="var(--coral)" />
@@ -188,6 +189,7 @@ export default function TopBar({ alwaysVisible = false }: { alwaysVisible?: bool
         </nav>
 
         <div className="ml-auto flex items-center gap-2 lg:justify-self-end">
+          <ThemeToggle />
           <div className="hidden items-center gap-2 lg:flex">
             {authButton(LOG_IN, "login")}
             {authButton(SIGN_UP, "signup")}

@@ -16,8 +16,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // data-theme starts as dark; the script in <head> swaps it to the saved choice before drawing.
-    <html lang="en" data-theme="dark" suppressHydrationWarning className={`${headingFont.variable} ${bodyFont.variable} ${brandFont.variable} ${barFont.variable} h-full antialiased`}>
+    // The script in <head> sets data-theme (saved choice, or the device setting) before anything is drawn.
+    <html lang="en" suppressHydrationWarning className={`${headingFont.variable} ${bodyFont.variable} ${brandFont.variable} ${barFont.variable} h-full antialiased`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>

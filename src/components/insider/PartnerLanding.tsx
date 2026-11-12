@@ -27,10 +27,10 @@ function PlanCard({ c, joinHref }: { c: PartnerCard; joinHref: string }) {
   // what "See more" shows: the lines every Partner plan has, this plan's staff logins, the free months, and the reward cap
   const lines = [...PARTNER_INCLUDED, t.staffLogins(c.staffLogins), t.freeMonths(FREE_MONTHS), t.rewardLine];
   return (
-    <li className="flex flex-col rounded-2xl border border-rosesoft bg-cream p-5">
+    <li className="flex flex-col rounded-2xl border border-rosesoft bg-card p-5">
       <p className="font-brand text-lg font-bold leading-snug">{c.name}</p>
       {c.forWho && <p className="text-sm font-semibold text-mutedtext">{c.forWho}</p>}
-      <p className="mt-4 font-brand text-xl font-bold text-maroon">{priceLabel(monthly)}</p>
+      <p className="mt-4 font-brand text-xl font-bold text-maroonink">{priceLabel(monthly)}</p>
       <p className="text-xs font-semibold text-mutedtext">{t.dealMonthly}</p>
       <p className="mt-2 text-sm font-semibold">
         {monthly === null ? PRICE_TO_CONFIRM : priceLabel(yearlyPriceAed(monthly))} <span className="text-xs text-mutedtext">{t.dealYearly}</span>
@@ -39,7 +39,7 @@ function PlanCard({ c, joinHref }: { c: PartnerCard; joinHref: string }) {
         {t.joinPlan}
       </Link>
       <details className="group mt-3 border-t border-rosesoft">
-        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between font-bar text-sm font-bold text-maroon marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral [&::-webkit-details-marker]:hidden">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between font-bar text-sm font-bold text-maroonink marker:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral [&::-webkit-details-marker]:hidden">
           {t.seeMore}
           <span className="transition group-open:rotate-90" aria-hidden="true">
             <Icon name="arrow" size={16} />
@@ -48,7 +48,7 @@ function PlanCard({ c, joinHref }: { c: PartnerCard; joinHref: string }) {
         <ul className="grid gap-2 pb-2 text-sm leading-snug">
           {lines.map((l) => (
             <li key={l} className="flex gap-2">
-              <span className="mt-0.5 shrink-0 text-maroon">
+              <span className="mt-0.5 shrink-0 text-maroonink">
                 <Icon name="star" size={14} />
               </span>
               {l}
@@ -86,8 +86,8 @@ export default function PartnerLanding() {
         <Tier n={1} group="restaurants" title={t.restaurantsTitle} joinHref={joinHref} />
         <Tier n={2} group="shops" title={t.shopsTitle} joinHref={joinHref} />
       </div>
-      <div className="mt-8 max-w-2xl rounded-2xl border-2 border-maroon bg-cream px-6 py-5">
-        <h3 className="font-brand text-xl font-bold text-maroon">{t.rewardTitle}</h3>
+      <div className="mt-8 max-w-2xl rounded-2xl border-2 border-maroonink bg-card px-6 py-5">
+        <h3 className="font-brand text-xl font-bold text-maroonink">{t.rewardTitle}</h3>
         <p className="mt-2 text-base leading-relaxed">{t.rewardText}</p>
       </div>
       <p className="mt-6 max-w-2xl rounded-2xl border border-rose-line bg-pagebase px-5 py-4 text-base font-semibold leading-relaxed">

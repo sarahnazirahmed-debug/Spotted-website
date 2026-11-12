@@ -39,7 +39,7 @@ export default function PhoneLoop() {
             <div className="absolute inset-x-4 bottom-6">
               <div className="relative">
                 <span className="phone-ring absolute -inset-1 rounded-full border-2 border-onbar" />
-                <span className="phone-button flex min-h-11 items-center justify-center gap-2 rounded-full bg-coral px-4 font-bar text-sm font-bold text-darktext">
+                <span className="phone-button flex min-h-11 items-center justify-center gap-2 rounded-full bg-coral px-4 font-bar text-sm font-bold text-oncoral">
                   <Icon name="bookmark" size={16} />
                   {p.save}
                 </span>
@@ -49,7 +49,7 @@ export default function PhoneLoop() {
 
           {/* SCENE 2: Place saved, and the Near you reminder (this is the still version) */}
           <div className="phone-scene phone-done flex flex-col bg-onbar px-4 pt-14 text-darktext">
-            <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-coral text-darktext">
+            <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-coral text-oncoral">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12.5l4.5 4.5L19 7.5" />
               </svg>
@@ -57,7 +57,7 @@ export default function PhoneLoop() {
             <p className="mt-3 text-center font-brand text-lg font-bold">{p.saved}</p>
             <p className="mt-1 text-center font-bar text-xs font-medium">{p.savedNote}</p>
             <div className="phone-near mt-auto mb-5 flex gap-3 rounded-2xl bg-bar p-3 text-onbar shadow-lg">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-coral text-darktext">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-coral text-oncoral">
                 <Icon name="bell" size={18} />
               </span>
               <span>

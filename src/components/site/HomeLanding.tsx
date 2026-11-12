@@ -64,19 +64,19 @@ export default function HomeLanding() {
           <p className="mb-8 max-w-2xl text-lg leading-relaxed">{h.forBusinessLead}</p>
           <div className="grid gap-5 md:grid-cols-3">
             {audience.map((x) => {
-              const card = "flex h-full flex-col rounded-2xl border border-rosesoft bg-cream p-7";
+              const card = "flex h-full flex-col rounded-2xl border border-rosesoft bg-card p-7";
               const body = (
                 <>
-                  <h3 className="font-brand text-2xl font-bold text-maroon">{x.title}</h3>
+                  <h3 className="font-brand text-2xl font-bold text-maroonink">{x.title}</h3>
                   <p className="mt-2 flex-1 text-base leading-relaxed">{x.text}</p>
-                  <span className="mt-5 inline-flex min-h-11 items-center gap-2 font-bold text-maroon">
+                  <span className="mt-5 inline-flex min-h-11 items-center gap-2 font-bold text-maroonink">
                     {x.on ? text.common.learnMore : text.common.comingSoon}
                     {x.on && <Icon name="arrow" size={18} />}
                   </span>
                 </>
               );
               return x.on ? (
-                <a key={x.title} href={x.href} className={`${card} transition hover:border-maroon motion-safe:active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral`}>
+                <a key={x.title} href={x.href} className={`${card} transition hover:border-maroonink motion-safe:active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral`}>
                   {body}
                 </a>
               ) : (
@@ -93,9 +93,9 @@ export default function HomeLanding() {
           <ol className="relative grid gap-5 md:gap-6 md:before:absolute md:before:inset-y-3 md:before:left-1/2 md:before:w-px md:before:bg-rosesoft md:before:content-['']">
             {h.helps.map((x, i) => (
               <li key={x.title} className={`relative md:w-[calc(50%-1.25rem)] ${i % 2 === 0 ? "md:justify-self-start" : "md:justify-self-end"}`}>
-                <div className="rounded-2xl border border-rosesoft bg-cream p-6">
+                <div className="rounded-2xl border border-rosesoft bg-card p-6">
                   <div className="flex items-center gap-4">
-                    <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-pinktint text-maroon">
+                    <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-pinktint text-maroonink">
                       <Icon name={HELP_ICONS[i]} />
                     </span>
                     <span className="font-brand text-sm font-bold text-mutedtext">Step {i + 1}</span>

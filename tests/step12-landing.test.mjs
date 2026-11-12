@@ -12,16 +12,13 @@ import { addUser, attempt, makeDb } from "./helpers-db.mjs";
 
 const read = (f) => readFileSync(f, "utf8");
 
-// ---------------------------------------------------------------- colours
-test("the six plum and coral colours are in colors.css, and only there", () => {
+// ---------------------------------------------------------------- colours (replaced in Stage 4: maroon and coral, no purple)
+test("the maroon and coral colours are in colors.css, and only there", () => {
   const css = read("src/styles/colors.css");
-  const want = { "--plum-deep": "#1a0f2e", "--plum": "#3b1b4f", "--plum-mid": "#7a2e6f", "--rose": "#d6598f", "--blush": "#f4d7d4", "--coral": "#ff6b6b" };
+  const want = { "--brand-maroon": "#5c0f24", "--rose": "#d6598f", "--rose-line": "#e8a9b6", "--blush": "#f4d7d4", "--soft-pink": "#fdeff1", "--coral": "#ff6b6b" };
   for (const [name, hex] of Object.entries(want)) assert.match(css, new RegExp(`${name}:\\s*${hex}\\b`, "i"), name);
-  // the page, cards, text and accent are made from them
-  assert.match(css, /--charcoal:\s*var\(--plum-deep\)/);
-  assert.match(css, /--graphite:\s*var\(--plum\)/);
-  assert.match(css, /--paper:\s*var\(--blush\)/);
   assert.match(css, /--ember:\s*var\(--coral\)/);
+  assert.match(css, /--paper:\s*var\(--blush\)/);
   // no other file holds those colour codes
   const hexes = Object.values(want).map((h) => h.slice(1));
   const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });

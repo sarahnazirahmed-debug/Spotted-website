@@ -1,11 +1,10 @@
 "use client";
 
-// The parts that float over every page: top bar, WhatsApp button, light/dark lamp.
-// (The home page adds the same three itself, because it also switches stories.)
+// The parts that float over every page: the top bar (with the sun/moon theme button) and the WhatsApp button.
+// (The pull-string lamp is retired; its switch `themeLamp` stays OFF.)
 import { FEATURES } from "@/config/features";
 import TopBar from "./TopBar";
 import WhatsApp from "./WhatsApp";
-import ThemeLamp from "./ThemeLamp";
 
 // alwaysVisible: show the top bar from the start (pages with no full-screen landing section).
 export default function SiteChrome({ alwaysVisible = false }: { alwaysVisible?: boolean }) {
@@ -13,7 +12,6 @@ export default function SiteChrome({ alwaysVisible = false }: { alwaysVisible?: 
     <>
       {FEATURES.topBar && <TopBar alwaysVisible={alwaysVisible} />}
       {FEATURES.whatsappButton && <WhatsApp />}
-      {FEATURES.themeLamp && <ThemeLamp />}
     </>
   );
 }

@@ -61,7 +61,7 @@ body {
   animation: bulb-flash 0.5s ease-out;
 }
 
-/* ---- Hero: blurred, softly moving purple gradient with lilac glows ---- */
+/* ---- Hero: blurred, softly moving maroon gradient with soft rose glows ---- */
 .hero-bg {
   background: linear-gradient(150deg, var(--c-deep) 0%, var(--c-main) 55%, var(--c-deep) 100%);
   background-size: 200% 200%;
@@ -200,4 +200,29 @@ body {
   .phone-loop[data-paused="true"] .phone-near,
   .phone-loop[data-paused="true"] .phone-ring,
   .phone-loop[data-paused="true"] .phone-button { animation-play-state: paused; }
+}
+
+/* ---- Theme switch (the sun/moon button) ----
+   The new theme is revealed as a growing circle: the browser takes a picture of the old and the new page, and the script in
+   src/lib/theme.ts grows a circle of the new one out of the button. Here the browser's own cross-fade is switched off. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+/* A browser without View Transitions gets a soft fade instead. */
+html.theme-fade,
+html.theme-fade *,
+html.theme-fade *::before,
+html.theme-fade *::after {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, fill 0.4s ease, stroke 0.4s ease !important;
+}
+/* Reduce Motion: no circle and no fade. (The script switches at once; this is a second safety.) */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+  html.theme-fade, html.theme-fade * { transition: none !important; }
 }

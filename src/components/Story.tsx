@@ -11,7 +11,6 @@ import Waitlist from "./Waitlist";
 import LiteStory from "./LiteStory";
 import Menu from "./Menu";
 import WhatsApp from "./WhatsApp";
-import ThemeLamp from "./ThemeLamp";
 import Hero from "./hero/Hero";
 import TopBar from "./TopBar";
 import WhatsSpotted from "./WhatsSpotted";
@@ -78,7 +77,6 @@ export default function Story() {
       </div>
       {FEATURES.footer && <Footer />}
       {FEATURES.whatsappButton && <WhatsApp />}
-      {FEATURES.themeLamp && <ThemeLamp />}
     </>
   );
 }

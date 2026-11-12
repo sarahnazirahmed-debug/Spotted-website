@@ -71,7 +71,7 @@ test("the six pictures exist, are objects (no faces), and the page uses no colou
   const icons = read("src/components/site/Icons.tsx");
   for (const n of ["arrow", "check", "bookmark", "bell", "range", "globe"]) assert.match(icons, new RegExp(`case "${n}":`), n);
   assert.match(home, /\["arrow", "check", "bookmark", "bell", "range", "globe"\]/);
-  assert.doesNotMatch(icons.slice(icons.indexOf('case "check"'), icons.indexOf('case "arrow"')), /circle|ellipse/); // nothing that could look like an eye
+  assert.doesNotMatch(icons.slice(icons.indexOf('case "check"'), icons.indexOf('case "sun"')), /circle|ellipse/); // nothing that could look like an eye
   assert.doesNotMatch(home, /#[0-9a-fA-F]{3,8}\b/);
   assert.doesNotMatch(read("src/content/en.ts").slice(read("src/content/en.ts").indexOf("  home: {"), read("src/content/en.ts").indexOf("  counters: {")), /\p{Extended_Pictographic}/u);
 });
