@@ -82,3 +82,14 @@ test("the dashboard hides the Pin button and the Pinned choice from everyone but
   assert.match(readFileSync("src/components/admin/PinDesk.tsx", "utf8"), /canPinReels\(me\?\.role \?\? null\)/);
   assert.match(readFileSync("src/components/admin/ReelForm.tsx", "utf8"), /!mayPin/);
 });
+
+test("Pin Desk: has an Added by filter, and a plain message on phones (the desk itself shows only on laptops)", async () => {
+  const { readFileSync } = await import("node:fs");
+  const desk = readFileSync("src/components/admin/PinDesk.tsx", "utf8");
+  assert.match(desk, /aria-label="Added by"/);
+  assert.match(desk, /addedBy && r\.added_by !== addedBy/);
+  const page = readFileSync("src/app/admin/pin/page.tsx", "utf8");
+  assert.match(page, /lg:hidden/);
+  assert.match(page, /hidden lg:block/);
+  assert.match(page, /laptop or a desktop/);
+});

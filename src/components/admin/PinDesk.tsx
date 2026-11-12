@@ -36,6 +36,7 @@ export default function PinDesk() {
   const [q, setQ] = useState("");
   const [platform, setPlatform] = useState("");
   const [emirate, setEmirate] = useState("");
+  const [addedBy, setAddedBy] = useState("");
   // the home page's "Add reel" bar opens this page with ?add=1, so the add form is already open
   const [adding, setAdding] = useState(() => new URLSearchParams(window.location.search).get("add") === "1");
   const [linkText, setLinkText] = useState("");
@@ -99,11 +100,14 @@ export default function PinDesk() {
   const collections = useMemo(() => [...new Set(reels.map((r) => r.collection).filter((c): c is string => !!c))].sort(), [reels]);
   const emirates = useMemo(() => [...new Set([...EMIRATES, ...reels.map((r) => r.emirate).filter((e): e is string => !!e)])], [reels]);
 
+  const people = useMemo(() => [...new Set(reels.map((r) => r.added_by).filter((p): p is string => !!p))].sort((a, b) => a.localeCompare(b)), [reels]);
+
   const bizNames = useMemo(() => new Map(businesses.map((b) => [b.id, b.name])), [businesses]);
   const shown = reels.filter((r) => {
     if (tab !== "all" && tab !== "waiting" && r.status !== tab) return false;
     if (platform && r.platform !== platform) return false;
     if (emirate && r.emirate !== emirate) return false;
+    if (addedBy && r.added_by !== addedBy) return false;
     const needle = q.trim().toLowerCase();
     if (!needle) return true;
     return [r.place_name, r.branch, r.emirate, r.category, r.collection, r.creator_handle, r.notes, r.link_key, r.offer_text, r.added_by, r.pinned_by]
@@ -272,6 +276,12 @@ export default function PinDesk() {
           <option value="">All emirates</option>
           {emirates.map((e) => (
             <option key={e}>{e}</option>
+          ))}
+        </select>
+        <select aria-label="Added by" className={field} value={addedBy} onChange={(e) => setAddedBy(e.target.value)}>
+          <option value="">Added by anyone</option>
+          {people.map((p) => (
+            <option key={p}>{p}</option>
           ))}
         </select>
       </div>
