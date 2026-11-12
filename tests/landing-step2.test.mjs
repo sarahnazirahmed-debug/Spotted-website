@@ -12,7 +12,7 @@ test("the three-bar menu (small screens only) holds the same links plus Log in a
   const bar = read("src/components/TopBar.tsx");
   assert.match(bar, /authButton\(LOG_IN/);
   assert.match(bar, /authButton\(SIGN_UP/);
-  assert.match(bar, /size-11[^"]*xl:hidden/); // the three-bar button is hidden on wide screens
+  assert.match(bar, /size-11[^"]*lg:hidden/); // the three-bar button is hidden on wide screens
   assert.match(bar, /aria-expanded=\{open\}/); // the three-bar button says whether the panel is open
   assert.match(bar, /Escape/); // it closes with the keyboard
 });
