@@ -3,6 +3,9 @@
 // /admin log-in: your email, then the 6-digit code we send you. Every time.
 import { useState } from "react";
 import { isEmail } from "@/lib/signupRules";
+import CodeEntry from "@/components/code/CodeEntry";
+import VerifyButton from "@/components/code/VerifyButton";
+import type { CodeState } from "@/lib/codeEntry";
 import { useAdmin } from "./AdminProvider";
 
 const field = "min-h-12 w-full rounded-2xl bg-paper px-5 text-base font-medium text-charcoal outline-none focus:ring-4 focus:ring-accent";
@@ -14,6 +17,7 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState<CodeState>("waiting");
   const [message, setMessage] = useState("");
 
   async function onEmail(e: React.FormEvent) {
@@ -29,11 +33,20 @@ export default function AdminLogin() {
 
   async function onCode(e: React.FormEvent) {
     e.preventDefault();
-    if (!/^\d{6}$/.test(code.trim())) return setMessage("The code has 6 numbers. Please check your email.");
+    if (!/^\d{6}$/.test(code.trim())) {
+      setStatus("wrong");
+      return setMessage("The code has 6 numbers. Please check your email.");
+    }
     setBusy(true);
+    setStatus("checking");
     const problem = await verify(email, code);
     setBusy(false);
-    if (problem) setMessage(problem);
+    if (problem) {
+      setStatus("wrong");
+      setMessage(problem);
+    } else {
+      setStatus("correct"); // the team area opens straight away
+    }
   }
 
   return (
@@ -68,26 +81,20 @@ export default function AdminLogin() {
             <p>
               We sent a 6-digit code to <strong>{email.trim().toLowerCase()}</strong>.
             </p>
-            <label htmlFor="admin-code" className="text-sm font-bold">
-              6-digit code
-            </label>
-            <input
+            <CodeEntry
               id="admin-code"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={6}
-              className={`${field} text-center text-2xl tracking-[0.3em]`}
+              label="6-digit code"
               value={code}
-              onChange={(e) => {
-                setCode(e.target.value);
+              state={status}
+              onChange={(d) => {
+                setCode(d);
                 setMessage("");
+                if (status === "wrong") setStatus("waiting");
               }}
               autoFocus
             />
-            <button type="submit" disabled={busy} className={button}>
-              {busy ? "Checking..." : "Log in"}
-            </button>
-            <button type="button" className="min-h-11 font-bold underline" onClick={() => { setStep("email"); setCode(""); setMessage(""); }}>
+            <VerifyButton state={status} />
+            <button type="button" className="min-h-11 font-bold underline" onClick={() => { setStep("email"); setCode(""); setStatus("waiting"); setMessage(""); }}>
               Use a different email
             </button>
           </form>

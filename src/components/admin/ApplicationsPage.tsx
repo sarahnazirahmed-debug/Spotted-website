@@ -5,6 +5,7 @@
 // and mark it Approved or Declined. Also: make Founding Insider invite codes (each works once).
 // The website only decides what to show. The database refuses anyone who is not allowed
 // (supabase/applications.sql): staff and helpers get nothing, and no PDF is ever public.
+import { LoadingBlocks } from "@/components/Skeleton";
 import { useCallback, useEffect, useState } from "react";
 import { canOpenApplications } from "@/lib/teamRules";
 import { useAdmin } from "./AdminProvider";
@@ -211,7 +212,7 @@ export default function ApplicationsPage() {
             </li>
           ))}
           {loaded && shown.length === 0 && <li className="text-lg">Nothing here yet.</li>}
-          {!loaded && <li className="text-lg">Loading...</li>}
+          {!loaded && <li><LoadingBlocks rows={3} /></li>}
         </ul>
       </section>
 

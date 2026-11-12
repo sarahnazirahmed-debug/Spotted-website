@@ -23,6 +23,10 @@
   --page-light: #fbf7f6;     /* the light theme's page */
   --muted-light: #6b4a53;    /* quieter text on the light theme */
   --rose-soft-light: #ebd3d8;/* soft lines round cards on the light theme */
+  --grey-light: #e4e0df;     /* loading blocks, light theme */
+  --grey-shine-light: #f4f1f0; /* the light band that sweeps over them, light theme */
+  --grey-dark: #3b3436;      /* loading blocks, dark theme */
+  --grey-shine-dark: #50484b;  /* the light band, dark theme */
   --leaf: #2bb673;           /* only for green stars and growth */
   --whatsapp: #25d366;       /* only on the WhatsApp button */
   --visit-green: #1f7a4d;    /* green stars: visits */
@@ -83,6 +87,8 @@
   --muted-text: var(--rose-line);                                   /* soft text */
   --rose-soft: color-mix(in srgb, var(--cocoa) 72%, var(--rose-line)); /* soft lines round cards */
   --problem-red: var(--coral);                                      /* problem messages */
+  --skeleton: var(--grey-dark);                                     /* loading blocks */
+  --skeleton-shine: var(--grey-shine-dark);                         /* the band that sweeps over them */
   --page: var(--page-base);
   --on-page: var(--dark-text);
   --heading: var(--dark-text);
@@ -104,6 +110,8 @@
   --muted-text: var(--muted-light);
   --rose-soft: var(--rose-soft-light);
   --problem-red: #b42318;
+  --skeleton: var(--grey-light);
+  --skeleton-shine: var(--grey-shine-light);
   --page: var(--page-base);
   --on-page: var(--dark-text);
   --heading: var(--dark-text);
@@ -127,6 +135,8 @@
     --muted-text: var(--muted-light);
     --rose-soft: var(--rose-soft-light);
     --problem-red: #b42318;
+    --skeleton: var(--grey-light);
+    --skeleton-shine: var(--grey-shine-light);
     --box: var(--brand-maroon);
     --panel: var(--brand-maroon);
     --footer: var(--brand-maroon);

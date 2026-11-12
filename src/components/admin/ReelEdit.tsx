@@ -1,6 +1,7 @@
 "use client";
 
 // /admin/reels/edit?id=...: change one reel (the same form as on the Pin Desk), with its history.
+import { LoadingBlocks } from "@/components/Skeleton";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -56,7 +57,7 @@ export default function ReelEdit() {
   }, [supabase, id, version]);
 
   if (!id || missing) return <p className="font-bold">That reel was not found. <Link href="/admin/reels" className="underline">Back to the list</Link></p>;
-  if (!reel) return <p>Loading...</p>;
+  if (!reel) return <LoadingBlocks className="mx-auto max-w-3xl" />;
 
   async function save(values: ReelInput, extras: Extras): Promise<string | null> {
     // the link itself never changes; only the facts do

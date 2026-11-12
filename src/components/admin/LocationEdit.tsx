@@ -1,6 +1,7 @@
 "use client";
 
 // /admin/locations/edit?id=...: change a location, and for a mall or hotel, its places inside.
+import { LoadingBlocks } from "@/components/Skeleton";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { canDeleteReels } from "@/lib/teamRules";
@@ -52,7 +53,7 @@ export default function LocationEdit() {
   }, [supabase, id, version]);
 
   if (!id || missing) return <p className="font-bold">That location was not found. <Link href="/admin/locations" className="underline">Back to the list</Link></p>;
-  if (!row) return <p>Loading...</p>;
+  if (!row) return <LoadingBlocks className="mx-auto max-w-2xl" />;
 
   const set = (k: keyof typeof v, value: string | boolean) => setV((o) => ({ ...o, [k]: value }));
   const parsed = parsePlaces(v.more);

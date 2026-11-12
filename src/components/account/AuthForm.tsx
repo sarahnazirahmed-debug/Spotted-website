@@ -4,6 +4,9 @@
 //   Sign up: name, email, phone / WhatsApp number (optional), birthday (optional) -> code -> thank-you.
 //   Log in:  email -> code -> partners go to their dashboard, everyone else sees "Spotted works in the app".
 // If Supabase is not connected yet (empty settings in .env.local), the form says so honestly.
+import CodeEntry from "@/components/code/CodeEntry";
+import VerifyButton from "@/components/code/VerifyButton";
+import { successWait, type CodeState } from "@/lib/codeEntry";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LAUNCH } from "@/config/features";
@@ -47,6 +50,7 @@ export default function AuthForm({ mode }: { mode: "signup" | "login" }) {
   const router = useRouter();
   const [step, setStep] = useState<Step>("form");
   const [v, setV] = useState({ name: "", email: "", phone: "", birthday: "", code: "" });
+  const [status, setStatus] = useState<CodeState>("waiting"); // the colour of the code boxes and the Verify button
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,15 +93,23 @@ export default function AuthForm({ mode }: { mode: "signup" | "login" }) {
 
   async function verify(e: React.FormEvent) {
     e.preventDefault();
-    if (!isCode(v.code)) return setMessage("The code has 6 to 8 numbers. Please check your email.");
+    if (!isCode(v.code)) {
+      setStatus("wrong");
+      return setMessage("The code has 6 to 8 numbers. Please check your email.");
+    }
     const supabase = getSupabase();
     if (!supabase) return setMessage("Sign-up is not open yet. Please check back soon.");
     setBusy(true);
+    setStatus("checking");
     const { data, error } = await supabase.auth.verifyOtp({ email: v.email.trim(), token: v.code.trim(), type: "email" });
     if (error || !data.user) {
       setBusy(false);
+      setStatus("wrong");
       return setMessage("That code did not work. Please check it, or ask for a new one.");
     }
+    // the code was right: let the "Verified" animation play before moving on
+    setStatus("correct");
+    await new Promise((r) => window.setTimeout(r, successWait(window.matchMedia("(prefers-reduced-motion: reduce)").matches)));
     if (mode === "signup") {
       setBusy(false);
       return setStep("thanks");
@@ -134,25 +146,22 @@ export default function AuthForm({ mode }: { mode: "signup" | "login" }) {
         <p className="text-lg text-mist">
           We sent a code to <strong className="text-paper">{v.email.trim()}</strong>. Type it here.
         </p>
-        <div>
-          <label htmlFor="auth-code" className={label}>
-            One-time code
-          </label>
-          <input
-            id="auth-code"
-            className={`${field} text-center text-2xl tracking-[0.3em]`}
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            maxLength={8}
-            value={v.code}
-            onChange={set("code")}
-            autoFocus
-          />
-        </div>
-        <button type="submit" disabled={busy} className={primary}>
-          {busy ? "Checking..." : mode === "signup" ? "Finish sign up" : "Log in"}
-        </button>
-        <button type="button" onClick={() => sendCode()} disabled={busy} className="min-h-11 font-bold text-paper underline">
+        <CodeEntry
+          id="auth-code"
+          label="One-time code"
+          value={v.code}
+          state={status}
+          length={6}
+          maxLength={8}
+          onChange={(d) => {
+            setV((o) => ({ ...o, code: d }));
+            setMessage("");
+            if (status === "wrong") setStatus("waiting");
+          }}
+          autoFocus
+        />
+        <VerifyButton state={status} />
+        <button type="button" onClick={() => sendCode()} disabled={busy || status === "correct"} className="min-h-11 font-bold text-paper underline">
           Send a new code
         </button>
         {message && (

@@ -217,7 +217,6 @@ export const en = {
     insiderTitle: "Your Insider dashboard",
     partnerTitle: "Your Partner dashboard",
     logOut: "Log out",
-    loading: "Loading...",
     closed: "Log in is not open yet. Please check back soon.",
     pleaseLogIn: "Please log in.",
     logIn: "Log in",
@@ -282,6 +281,14 @@ export const en = {
     comingSoon: "Coming soon",
     note: "This page will be published soon.",
     confidentialityTitle: "Confidentiality agreement",
+  },
+
+  // The code screens (log in and sign up): the words on the Verify button.
+  codeEntry: {
+    verify: "Verify",
+    checking: "Checking",
+    verified: "Verified",
+    tryAgain: "Try again",
   },
 
   login: {

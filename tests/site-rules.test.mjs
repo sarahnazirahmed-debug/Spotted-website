@@ -47,7 +47,7 @@ test("every colour name used in the code exists in colors.css", () => {
     for (const m of text(f).matchAll(/rgbOf|cssRgb|cssRgba|forThree\(\s*"(--[a-z0-9-]+)"/g)) if (m[1]) used.add(m[1]);
   }
   // the fonts come from src/styles/fonts.ts (next/font); --d is an animation delay
-  const fromFonts = new Set(["--font-heading", "--font-body", "--font-brand", "--font-bar", "--d"]); // --d = an animation delay, not a colour
+  const fromFonts = new Set(["--font-heading", "--font-body", "--font-brand", "--font-bar", "--d", "--delay", "--i"]); // --d, --delay, --i = animation numbers (a digit, a delay, a letter number), not colours
   const missing = [...used].filter((n) => !defined.has(n) && !fromFonts.has(n) && !n.startsWith("--tw-"));
   assert.deepEqual(missing, []);
 });

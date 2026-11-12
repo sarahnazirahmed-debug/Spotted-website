@@ -3,6 +3,7 @@
 // /admin/team (main admin and associates): the people on the team, add a person, change a role,
 // remove a person, and the log of who did what. The main admin row has no buttons.
 // The website only decides which buttons to show. The database refuses anything that is not allowed.
+import { LoadingBlocks } from "@/components/Skeleton";
 import { useCallback, useEffect, useState } from "react";
 import { titleFor } from "@/lib/pindeskTitle";
 import { canManage, canOpenTeam, rolesICanGive, ROLE_LABEL, type TeamRole } from "@/lib/teamRules";
@@ -144,8 +145,8 @@ export default function TeamPage() {
               ))}
               {members.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-4 text-mist">
-                    Loading...
+                  <td colSpan={5} className="p-4">
+                    <LoadingBlocks rows={2} />
                   </td>
                 </tr>
               )}

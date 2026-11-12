@@ -2,6 +2,7 @@
 
 // /admin/restaurants/edit?id=...: change a restaurant or shop. "Not needed" marks a detail the place does not have, so it counts as complete.
 // The code is shown but can never be changed. Every change is logged with who made it (the database does that).
+import { LoadingBlocks } from "@/components/Skeleton";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { businessChecklist, niceDateTime, type NotNeeded } from "@/lib/listRules";
@@ -54,7 +55,7 @@ export default function BusinessEdit() {
   }, [supabase, id, version]);
 
   if (!id || missing) return <p className="font-bold">That restaurant or shop was not found. <Link href="/admin/restaurants" className="underline">Back to the list</Link></p>;
-  if (!row) return <p>Loading...</p>;
+  if (!row) return <LoadingBlocks className="mx-auto max-w-2xl" />;
 
   const set = (k: keyof typeof v, value: string | boolean) => setV((o) => ({ ...o, [k]: value }));
   const markNN = (k: keyof NotNeeded, on: boolean) => {

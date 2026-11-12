@@ -2,6 +2,7 @@
 
 // The page around both dashboards: a maroon header with the title and the Log out button, the messages for
 // "not logged in", "not approved" and "free period ended", the five number cards, and the footer.
+import { LoadingBlocks } from "@/components/Skeleton";
 import Link from "next/link";
 import { FEATURES } from "@/config/features";
 import { text } from "@/content";
@@ -43,8 +44,7 @@ export default function DashboardFrame({
 }: { title: string; state: MemberState; signOut: () => void; numbers: Numbers | null; children?: React.ReactNode }) {
   const paid = paidUntilText(numbers);
   const message =
-    state === "loading" ? t.loading
-    : state === "closed" ? t.closed
+    state === "closed" ? t.closed
     : state === "notMember" ? t.notMember
     : state === "ended" ? t.ended
     : null;
@@ -75,6 +75,11 @@ export default function DashboardFrame({
               <Link href="/login" className={`${addButton} mt-4`}>
                 {t.logIn}
               </Link>
+            </div>
+          )}
+          {state === "loading" && (
+            <div className={card}>
+              <LoadingBlocks rows={3} />
             </div>
           )}
           {message && (

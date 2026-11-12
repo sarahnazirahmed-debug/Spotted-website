@@ -2,6 +2,7 @@
 
 // /admin/restaurants/view?id=...: the page of one restaurant or shop: its details, its locations and its reels.
 // Nothing here deletes anything. A closed place is marked "Permanently closed", not removed.
+import { LoadingBlocks } from "@/components/Skeleton";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { businessChecklist, niceDateTime, type NotNeeded } from "@/lib/listRules";
@@ -43,7 +44,7 @@ export default function BusinessView() {
   }, [supabase, id]);
 
   if (!id || missing) return <p className="font-bold">That restaurant or shop was not found. <Link href="/admin/restaurants" className="underline">Back to the list</Link></p>;
-  if (!data) return <p>Loading...</p>;
+  if (!data) return <LoadingBlocks className="mx-auto max-w-3xl" />;
   const { b, locs, reels } = data;
   const checks = businessChecklist({ ...b, order_instagram: b.order_instagram, order_whatsapp: b.order_whatsapp }, { locations: locs.length, reels: reels.length });
   const ways = orderWays(b, b.instagram_handle, b.business_whatsapp);

@@ -2,6 +2,7 @@
 
 // The frame around every /admin page: sends visitors to /login, the "not on the team" message, the first-visit
 // confidentiality tick box, and the top menu (Pin Desk, Team if allowed, Sign out).
+import { LoadingBlocks } from "@/components/Skeleton";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -54,7 +55,7 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
     if (status === "loggedOut") router.replace("/login");
   }, [status, router]);
 
-  if (status === "checking" || status === "loggedOut") return <p className="mx-auto max-w-md px-5 py-20 text-lg">Loading...</p>;
+  if (status === "checking" || status === "loggedOut") return <LoadingBlocks className="mx-auto max-w-md px-5 py-20" />;
   if (status === "closed")
     return <p className="mx-auto max-w-md px-5 py-20 text-lg">Log in is not open yet. Supabase is not connected.</p>;
   if (status === "notMember" || !me)

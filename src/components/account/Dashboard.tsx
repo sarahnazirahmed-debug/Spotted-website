@@ -3,6 +3,7 @@
 // The partner dashboard (restaurants, shops, influencers). For now it only greets the partner and
 // shows their trial; the real dashboard (places, offers, media, stars) comes next.
 // Anyone who is not a partner is told that Spotted works in the app.
+import { LoadingBlocks } from "@/components/Skeleton";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabase } from "@/lib/supabase";
@@ -46,7 +47,7 @@ export default function Dashboard() {
   const box = "mx-auto max-w-lg rounded-3xl bg-panel p-8 text-center text-paper md:p-10";
   const link = "mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-paper px-7 font-extrabold text-charcoal";
 
-  if (view === "loading") return <div className={box}>Loading...</div>;
+  if (view === "loading") return <div className={box}><LoadingBlocks rows={2} /></div>;
   if (view === "closed") return <div className={box}>Log in is not open yet. Please check back soon.</div>;
   if (view === "loggedOut")
     return (

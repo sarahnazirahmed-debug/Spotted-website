@@ -17,6 +17,9 @@ import { isEmail } from "@/lib/signupRules";
 import { destinationFor, type PartnerKind } from "@/lib/loginRoute";
 import { partnerLink } from "@/config/routes";
 import { text } from "@/content";
+import CodeEntry from "@/components/code/CodeEntry";
+import VerifyButton from "@/components/code/VerifyButton";
+import { successWait, type CodeState } from "@/lib/codeEntry";
 
 const t = text.login;
 const field =
@@ -31,6 +34,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState<CodeState>("waiting"); // the colour of the code boxes and the Verify button
   const [message, setMessage] = useState("");
 
   async function sendCode(e?: React.FormEvent) {
@@ -48,13 +52,18 @@ export default function LoginForm() {
 
   async function verify(e: React.FormEvent) {
     e.preventDefault();
-    if (!/^\d{6}$/.test(code.trim())) return setMessage(t.badCode);
+    if (!/^\d{6}$/.test(code.trim())) {
+      setStatus("wrong");
+      return setMessage(t.badCode);
+    }
     const supabase = getAdminSupabase();
     if (!supabase) return setMessage(t.closed);
     setBusy(true);
+    setStatus("checking");
     const { data, error } = await supabase.auth.verifyOtp({ email: email.trim().toLowerCase(), token: code.trim(), type: "email" });
     if (error || !data.session) {
       setBusy(false);
+      setStatus("wrong");
       return setMessage(t.wrongCode);
     }
 
@@ -62,6 +71,7 @@ export default function LoginForm() {
     const { data: who, error: whoError } = await supabase.rpc("whoami");
     if (whoError) {
       setBusy(false);
+      setStatus("waiting");
       return setMessage(t.problem);
     }
     const team = (Array.isArray(who) ? who[0] : who) != null;
@@ -78,6 +88,7 @@ export default function LoginForm() {
       await supabase.auth.signOut();
       setBusy(false);
       setCode("");
+      setStatus("waiting");
       setMessage("");
       return setStep("unknown");
     }
@@ -86,6 +97,9 @@ export default function LoginForm() {
       await getSupabase()?.auth.setSession({ access_token: data.session.access_token, refresh_token: data.session.refresh_token });
       await supabase.auth.signOut({ scope: "local" });
     }
+    // the code was right: let the "Verified" animation play before moving on
+    setStatus("correct");
+    await new Promise((r) => window.setTimeout(r, successWait(window.matchMedia("(prefers-reduced-motion: reduce)").matches)));
     router.push(to);
   }
 
@@ -113,28 +127,20 @@ export default function LoginForm() {
         <p className="text-lg text-mist">
           {t.codeSent} <strong className="text-paper">{email.trim()}</strong>.
         </p>
-        <div>
-          <label htmlFor="login-code" className={label}>
-            {t.codeLabel}
-          </label>
-          <input
-            id="login-code"
-            className={`${field} text-center text-2xl tracking-[0.3em]`}
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            maxLength={6}
-            value={code}
-            onChange={(e) => {
-              setCode(e.target.value);
-              setMessage("");
-            }}
-            autoFocus
-          />
-        </div>
-        <button type="submit" disabled={busy} className={primary}>
-          {busy ? t.checking : t.check}
-        </button>
-        <button type="button" onClick={() => sendCode()} disabled={busy} className="min-h-11 font-bold text-paper underline">
+        <CodeEntry
+          id="login-code"
+          label={t.codeLabel}
+          value={code}
+          state={status}
+          onChange={(d) => {
+            setCode(d);
+            setMessage("");
+            if (status === "wrong") setStatus("waiting");
+          }}
+          autoFocus
+        />
+        <VerifyButton state={status} />
+        <button type="button" onClick={() => sendCode()} disabled={busy || status === "correct"} className="min-h-11 font-bold text-paper underline">
           {t.newCode}
         </button>
         {message && (

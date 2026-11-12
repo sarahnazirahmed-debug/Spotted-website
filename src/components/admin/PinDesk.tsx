@@ -3,6 +3,7 @@
 // /admin/pin: the Pin Desk. Everyone on the team can use it.
 // Add a reel by pasting its link, fill in the place facts, and Pin it once it has a place and a pin.
 // We only store links and place facts. Never videos, photos, captions, or anything about app users.
+import { LoadingBlocks } from "@/components/Skeleton";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { canDeleteReels } from "@/lib/teamRules";
 import { EMIRATES, pinProblem, STATUS_LABEL, type ReelStatus } from "@/lib/pinRules";
@@ -425,7 +426,7 @@ export default function PinDesk() {
           {loaded && shown.length === 0 && (
             <p className="rounded-2xl bg-alt p-6 text-center font-bold">{reels.length === 0 ? "The desk is empty. Add the first reel." : "No reels match."}</p>
           )}
-          {!loaded && <p>Loading...</p>}
+          {!loaded && <LoadingBlocks rows={4} />}
         </section>
       )}
     </div>

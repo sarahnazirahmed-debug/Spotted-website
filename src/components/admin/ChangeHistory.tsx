@@ -1,6 +1,7 @@
 "use client";
 
 // The change log for one row (and the rows that belong to it): who changed what, and when.
+import { LoadingBlocks } from "@/components/Skeleton";
 import { useEffect, useState } from "react";
 import { describeChange, niceDateTime } from "@/lib/listRules";
 import { useAdmin } from "./AdminProvider";
@@ -24,7 +25,7 @@ export default function ChangeHistory({ rowId, version }: { rowId: string; versi
   return (
     <section className="grid gap-2">
       <h2 className="text-2xl font-extrabold text-heading">History</h2>
-      {entries === null && <p>Loading...</p>}
+      {entries === null && <LoadingBlocks rows={2} />}
       {entries?.length === 0 && <p className="font-bold">No changes logged yet.</p>}
       <ul className="grid gap-2">
         {entries?.map((e) => (

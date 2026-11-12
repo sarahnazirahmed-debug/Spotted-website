@@ -235,3 +235,41 @@ html.theme-fade *::after {
   .faq-side { animation: faq-slide-in 0.35s ease-out both; }
   .faq-under { animation: faq-drop-in 0.3s ease-out both; }
 }
+
+/* ---- Loading: grey blocks with a light band that sweeps across every 1.4 seconds.
+   With Reduce Motion on the blocks stay still (no sweep). ---- */
+.skeleton { position: relative; overflow: hidden; background: var(--skeleton); border-radius: 0.75rem; }
+.skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent 0%, var(--skeleton-shine) 50%, transparent 100%); }
+@keyframes skeleton-sweep { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton::after { animation: skeleton-sweep 1.4s ease-in-out infinite; }
+}
+
+/* ---- The 6-digit code: each digit rolls in like a slot machine (a strip of 0 to 9 twice; it rolls down to the digit). ---- */
+.reel { display: inline-block; height: 1.2em; overflow: hidden; line-height: 1.2em; }
+.reel-strip { display: flex; flex-direction: column; transform: translateY(calc(var(--d) * -1.2em - 12em)); }
+@keyframes reel-roll { from { transform: translateY(0); } to { transform: translateY(calc(var(--d) * -1.2em - 12em)); } }
+@keyframes code-shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
+
+/* ---- The Verify button: two waves of liquid rise inside it; the letters drop out and the new word drops in. ---- */
+.liquid { position: absolute; inset: 0; pointer-events: none; transform: translateY(100%); }
+.liquid-level-checking { transform: translateY(45%); }
+.liquid-level-full { transform: translateY(-8%); }
+.liquid-wave { position: absolute; left: 0; top: -0.7rem; width: 200%; height: 0.8rem; }
+.liquid-body { position: absolute; inset: 0; top: 0; }
+@keyframes wave-a { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes wave-b { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+@keyframes letter-in { from { transform: translateY(-120%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes letter-out { from { transform: translateY(0); opacity: 1; } to { transform: translateY(140%); opacity: 0; } }
+.letters-out { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .reel-strip { animation: reel-roll 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: var(--delay, 0s); }
+  .code-shake { animation: code-shake 0.45s ease-in-out; }
+  .liquid { transition: transform 1.4s cubic-bezier(0.4, 0, 0.2, 1); }
+  .liquid-level-full, .liquid-level-wrong { transition-duration: 0.7s; }
+  .liquid-wave-a { animation: wave-a 1.6s linear infinite; }
+  .liquid-wave-b { animation: wave-b 2.4s linear infinite; }
+  .letter-in { display: inline-block; animation: letter-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: calc(var(--i) * 45ms); }
+  .letters-out { display: inline-flex; position: absolute; inset: 0; align-items: center; justify-content: center; }
+  .letters-out span { display: inline-block; animation: letter-out 0.5s ease-in both; animation-delay: calc(var(--i) * 35ms); }
+}

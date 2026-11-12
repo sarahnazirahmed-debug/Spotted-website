@@ -1,6 +1,7 @@
 "use client";
 
 // One list of the Pin Desk: a heading, a search box, and one card per row. Each card opens its edit page.
+import { LoadingBlocks } from "@/components/Skeleton";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { matches } from "@/lib/listRules";
@@ -41,7 +42,7 @@ export default function ListShell({ title, addHref, addLabel, rows, loaded, empt
       <div>
         <label htmlFor="list-q" className="mb-1 block text-sm font-bold">Search</label>
         <input id="list-q" className={field} value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" />
-        <p className="mt-1 text-sm text-ash" role="status">{loaded ? `${shown.length} of ${rows.length}, newest on top` : "Loading..."}</p>
+        {loaded ? <p className="mt-1 text-sm text-ash" role="status">{`${shown.length} of ${rows.length}, newest on top`}</p> : <LoadingBlocks rows={4} className="mt-3" />}
       </div>
       <ul className="grid gap-3">
         {shown.map((r) => (
