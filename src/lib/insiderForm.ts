@@ -46,6 +46,11 @@ export const phoneVerified = (v: Values, k: "phone" | "whatsapp") => v[k].trim()
 // With "same as my phone" the WhatsApp number IS the phone number (free, nothing more to verify).
 export const whatsappNumber = (v: Values) => (v.sameAsPhone ? v.phone : v.whatsapp);
 
+// FREE phone check (no SMS): the person sends Spotted a WhatsApp message FROM their own number. The message says the number they
+// typed, so the team can match it to the sender. Nothing is sent by us, and nothing is saved from the message here.
+export const whatsappCheckMessage = (v: Values) =>
+  `Hi Spotted, I am applying as an Insider. Please confirm my number: ${whatsappNumber(v).trim() || v.phone.trim()}`;
+
 // SMS codes cost money (a provider is needed). While SMS is OFF in features.ts the phone is not required to be verified.
 export type Context = { today?: Date; smsOn?: boolean };
 

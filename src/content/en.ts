@@ -317,6 +317,10 @@ export const en = {
     home: "Back to the home page",
     smsOff: "Phone codes are not open yet. Please type your number. We will check it ourselves later.",
     sameAsPhone: "My WhatsApp is the same as my phone",
+    // DRAFT WORDING (to approve later): the free way to check a number, without a paid SMS.
+    whatsappCheckTitle: "Confirm your number on WhatsApp (free)",
+    whatsappCheckHelp: "Tap the button and send the message from the number you typed. We will see it and tick your number.",
+    whatsappCheckButton: "Message Spotted on WhatsApp",
     sendCode: "Send code",
     enterCode: "Enter the code",
     verifiedWord: "Verified",

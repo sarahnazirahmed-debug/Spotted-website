@@ -9,11 +9,12 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { FEATURES } from "@/config/features";
 import { text } from "@/content";
+import { whatsappUrl } from "@/config/links";
 import { getSupabase } from "@/lib/supabase";
 import { MAX_PDF_BYTES, pdfPath, pdfProblem } from "@/lib/applyRules";
 import type { CodeState } from "@/lib/codeEntry";
 import {
-  COUNTRY, EMIRATES, MAX_AGENCY_ACCOUNTS, STEPS, buildPayload, emailVerified, emptyValues, firstBadStep, phoneVerified, stepProblem, summary,
+  COUNTRY, EMIRATES, MAX_AGENCY_ACCOUNTS, STEPS, buildPayload, emailVerified, emptyValues, firstBadStep, phoneVerified, stepProblem, summary, whatsappCheckMessage,
   type StepId, type Values,
 } from "@/lib/insiderForm";
 import VerifyButton from "../code/VerifyButton";
@@ -274,6 +275,13 @@ export default function InsiderWizard() {
               {!v.sameAsPhone && <Field id="wa" label="WhatsApp number"><input id="wa" type="tel" inputMode="tel" className={input} value={v.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} placeholder="+971 50 000 0000" /></Field>}
               <Field id="bphone" label="Backup phone" optional><input id="bphone" type="tel" inputMode="tel" className={input} value={v.backupPhone} onChange={(e) => set("backupPhone", e.target.value)} /></Field>
               <Field id="land" label="Landline" optional><input id="land" type="tel" inputMode="tel" className={input} value={v.landline} onChange={(e) => set("landline", e.target.value)} /></Field>
+              {!smsOn && whatsappUrl() && (
+                <div className="grid gap-2 rounded-2xl border border-rosesoft p-4">
+                  <p className="font-bold">{t.whatsappCheckTitle}</p>
+                  <p className="text-sm">{t.whatsappCheckHelp}</p>
+                  <a className={`${ghost} w-fit`} href={whatsappUrl(whatsappCheckMessage(v))} target="_blank" rel="noopener noreferrer">{t.whatsappCheckButton}</a>
+                </div>
+              )}
               {smsOn && phoneVerified(v, "phone") && <p role="status" className="font-bold text-maroonink">Phone verified</p>}
             </div>
           )}
