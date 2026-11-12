@@ -178,6 +178,7 @@ export default function PinDesk() {
   async function download() {
     const { default: writeExcelFile } = await import("write-excel-file/browser");
     await writeExcelFile(reelsToRows(reels)).toFile(`pin-desk-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    void supabase!.rpc("note_reels_export"); // tells the dashboard reminder that an export was made (it is fine if this fails)
   }
 
   async function importFile(file: File) {

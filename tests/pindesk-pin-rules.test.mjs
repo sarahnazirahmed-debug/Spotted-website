@@ -93,3 +93,8 @@ test("Pin Desk: has an Added by filter, and a plain message on phones (the desk 
   assert.match(page, /hidden lg:block/);
   assert.match(page, /laptop or a desktop/);
 });
+
+test("downloading the Excel file tells the dashboard reminder", async () => {
+  const { readFileSync } = await import("node:fs");
+  assert.match(readFileSync("src/components/admin/PinDesk.tsx", "utf8"), /rpc\("note_reels_export"\)/);
+});
