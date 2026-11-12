@@ -17,6 +17,8 @@ import {
   type StepId, type Values,
 } from "@/lib/insiderForm";
 import VerifyButton from "../code/VerifyButton";
+import { isMissingFunction } from "@/lib/referenceCode";
+import ApplyConfirmation from "./ApplyConfirmation";
 import CodeRow from "./CodeRow";
 
 const t = text.insiderForm;
@@ -56,6 +58,7 @@ export default function InsiderWizard() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<CodeState>("waiting");
   const [phase, setPhase] = useState<"form" | "flying" | "done">("form");
+  const [code, setCode] = useState<string | null>(null);
   const cards = useRef<HTMLDivElement>(null);
   const bookmark = useRef<HTMLDivElement>(null);
   const confirm = useRef<HTMLDivElement>(null);
@@ -121,13 +124,16 @@ export default function InsiderWizard() {
       }
       paths[key] = path;
     }
-    // 2. the application: the database checks every rule again and saves it as "New" (pending)
-    const { error } = await supabase.rpc("submit_insider_application", { p: buildPayload(v, paths, smsOn) });
+    // 2. the application: the database checks every rule again, saves it as "New" and gives back the reference code
+    const payload = buildPayload(v, paths, smsOn);
+    let { data, error } = await supabase.rpc("submit_insider_application_with_code", { p: payload });
+    if (isMissingFunction(error)) ({ data, error } = await supabase.rpc("submit_insider_application", { p: payload })); // the code file is not run yet: send without a code
     if (error) {
       setStatus("wrong");
       const m = /APPLY: (.*)$/.exec(error.message);
       return setMessage(m ? m[1] : t.failed);
     }
+    setCode(typeof data === "string" && /^[A-Z2-9]{12}$/.test(data) ? data : null);
     setStatus("correct");
     await new Promise((r) => window.setTimeout(r, reduced() ? 300 : 1100));
     fly();
@@ -168,13 +174,8 @@ export default function InsiderWizard() {
 
   if (phase === "done")
     return (
-      <div ref={confirm} role="status" className="mx-auto grid max-w-xl gap-4 rounded-3xl border border-rosesoft bg-card p-8 text-center">
-        <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-maroon text-cream">
-          <svg viewBox="0 0 20 20" width="30" height="30" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M4 10.5l4 4 8-9" /></svg>
-        </span>
-        <h2 className="font-brand text-3xl font-bold text-maroonink">{t.doneTitle}</h2>
-        <p className="text-lg">{t.doneLead}</p>
-        <Link href="/" className={`${ghost} mx-auto`}>Back to the home page</Link>
+      <div ref={confirm}>
+        <ApplyConfirmation kind="insider" code={code} />
       </div>
     );
 

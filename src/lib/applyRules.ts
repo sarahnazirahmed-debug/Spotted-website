@@ -52,7 +52,7 @@ export type InsiderValues = {
 };
 export type PartnerValues = {
   businessName: string; businessType: string; ownerName: string; email: string; phone: string; instagram: string; website: string;
-  emirate: string; branches: string; hasLicence: boolean; hasFoodPermit: boolean;
+  emirate: string; hasLicence: boolean; hasFoodPermit: boolean;
 };
 
 // The first problem in an Insider form, or null when it is fine.
@@ -83,8 +83,6 @@ export function partnerProblem(v: PartnerValues): string | null {
   if (!handleOk(cleanHandle(v.instagram))) return "Please add the business Instagram handle.";
   if (v.website.trim() && !isLink(v.website)) return "Please check the website link (it starts with https://).";
   if (!EMIRATES.includes(v.emirate)) return "Please choose the emirate.";
-  const n = Number(v.branches);
-  if (!Number.isInteger(n) || n < 1 || n > 500) return "Please enter the number of branches (1 or more).";
   if (!v.hasLicence) return "Please upload your UAE trade licence (PDF).";
   if (isFoodType(v.businessType) && !v.hasFoodPermit) return "Please upload your food permit (PDF). It is required for food and drink businesses.";
   return null;

@@ -294,3 +294,6 @@ html.theme-fade *::after {
   .rate-bin-lid { transition: transform 0.2s ease-out; }
   .rate-cross { transition: opacity 0.4s ease; }
 }
+
+/* The "We got your form" screen: only the Rate us star floats there, so the round WhatsApp button is hidden while it shows. */
+html[data-hide-whatsapp] [data-whatsapp] { display: none; }

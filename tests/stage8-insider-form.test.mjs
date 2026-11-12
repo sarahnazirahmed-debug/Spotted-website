@@ -318,7 +318,7 @@ test("database: visitors can send an application but cannot read any", async () 
 test("the SQL file exists, the old submit function is untouched, and the older files were not edited", () => {
   assert.ok(existsSync("supabase/apply_insider_form.sql"));
   assert.match(read("supabase/applications.sql"), /create function public\.submit_application\(p jsonb\)/);
-  for (const f of readdirSync("supabase").filter((x) => x.endsWith(".sql") && x !== "apply_insider_form.sql")) assert.doesNotMatch(read(`supabase/${f}`), /submit_insider_application/, f);
+  for (const f of readdirSync("supabase").filter((x) => x.endsWith(".sql") && x !== "apply_insider_form.sql" && x !== "apply_reference_codes.sql")) assert.doesNotMatch(read(`supabase/${f}`), /submit_insider_application/, f);
 });
 
 test("no form sits inside another form: the email code box is a plain box with a plain Verify button", () => {

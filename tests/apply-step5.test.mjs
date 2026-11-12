@@ -34,7 +34,7 @@ test("Insider form: a good one passes; each missing thing gives a clear message"
 
 const goodPartner = {
   businessName: "Test Cafe", businessType: "Cafe", ownerName: "Omar", email: "o@example.com", phone: "+971 50 111 1111", instagram: "@testcafe",
-  website: "", emirate: "Dubai", branches: "2", hasLicence: true, hasFoodPermit: true,
+  website: "", emirate: "Dubai", hasLicence: true, hasFoodPermit: true,
 };
 test("Partner form: licence always, food permit for food and drink only", () => {
   assert.equal(partnerProblem(goodPartner), null);
@@ -43,7 +43,7 @@ test("Partner form: licence always, food permit for food and drink only", () => 
   assert.equal(partnerProblem({ ...goodPartner, businessType: "Shop", hasFoodPermit: false }), null);
   assert.equal(isFoodType("Cloud or home kitchen"), true);
   assert.equal(isFoodType("Shop"), false);
-  assert.match(partnerProblem({ ...goodPartner, branches: "0" }), /branches/);
+  assert.equal(partnerProblem({ ...goodPartner }), null); // branches are no longer asked: partners add them later in the dashboard
   assert.match(partnerProblem({ ...goodPartner, emirate: "" }), /emirate/);
 });
 

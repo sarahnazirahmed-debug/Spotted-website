@@ -9,6 +9,8 @@
 //   4. opens the thank-you page.
 // The age is worked out from the date of birth and shown; it is never asked.
 import { useState } from "react";
+import { isMissingFunction } from "@/lib/referenceCode";
+import ApplyConfirmation from "./ApplyConfirmation";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PARTNER_PRICE_CARDS, cardPriceKey, priceLabel } from "@/config/pricing";
@@ -81,13 +83,15 @@ export default function ApplyForm() {
   const [tickError, setTickError] = useState(false);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false); // a Partner application was sent: show "We got your form" with the code
+  const [doneCode, setDoneCode] = useState<string | null>(null);
   const [trap, setTrap] = useState(""); // a hidden box that only robots fill in
 
   const [ins, setIns] = useState({
     joinType: (params.get("how") === "founding" ? "founding" : "regular") as "regular" | "founding",
     inviteCode: "", fullName: "", dob: "", email: "", phone: "", profileLink: "", instagram: "", tiktok: "", youtube: "", snapchat: "", otherName: "", otherLink: "",
   });
-  const [par, setPar] = useState({ businessName: "", businessType: "", ownerName: "", email: "", phone: "", instagram: "", website: "", emirate: "", branches: "", plan: "" });
+  const [par, setPar] = useState({ businessName: "", businessType: "", ownerName: "", email: "", phone: "", instagram: "", website: "", emirate: "", plan: "" });
   const [files, setFiles] = useState<{ permit: File | null; licence: File | null; food: File | null }>({ permit: null, licence: null, food: null });
 
   const setI = (k: keyof typeof ins) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -153,17 +157,26 @@ export default function ApplyForm() {
         : {
             ...common, contact_name: par.ownerName.trim(), email: par.email.trim(), phone: par.phone.trim(), business_name: par.businessName.trim(),
             business_type: par.businessType, instagram: cleanHandleOrEmpty(par.instagram), website: par.website.trim(), emirate: par.emirate,
-            branches: Number(par.branches), plan_interest: par.plan,
+            plan_interest: par.plan,
           };
-    const { error } = await supabase.rpc("submit_application", { p: payload });
+    // Partners: the database saves it and gives back the reference code. (Branches are not asked: partners add them later in their dashboard.)
+    let { data, error } = await supabase.rpc(kind === "partner" ? "submit_application_with_code" : "submit_application", { p: payload });
+    if (kind === "partner" && isMissingFunction(error)) ({ data, error } = await supabase.rpc("submit_application", { p: { ...payload, branches: 1 } })); // the code file is not run yet
     setBusy(false);
     if (error) {
       // the database's own messages start with "APPLY: " and are written for visitors
       const m = /APPLY: (.*)$/.exec(error.message);
       return setMessage(m ? m[1] : t.failed);
     }
+    if (kind === "partner") {
+      setDoneCode(typeof data === "string" && /^[A-Z2-9]{8}$/.test(data) ? data : null);
+      setDone(true);
+      return;
+    }
     router.push("/apply/thanks");
   }
+
+  if (done) return <ApplyConfirmation kind="partner" code={doneCode} />;
 
   const other = kind === "insider" ? { href: "/apply?type=partner", label: t.switchToPartner } : { href: "/apply?type=insider", label: t.switchToInsider };
   const tick = (key: keyof typeof ticks, label: string, href: string) => (
@@ -282,9 +295,6 @@ export default function ApplyForm() {
                   <option key={b}>{b}</option>
                 ))}
               </select>
-            </Field>
-            <Field id="branches" label={t.branches}>
-              <input id="branches" type="number" inputMode="numeric" min={1} max={500} className={input} value={par.branches} onChange={setP("branches")} />
             </Field>
           </div>
           <Field id="plan" label={t.plan} optional>
