@@ -273,3 +273,24 @@ html.theme-fade *::after {
   .letters-out { display: inline-flex; position: absolute; inset: 0; align-items: center; justify-content: center; }
   .letters-out span { display: inline-block; animation: letter-out 0.5s ease-in both; animation-delay: calc(var(--i) * 35ms); }
 }
+
+/* ---- The Rate us star ----
+   The star bobs gently, the page behind the card fades in blurry, the bin's lid opens, and after a rating the star is
+   "vacuumed" off the right edge. With Reduce Motion on, none of this moves: things just appear and disappear. */
+@keyframes rate-star-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-4px) rotate(8deg); } }
+@keyframes rate-star-vacuum {
+  0% { transform: scale(1, 1); opacity: 1; }
+  22% { transform: translateX(-6px) scale(1.15, 0.9); }
+  100% { transform: translateX(110px) scale(2.6, 0.08) rotate(14deg); opacity: 0; }
+}
+@keyframes rate-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.rate-bin-lid { transform-origin: 6px 8px; }
+.rate-bin-lid-open { transform: rotate(-28deg) translateY(-1px); }
+@media (prefers-reduced-motion: no-preference) {
+  .rate-star-float { animation: rate-star-bob 3.2s ease-in-out infinite; }
+  .rate-star-vacuum { animation: rate-star-vacuum 0.75s cubic-bezier(0.5, 0, 0.9, 0.4) forwards; }
+  .rate-backdrop { animation: rate-fade-in 0.25s ease-out both; }
+  .rate-bin { transition: opacity 0.25s ease; }
+  .rate-bin-lid { transition: transform 0.2s ease-out; }
+  .rate-cross { transition: opacity 0.4s ease; }
+}

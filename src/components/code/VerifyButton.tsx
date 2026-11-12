@@ -11,7 +11,8 @@ import { useEffect, useRef, useState } from "react";
 import { text } from "@/content";
 import { BUTTON_CLASS, FILL_MS, LIQUID_CLASS, LIQUID_LEVEL, lean, type CodeState } from "@/lib/codeEntry";
 
-const words = (s: CodeState) => ({ waiting: text.codeEntry.verify, checking: text.codeEntry.checking, wrong: text.codeEntry.tryAgain, correct: text.codeEntry.verified })[s];
+export type ButtonWords = { verify: string; checking: string; tryAgain: string; verified: string };
+const wordFor = (w: ButtonWords, s: CodeState) => ({ waiting: w.verify, checking: w.checking, wrong: w.tryAgain, correct: w.verified })[s];
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 function Letters({ word }: { word: string }) {
@@ -26,7 +27,8 @@ function Letters({ word }: { word: string }) {
   );
 }
 
-export default function VerifyButton({ state, disabled = false }: { state: CodeState; disabled?: boolean }) {
+// `words` lets another screen (for example the Rate us card: "Submit" then "Submitted") use the same button with its own words.
+export default function VerifyButton({ state, disabled = false, words = text.codeEntry }: { state: CodeState; disabled?: boolean; words?: ButtonWords }) {
   const button = useRef<HTMLButtonElement>(null);
   const [shown, setShown] = useState<CodeState>(state); // the word on the button (it waits for the liquid to fill)
   const shownRef = useRef<CodeState>(state);
@@ -36,13 +38,13 @@ export default function VerifyButton({ state, disabled = false }: { state: CodeS
     if (shownRef.current === state) return;
     const wait = state === "correct" && !reduced() ? FILL_MS : 0;
     const t = window.setTimeout(() => {
-      setLeaving(words(shownRef.current));
+      setLeaving(wordFor(words, shownRef.current));
       shownRef.current = state;
       setShown(state);
       window.setTimeout(() => setLeaving(null), 800);
     }, wait);
     return () => window.clearTimeout(t);
-  }, [state]);
+  }, [state, words]);
 
   const locked = disabled || state === "checking" || state === "correct";
 
@@ -79,7 +81,7 @@ export default function VerifyButton({ state, disabled = false }: { state: CodeS
         </span>
         <span className={`relative z-10 flex min-h-6 items-center justify-center ${textClass}`}>
           <span key={shown} aria-live="polite">
-            <Letters word={words(shown)} />
+            <Letters word={wordFor(words, shown)} />
           </span>
           {leaving && (
             <span aria-hidden="true" className="letters-out">

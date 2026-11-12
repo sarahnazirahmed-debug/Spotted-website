@@ -8,7 +8,7 @@ import { CONTACT_DETAILS } from "./contactDetails.ts";
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "loginPage" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "legalPlaceholders" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage" | "designDraft" | "applyPage" | "newLanding";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "loginPage" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "legalPlaceholders" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage" | "designDraft" | "applyPage" | "newLanding" | "feedbackStar";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
@@ -95,6 +95,9 @@ export const FEATURES: Record<FeatureName, boolean> = {
   applyPage: true,
   // The home page in the new maroon, cream, Merriweather and Inter look (step 8). OFF brings back the older dark look.
   newLanding: true,
+  // The floating "Rate us" star (right side of every public page), its card, and the "Rate us" link in the footer.
+  // Ratings are saved in the star_feedback table: run supabase/star_feedback.sql first, or switch this OFF.
+  feedbackStar: true,
 };
 
 // LAUNCH WORDS: what the banner says, and whether the App Store / Google Play buttons show.

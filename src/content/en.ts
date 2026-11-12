@@ -283,6 +283,33 @@ export const en = {
     confidentialityTitle: "Confidentiality agreement",
   },
 
+  // The Rate us star. DRAFT WORDING: to be approved by Sarah.
+  rate: {
+    star: "Rate us",
+    title: "How are we doing?",
+    aboutLabel: "What are you rating?",
+    website: "The website",
+    app: "The app",
+    faceLabel: "Your rating",
+    pickFace: "Pick a face.",
+    notes: ["Not good", "Could be better", "It is okay", "Good", "Great"],
+    noteLabel: "Anything to add? (optional)",
+    submit: "Submit",
+    sending: "Sending",
+    submitted: "Submitted",
+    tryAgain: "Try again",
+    thanks: "Thank you. Your rating helps us make Spotted better.",
+    close: "Close",
+    hideForGood: "Hide the star for good",
+    hiddenNote: "The star is hidden. You can still find Rate us at the bottom of the page.",
+    binLabel: "Drop here to hide the star",
+    cannotSend: "We could not send your rating. Please try again later.",
+    tooFast: "Please wait a few seconds before you rate again.",
+    tooMany: "You have rated a few times already. Thank you! Please try again later.",
+    honeypotLabel: "Leave this box empty",
+    faceName: (n: number) => `${n} out of 5`,
+  },
+
   // The code screens (log in and sign up): the words on the Verify button.
   codeEntry: {
     verify: "Verify",

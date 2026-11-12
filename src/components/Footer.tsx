@@ -4,6 +4,7 @@ import { CONTACT, FEATURES } from "@/config/features";
 import { text } from "@/content";
 import SocialButtons from "./site/SocialButtons";
 import IfInstagram from "./site/IfInstagram";
+import RateUsLink from "./rate/RateUsLink";
 
 export default function Footer() {
   // The footer has five page links: About us, Contact, Terms, Privacy policy, Confidentiality agreement.
@@ -45,6 +46,7 @@ export default function Footer() {
                 {name}
               </Link>
             ))}
+          {FEATURES.feedbackStar && <RateUsLink />}
         </nav>
       </div>
     </footer>
