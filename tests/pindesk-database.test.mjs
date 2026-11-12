@@ -16,6 +16,7 @@ before(async () => {
     insert into public.team_members (email, name, role) values
       ('main@example.com','Main Admin','main_admin'), ('assoc@example.com','Associate One','associate'),
       ('staff@example.com','Staff Person','staff'), ('helper@example.com','Helper Person','helper');
+    insert into public.approved_staff (email, is_primary_owner) values ('main@example.com', true);
   `);
 });
 
@@ -216,12 +217,12 @@ test("a reel cannot use a location that belongs to a different restaurant, or be
 });
 
 test("the old reel rules still work (Pinned needs a place name and a pin; added by and pinned by are filled in)", async () => {
-  assert.equal((await attempt(db, P.staff, "insert into public.reels (url, link_key, platform, status) values ('https://www.instagram.com/reel/PIN0/', 'instagram/PIN0', 'instagram', 'pinned')")).ok, false);
-  const r = await as(db, P.staff, async (d) => {
+  assert.equal((await attempt(db, P.main, "insert into public.reels (url, link_key, platform, status) values ('https://www.instagram.com/reel/PIN0/', 'instagram/PIN0', 'instagram', 'pinned')")).ok, false);
+  const r = await as(db, P.main, async (d) => {
     await d.query("insert into public.reels (url, link_key, platform, place_name, lat, lng, status) values ('https://www.instagram.com/reel/PIN1/', 'instagram/PIN1', 'instagram', 'Place', 25, 55, 'pinned')");
     return (await d.query("select added_by, pinned_by from public.reels where link_key = 'instagram/PIN1'")).rows[0];
   });
-  assert.deepEqual(r, { added_by: "Staff Person", pinned_by: "Staff Person" });
+  assert.deepEqual(r, { added_by: "Main Admin", pinned_by: "Main Admin" });
 });
 
 // ---------------------------------------------------------------- items, deals, offers

@@ -6,6 +6,7 @@ import { similarNames } from "@/lib/businessRules";
 import { locationFits, locationGroups, postedOnProblem, type BizOption, type LocOption } from "@/lib/reelPlace";
 import { cleanDeals, cleanOffers, draftFromDeal, draftFromOffer, type Deal, type DealDraft, type Offer, type OfferDraft } from "@/lib/reelDeals";
 import { useAdmin } from "./AdminProvider";
+import { canPinReels } from "@/lib/teamRules";
 import ReelExtras from "./ReelExtras";
 import type { Extras } from "@/lib/reelExtrasSave";
 import { cleanDishes, MAX_DISHES } from "@/lib/dishes";
@@ -65,7 +66,8 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
   const [pinMessage, setPinMessage] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
-  const { supabase } = useAdmin();
+  const { supabase, me } = useAdmin();
+  const mayPin = canPinReels(me?.role ?? null);
   const [bizFilter, setBizFilter] = useState("");
   const [creating, setCreating] = useState(false);
   const [newBiz, setNewBiz] = useState({ name: "", type: "restaurant" as "restaurant" | "shop" });
@@ -134,6 +136,7 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
     const lng = num(v.lng);
     if ((v.lat.trim() && lat == null) || (v.lng.trim() && lng == null)) return setMessage("The pin must be numbers.");
     if ((lat != null && Math.abs(lat) > 90) || (lng != null && Math.abs(lng) > 180)) return setMessage("That pin is not on the map.");
+    if (v.status === "pinned" && initial.status !== "pinned" && !mayPin) return setMessage("Only Sarah can mark a reel Pinned. Leave it as To check.");
     if (v.status === "pinned" && cannotPin) return setMessage(`Cannot mark Pinned. ${cannotPin}`);
     const dealResult = cleanDeals(dealDrafts);
     if (dealResult.problem) return setMessage(dealResult.problem);
@@ -367,7 +370,7 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
         <label className={label} htmlFor="rf-status">Status</label>
         <select id="rf-status" className={field} value={v.status} onChange={set("status")}>
           {(["to_check", "pinned", "skip"] as ReelStatus[]).map((s) => (
-            <option key={s} value={s} disabled={s === "pinned" && !!cannotPin}>
+            <option key={s} value={s} disabled={s === "pinned" && (!!cannotPin || (!mayPin && initial.status !== "pinned"))}>
               {STATUS_LABEL[s]}
             </option>
           ))}

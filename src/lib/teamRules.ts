@@ -16,6 +16,8 @@ export const canUsePinDesk = (me: TeamRole | null) => me !== null;
 export const canSeeEarnings = (me: TeamRole | null) => me === "main_admin" || me === "associate";
 // Only the main admin and associates may mark a detail "Not needed" (the database checks this too).
 export const canMarkNotNeeded = (me: TeamRole | null) => me === "main_admin" || me === "associate";
+// Only Sarah (the primary owner) may mark a reel Pinned. The database enforces it (supabase/pindesk_pin_rules.sql); this only hides the button.
+export const canPinReels = (me: TeamRole | null) => me === "main_admin";
 export const canDeleteReels = (me: TeamRole | null) => me === "main_admin" || me === "associate";
 
 // The roles that `me` may give to a new person (or change a person to).

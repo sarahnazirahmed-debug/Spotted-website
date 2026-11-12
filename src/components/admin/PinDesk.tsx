@@ -5,7 +5,7 @@
 // We only store links and place facts. Never videos, photos, captions, or anything about app users.
 import { LoadingBlocks } from "@/components/Skeleton";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { canDeleteReels } from "@/lib/teamRules";
+import { canDeleteReels, canPinReels } from "@/lib/teamRules";
 import { EMIRATES, pinProblem, STATUS_LABEL, type ReelStatus } from "@/lib/pinRules";
 import { readReelLink } from "@/lib/reelLinks";
 import { reelsToRows, rowsToReels } from "@/lib/reelExcel";
@@ -416,7 +416,7 @@ export default function PinDesk() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button type="button" className={small} onClick={() => { setEditing(r); setAdding(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Edit</button>
-                  {r.status !== "pinned" && <button type="button" className={small} onClick={() => setStatus(r, "pinned")}>Pin</button>}
+                  {r.status !== "pinned" && canPinReels(me?.role ?? null) && <button type="button" className={small} onClick={() => setStatus(r, "pinned")}>Pin</button>}
                   {r.status !== "skip" && <button type="button" className={small} onClick={() => setStatus(r, "skip")}>Skip</button>}
                   {r.status !== "to_check" && <button type="button" className={small} onClick={() => setStatus(r, "to_check")}>To check</button>}
                 </div>

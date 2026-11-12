@@ -28,6 +28,7 @@ before(async () => {
       ('assoc2@example.com', 'Associate Two', 'associate'),
       ('staff@example.com', 'Staff Person', 'staff'),
       ('helper@example.com', 'Helper Person', 'helper');
+    insert into public.approved_staff (email, is_primary_owner) values ('main@example.com', true);
     insert into public.reels (url, link_key, platform, place_name, status)
       values ('https://www.instagram.com/reel/AAA/', 'instagram/AAA', 'instagram', 'Seed Cafe', 'to_check');
     insert into public.share_requests (link_key, url, platform, times_shared)
@@ -232,21 +233,22 @@ test("only the main admin and associates delete reels", async () => {
   assert.equal((await attempt(db, P.assoc, "delete from public.reels where link_key = 'instagram/AAA'")).affected, 1);
 });
 
+// Only the primary owner (Sarah) can pin, so these use the main admin who is marked as primary owner.
 test("added_by and pinned_by are filled in by the database", async () => {
-  const r = await as(db, P.helper, async (d) => {
+  const r = await as(db, P.main, async (d) => {
     await d.query("insert into public.reels (url, link_key, platform, place_name, lat, lng, status, added_by, pinned_by) values ('https://www.instagram.com/reel/P1/', 'instagram/P1', 'instagram', 'Pin Place', 25.2, 55.3, 'pinned', 'Fake', 'Fake')");
     return d.query("select added_by, pinned_by from public.reels where link_key = 'instagram/P1'");
   });
-  assert.equal(r.rows[0].added_by, "Helper Person");
-  assert.equal(r.rows[0].pinned_by, "Helper Person");
+  assert.equal(r.rows[0].added_by, "Main Admin");
+  assert.equal(r.rows[0].pinned_by, "Main Admin");
 });
 
 test("a reel cannot be Pinned without a place name and a pin on the map", async () => {
-  const noPin = await attempt(db, P.staff, "update public.reels set status = 'pinned' where link_key = 'instagram/AAA'");
+  const noPin = await attempt(db, P.main, "update public.reels set status = 'pinned' where link_key = 'instagram/AAA'");
   assert.equal(noPin.ok, false, "pinned without a pin");
-  const noName = await attempt(db, P.staff, "update public.reels set status = 'pinned', lat = 25, lng = 55, place_name = '  ' where link_key = 'instagram/AAA'");
+  const noName = await attempt(db, P.main, "update public.reels set status = 'pinned', lat = 25, lng = 55, place_name = '  ' where link_key = 'instagram/AAA'");
   assert.equal(noName.ok, false, "pinned without a place name");
-  const ok = await attempt(db, P.staff, "update public.reels set status = 'pinned', lat = 25, lng = 55 where link_key = 'instagram/AAA'");
+  const ok = await attempt(db, P.main, "update public.reels set status = 'pinned', lat = 25, lng = 55 where link_key = 'instagram/AAA'");
   assert.equal(ok.ok, true);
 });
 
