@@ -126,3 +126,12 @@ test("the pages are called About us and FAQs", () => {
   assert.equal(en.nav.faq, "FAQs");
   assert.equal(en.nav.faqs, "FAQs");
 });
+
+test("the footer links to About us and Contact, each behind its own switch", () => {
+  const f = code("src/components/Footer.tsx");
+  assert.match(f, /\[text\.nav\.about, "\/about", FEATURES\.aboutPage\]/);
+  assert.match(f, /\[text\.footer\.contact, "\/contact", FEATURES\.contactPage\]/);
+  assert.equal(en.footer.contact, "Contact");
+  assert.equal(en.nav.about, "About us");
+  assert.ok(f.indexOf("/about") < f.indexOf("/terms")); // About us and Contact come first
+});

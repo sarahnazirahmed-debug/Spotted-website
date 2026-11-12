@@ -1,4 +1,4 @@
-// The footer: Terms, Privacy policy, Confidentiality agreement, the Instagram button (once the address is set), and the contact email (once it exists).
+// The footer: About us, Contact, Terms, Privacy policy, Confidentiality agreement, the Instagram button (once the address is set), and the contact email (once it exists).
 import Link from "next/link";
 import { CONTACT, FEATURES } from "@/config/features";
 import { text } from "@/content";
@@ -6,9 +6,12 @@ import SocialButtons from "./site/SocialButtons";
 import IfInstagram from "./site/IfInstagram";
 
 export default function Footer() {
-  // The footer has three page links: Terms, Privacy policy, Confidentiality agreement.
+  // The footer has five page links: About us, Contact, Terms, Privacy policy, Confidentiality agreement.
+  // (About us and Contact show only while their switches are ON in features.ts.)
   // Then Instagram and the email (the email shows only once the mailbox works: CONTACT.emailLive in features.ts).
   const links: [string, string, boolean][] = [
+    [text.nav.about, "/about", FEATURES.aboutPage],
+    [text.footer.contact, "/contact", FEATURES.contactPage],
     [text.footer.terms, "/terms", FEATURES.legalPages],
     [text.footer.privacyPolicy, "/privacy", FEATURES.legalPages],
     [text.footer.confidentiality, "/confidentiality", FEATURES.legalPages],
