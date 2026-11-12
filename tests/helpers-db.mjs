@@ -37,6 +37,7 @@ export async function makeDb({ skip = [] } = {}) {
   if (!skip.includes("star_feedback.sql")) await db.exec(readFileSync("supabase/star_feedback.sql", "utf8"));
   await db.exec(readFileSync("supabase/applications.sql", "utf8"));
   await db.exec(readFileSync("supabase/dashboards.sql", "utf8"));
+  await db.exec(readFileSync("supabase/apply_insider_form.sql", "utf8"));
   return db;
 }
 

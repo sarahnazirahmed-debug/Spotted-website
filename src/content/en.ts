@@ -283,6 +283,41 @@ export const en = {
     confidentialityTitle: "Confidentiality agreement",
   },
 
+  // The Insider application (7 steps). DRAFT WORDING: to be approved by Sarah.
+  insiderForm: {
+    progress: (n: number, total: number) => `Step ${n} of ${total}`,
+    next: "Next",
+    back: "Back",
+    review: "Review",
+    steps: [
+      { title: "How are you joining?", lead: "Most people join as a Regular Insider. Founding Insiders join by invitation." },
+      { title: "Who are you?", lead: "Choose the one that fits you best." },
+      { title: "Your details", lead: "Tell us a little about you. We need to know you are 18 or over." },
+      { title: "Your emails", lead: "We send a 6-digit code to check each email is real. The business email must be checked before you go on." },
+      { title: "Your phone numbers", lead: "We use these only to reach you about your application." },
+      { title: "Your social accounts", lead: "Add at least one: Instagram (link and handle) or TikTok (handle)." },
+      { title: "Your documents", lead: "PDF files only, up to 5 MB each. They are stored privately and only our team can open them." },
+    ],
+    reviewTitle: "Check everything, then send",
+    reviewLead: "These are your seven answers. Press Edit on any card to change it.",
+    edit: "Edit",
+    ticks: { terms: "I agree to the Terms and conditions", privacy: "I agree to the Privacy policy", confidentiality: "I agree to the Confidentiality agreement" },
+    submit: "Submit",
+    sending: "Sending",
+    submitted: "Submitted",
+    tryAgain: "Try again",
+    uploadFailed: "A file did not upload. Please try again.",
+    failed: "Something went wrong. Please try again.",
+    closed: "The form is not open yet. Please check back soon.",
+    doneTitle: "We got your form",
+    doneLead: "Our team will read it and write to your business email. Thank you for applying.",
+    smsOff: "Phone codes are not open yet. Please type your number. We will check it ourselves later.",
+    sameAsPhone: "My WhatsApp is the same as my phone",
+    sendCode: "Send code",
+    enterCode: "Enter the code",
+    verifiedWord: "Verified",
+  },
+
   // The Rate us star. DRAFT WORDING: to be approved by Sarah.
   rate: {
     star: "Rate us",

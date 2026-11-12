@@ -8,7 +8,7 @@ import { CONTACT_DETAILS } from "./contactDetails.ts";
 //
 // Rule: every time we add a new big section to the site, add a switch for it here first.
 
-export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "loginPage" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "legalPlaceholders" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage" | "designDraft" | "applyPage" | "newLanding" | "feedbackStar";
+export type FeatureName = "hero" | "whatsSpotted" | "businessPages" | "businessWaitlist" | "insiderWaitlist" | "creatorCredit" | "businessDirectory" | "adminArea" | "accounts" | "loginPage" | "insiderPage" | "careersPage" | "aboutPage" | "legalPages" | "legalPlaceholders" | "footer" | "topBar" | "themeLamp" | "waitlist" | "whatsappButton" | "pricingPage" | "howToJoinPage" | "faqPage" | "removeReelsPage" | "liveCounters" | "storeButtons" | "getInTouch" | "contactPage" | "designDraft" | "applyPage" | "newLanding" | "feedbackStar" | "smsVerification";
 
 export const FEATURES: Record<FeatureName, boolean> = {
   // The full-screen landing section at the very top (moving banner, "Spotted", launch words).
@@ -98,6 +98,9 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // The floating "Rate us" star (right side of every public page), its card, and the "Rate us" link in the footer.
   // Ratings are saved in the star_feedback table: run supabase/star_feedback.sql first, or switch this OFF.
   feedbackStar: true,
+  // Phone number codes by SMS on the Insider form. OFF: an SMS provider costs money, so nothing is sent and a phone does not
+  // need to be verified. The form still asks for the numbers. Switch ON only after a provider is chosen and connected.
+  smsVerification: false,
 };
 
 // LAUNCH WORDS: what the banner says, and whether the App Store / Google Play buttons show.

@@ -7,6 +7,7 @@ import { text } from "@/content";
 import Footer from "../Footer";
 import SiteChrome from "../SiteChrome";
 import ApplyForm from "./ApplyForm";
+import InsiderWizard from "./InsiderWizard";
 
 export default function ApplyPage() {
   const t = text.apply;
@@ -23,7 +24,7 @@ export default function ApplyPage() {
         </div>
       </header>
       <main className="bg-pinktint px-5 py-12 md:py-16">
-        <ApplyForm />
+        {partner ? <ApplyForm /> : <InsiderWizard />}
       </main>
       {FEATURES.footer && <Footer />}
       <SiteChrome alwaysVisible />

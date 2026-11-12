@@ -28,7 +28,8 @@ function Letters({ word }: { word: string }) {
 }
 
 // `words` lets another screen (for example the Rate us card: "Submit" then "Submitted") use the same button with its own words.
-export default function VerifyButton({ state, disabled = false, words = text.codeEntry }: { state: CodeState; disabled?: boolean; words?: ButtonWords }) {
+// `onPress`: use it when the button sits inside ANOTHER form (a form inside a form is not allowed): it becomes a plain button that calls this.
+export default function VerifyButton({ state, disabled = false, words = text.codeEntry, onPress }: { state: CodeState; disabled?: boolean; words?: ButtonWords; onPress?: () => void }) {
   const button = useRef<HTMLButtonElement>(null);
   const [shown, setShown] = useState<CodeState>(state); // the word on the button (it waits for the liquid to fill)
   const shownRef = useRef<CodeState>(state);
@@ -65,7 +66,8 @@ export default function VerifyButton({ state, disabled = false, words = text.cod
     <div onPointerMove={pull} onPointerLeave={settle} className="-m-4 p-4">
       <button
         ref={button}
-        type="submit"
+        type={onPress ? "button" : "submit"}
+        onClick={onPress}
         disabled={locked}
         className={`relative isolate flex min-h-12 w-full items-center justify-center overflow-hidden rounded-full border-2 px-7 font-extrabold transition-[transform,background-color,border-color] duration-150 motion-safe:active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-coral ${BUTTON_CLASS[state]}`}
       >

@@ -138,7 +138,7 @@ test("pressing starts a two-wave liquid; a right code fills it, the letters DROP
   assert.match(vb, /letters-out/); // the old word's letters drop away
   assert.match(vb, /FILL_MS/); // the word changes only after the liquid has filled
   assert.deepEqual([en.codeEntry.verify, en.codeEntry.checking, en.codeEntry.verified, en.codeEntry.tryAgain], ["Verify", "Checking", "Verified", "Try again"]);
-  assert.match(vb, /type="submit"/);
+  assert.match(vb, /type=\{onPress \? "button" : "submit"\}/);
 });
 
 test("with Reduce Motion there are no waves, no dropping letters and no leaning: only the colour and the word change", () => {
