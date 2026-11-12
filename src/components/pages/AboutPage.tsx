@@ -1,46 +1,28 @@
-// The /about page: the story of Spotted, made in the UAE, how to reach us.
-import SiteChrome from "../SiteChrome";
-import Footer from "../Footer";
-import PageHeader from "./PageHeader";
-import { H2, P, Prose } from "./Prose";
-import { CONTACT, FEATURES } from "@/config/features";
+// The /about page (About us): the story of Spotted, made in the UAE, and how to reach us.
+// The words are in src/content/en.ts (about). The contact details are in src/config/contactDetails.ts.
+import { text } from "@/content";
+import ContactDetails from "../site/ContactDetails";
+import DraftPage from "../site/DraftPage";
+import { Section } from "../insider/ProfileLanding";
 
 export default function AboutPage() {
-  const btn =
-    "flex min-h-12 items-center justify-center rounded-full px-7 text-base font-extrabold transition active:scale-95";
+  const a = text.about;
   return (
-    <>
-      <PageHeader chip="About" title="The story of Spotted." lead="Made in the UAE, for everyone who saves places and forgets them." />
-      <main className="bg-page">
-        <Prose>
-          <H2>Why we made it</H2>
-          <P>
-            People save dozens of restaurants, cafés, shops and things to do from Instagram reels, then forget about them. When
-            they are actually nearby, they do not remember.
-          </P>
-          <H2>What Spotted does</H2>
-          <P>
-            Spotted lets you share a reel straight to the app, confirm which place it is, and then get a gentle phone notification
-            when you are close to that place.
-          </P>
-          <H2>Made in the UAE</H2>
-          <P>
-            Spotted is made in the UAE and starts in Khalifa City, Abu Dhabi. It works wherever you are, and it is built for
-            people who love finding new places to eat, shop and play.
-          </P>
-          <H2>Say hello</H2>
-          <P>We would love to hear from you.</P>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            {CONTACT.emailLive && (
-              <a href={`mailto:${CONTACT.email}`} className={`${btn} bg-panel text-paper`}>
-                {CONTACT.email}
-              </a>
-            )}
-          </div>
-        </Prose>
-      </main>
-      {FEATURES.footer && <Footer />}
-      <SiteChrome alwaysVisible />
-    </>
+    <DraftPage chip={a.chip} title={a.title} lead={a.lead}>
+      <Section title={a.sections[0].title}>
+        <div className="grid max-w-3xl gap-10">
+          {a.sections.map((s, i) => (
+            <div key={s.title}>
+              {i > 0 && <h3 className="mb-3 font-brand text-2xl font-bold text-maroonink">{s.title}</h3>}
+              <p className="text-lg leading-relaxed">{s.text}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+      <Section title={a.contactTitle} tint>
+        <p className="mb-6 max-w-2xl text-lg leading-relaxed">{a.contactLead}</p>
+        <ContactDetails />
+      </Section>
+    </DraftPage>
   );
 }

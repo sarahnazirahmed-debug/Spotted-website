@@ -116,7 +116,7 @@ test("the menu words are in the one text file, in the agreed order", () => {
   assert.match(nav, /FEATURES\.careersPage \? \[\.\.\.LINKS, CAREERS\] : LINKS/); // Careers only while its switch is ON (no note when OFF)
   assert.match(text("src/config/features.ts"), /careersPage: false/); // the switch stays OFF
   const en = text("src/content/en.ts");
-  for (const w of ["Home", "Restaurants", "Shops", "Insiders", "Pricing", "How to join", "FAQ", "About", "Sign in", "Partners", "Careers", "Log in", "Sign up", "FAQs"]) assert.ok(en.includes(`"${w}"`), `${w} missing from the text file`);
+  for (const w of ["Home", "Restaurants", "Shops", "Insiders", "Pricing", "How to join", "Sign in", "Partners", "Careers", "Log in", "Sign up", "FAQs", "About us"]) assert.ok(en.includes(`"${w}"`), `${w} missing from the text file`);
 });
 
 test("the home page and partner pages take their words from the text file (no long sentences inside the page code)", () => {

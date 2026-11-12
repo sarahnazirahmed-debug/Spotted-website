@@ -11,8 +11,8 @@ export const en = {
     insiders: "Insiders",
     pricing: "Pricing",
     howToJoin: "How to join",
-    faq: "FAQ",
-    about: "About",
+    faq: "FAQs",
+    about: "About us",
     signIn: "Sign in",
     partners: "Partners",
     careers: "Careers",
@@ -476,21 +476,28 @@ export const en = {
   },
 
   faq: {
-    chip: "FAQ",
+    chip: "FAQs",
     title: "Questions and answers.",
+    pick: "Choose a question on the left.",
+    // DRAFT WORDING: to be approved by Sarah. Short, plain answers.
     items: [
-      {
-        q: "Is my information private?",
-        a: "Yes. The places you save, your settings and your sign-in details stay on your phone. We do not run ads, we do not sell data, and we do not use analytics. Read the privacy policy for the full story.",
-      },
-      {
-        q: "Why does Spotted need my location in the background?",
-        a: "So it can remind you when you are near a place you saved, even when the app is closed. This needs the location setting \"Always\". Your location is used on your phone only, and we never receive it. You can turn reminders off in Settings.",
-      },
-      {
-        q: "How does saving a place work?",
-        a: "You share a reel to Spotted, and Spotted suggests the place. You confirm it is the right one. Then it goes into your saved list and onto your map. Spotted does not read Instagram, TikTok or YouTube. It only keeps the link you shared.",
-      },
+      { q: "What is Spotted?", a: "Spotted remembers the places you find in reels. You save a place once, and Spotted gives you a nudge when you are nearby." },
+      { q: "How do I save a place?", a: "Share the reel to Spotted. Spotted shows you the place. You check it and tap to confirm. Nothing is saved without your OK." },
+      { q: "How do the reminders work?", a: "When you get close to a place you saved, you get a gentle message, even when the app is closed. You choose how near: 1, 5, 10 or 15 km." },
+      { q: "Why does Spotted need my location in the background?", a: "So it can remind you when you are near a place you saved, even when the app is closed. This needs the location setting \"Always\". Your location is used on your phone only, and we never receive it. You can turn reminders off in Settings." },
+      { q: "Is my information private?", a: "Yes. The places you save, your settings and your sign-in details stay on your phone. We do not run ads, we do not sell data, and we do not use analytics. Read the privacy policy for the full story." },
+      { q: "Does Spotted read Instagram, TikTok or YouTube?", a: "No. Spotted only keeps the link you share. It never reads comments and never copies videos, photos or captions." },
+      { q: "Does Spotted work in my country?", a: "Yes. You can save a place anywhere in the world, and your reminders come with you when you travel." },
+      { q: "What is a Spotted Partner?", a: "A restaurant or shop. Partners are remembered after a reel goes viral, and when people walk past. See the Partners page." },
+      { q: "What is a Spotted Insider?", a: "A creator. Insiders see where their reels send people. See the Insiders page." },
+      { q: "How do I join as a Partner or an Insider?", a: "Send the form on the Partner page or the Insider page. We check every application by hand and reply in 2-3 days." },
+      { q: "How are visits counted?", a: "With a QR scan. When someone visits your place, they scan your QR code, and that counts as a real visit. Only real, scanned visits are counted." },
+      { q: "Is my business information confidential?", a: "Yes. Only the Spotted team can see your details, and everyone on the team agrees to keep them confidential. We only store links and place facts, and nothing about app users." },
+      { q: "I am a creator. Can I have my reels removed?", a: "Yes. Use the form on the \"Remove my reels\" page and tell us which reels. We will remove them." },
+      { q: "How do I send a complaint?", a: "Write to the complaints email on the Contact page. We will reply as soon as we can." },
+    ],
+    // Answers that are NOT shown for now (prices are still to be confirmed). Kept here so nothing is lost.
+    itemsLater: [
       {
         q: "Does Spotted work offline?",
         a: "Your saved places and menus work offline. Finding new places needs the internet.",
@@ -506,18 +513,6 @@ export const en = {
       {
         q: "Can I cancel?",
         a: "Yes, you can cancel. Tell us and we will stop your plan. Your data from the free months stays saved, so if you come back later, it carries on from there.",
-      },
-      {
-        q: "How are visits counted?",
-        a: "With a QR scan. When someone visits your place, they scan your QR code, and that counts as a real visit. Only real, scanned visits are counted.",
-      },
-      {
-        q: "Is my business information confidential?",
-        a: "Yes. Only the Spotted team can see your details, and everyone on the team agrees to keep them confidential. We only store links and place facts, and nothing about app users.",
-      },
-      {
-        q: "I am a creator. Can I have my reels removed?",
-        a: "Yes. Use the form on the \"Remove my reels\" page and tell us which reels. We will remove them.",
       },
     ],
     removeLink: "Remove my reels",
@@ -540,11 +535,30 @@ export const en = {
     closed: "This form is not open yet. Please message us on WhatsApp.",
   },
 
+  // About us. DRAFT WORDING: to be approved by Sarah.
+  about: {
+    chip: "About us",
+    title: "The story of Spotted.",
+    lead: "Made in the UAE, for everyone who saves places and forgets them.",
+    sections: [
+      { title: "Why we made it", text: "People save dozens of restaurants, cafes, shops and things to do from reels, then forget about them. When they are actually nearby, they do not remember." },
+      { title: "What Spotted does", text: "Spotted lets you share a reel straight to the app, confirm which place it is, and then get a gentle phone notification when you are close to that place." },
+      { title: "Made in the UAE", text: "Spotted is made in the UAE and starts in Khalifa City, Abu Dhabi. It works wherever you are, and it is built for people who love finding new places to eat, shop and play." },
+    ],
+    contactTitle: "Say hello",
+    contactLead: "We would love to hear from you.",
+  },
+
   contact: {
     chip: "Contact",
-    title: "Say hello.",
-    lead: "Message us on WhatsApp or Instagram. We read every message.",
-    emailLabel: "Email",
+    title: "Contact us.",
+    lead: "Questions, ideas or a complaint? Write to us. We read every message.",
+    inquiry: "Questions and enquiries",
+    complaints: "Complaints",
+    phone: "Phone",
+    placeholder: "Placeholder",
+    placeholderNote: "These details are placeholders for now. The real ones will be added soon.",
+    instagramTitle: "Find us on Instagram",
   },
 
   footer: {

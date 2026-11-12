@@ -1,3 +1,5 @@
+import { CONTACT_DETAILS } from "./contactDetails.ts";
+
 // SECTION SWITCHES: the one place that turns big parts of the website on or off.
 //
 // `true`  = the section is shown.
@@ -116,9 +118,9 @@ export const bannerWords = (): { label: string; line2?: string } =>
   LAUNCH.status === "outNow" ? LAUNCH.outNow : LAUNCH.comingSoon;
 
 // Contact details shown on the About page, the legal pages and in the footer.
-// The email address is only shown once the domain is bought and the mailbox works:
-// buy the domain, create the mailbox, change the address below, then set emailLive to true.
-export const CONTACT = { email: "hello@spotted.ae", emailLive: false };
+// The email address is only shown as a real link once the domain is bought and the mailbox works.
+// (The values come from src/config/contactDetails.ts: that is the one place to change them.)
+export const CONTACT = { email: CONTACT_DETAILS.inquiryEmail.value, emailLive: CONTACT_DETAILS.inquiryEmail.live };
 
 // The privacy and terms pages are drafts until a lawyer has read them.
 // Set to false (and update the dates) once they are reviewed. The notice is shown on both pages.

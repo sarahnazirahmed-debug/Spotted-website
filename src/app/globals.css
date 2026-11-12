@@ -226,3 +226,12 @@ html.theme-fade *::after {
   ::view-transition-new(*) { animation: none !important; }
   html.theme-fade, html.theme-fade * { transition: none !important; }
 }
+
+/* ---- FAQs: the answer slides in from the right (wide screens) or drops in under its question (small screens).
+   With Reduce Motion on there is no animation: the answer just appears. ---- */
+@keyframes faq-slide-in { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes faq-drop-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .faq-side { animation: faq-slide-in 0.35s ease-out both; }
+  .faq-under { animation: faq-drop-in 0.3s ease-out both; }
+}
