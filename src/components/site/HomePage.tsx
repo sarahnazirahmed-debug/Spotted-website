@@ -13,7 +13,7 @@ import IfInstagram from "./IfInstagram";
 import StoreButtons from "./StoreButtons";
 import HomeLanding from "./HomeLanding";
 
-const HELP_ICONS: IconName[] = ["bookmark", "bell", "globe"];
+const HELP_ICONS: IconName[] = ["arrow", "check", "bookmark", "bell", "range", "globe"];
 
 // `newLanding` ON (features.ts) = the new maroon and cream landing page. OFF = the older dark look below.
 export default function HomePage() {

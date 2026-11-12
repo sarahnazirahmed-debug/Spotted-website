@@ -183,6 +183,12 @@ body {
   0%, 34%, 42%, 100% { transform: scale(1); }
   37% { transform: scale(0.95); }
 }
+/* Links that jump to a part of the same page (for example "Users" to "How Spotted helps") glide smoothly.
+   With Reduce Motion on, they jump instantly. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .phone-reel { animation: phone-reel-scene 7s ease-in-out infinite; }
   .phone-done { animation: phone-done-scene 7s ease-in-out infinite; }

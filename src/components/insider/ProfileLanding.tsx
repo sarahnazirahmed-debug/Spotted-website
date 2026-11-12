@@ -30,7 +30,7 @@ export const heading = "font-brand text-[clamp(1.7rem,4.5vw,2.6rem)] font-bold l
 
 export function Section({ id, title, children, tint = false }: { id?: string; title: string; children: React.ReactNode; tint?: boolean }) {
   return (
-    <section id={id} className={`${tint ? "bg-pinktint" : "bg-pagebase"} px-5 py-16 text-darktext md:py-24`}>
+    <section id={id} className={`${tint ? "bg-pinktint" : "bg-pagebase"} scroll-mt-16 px-5 py-16 text-darktext md:py-24`}>
       <div className="mx-auto max-w-5xl">
         <h2 className={`mb-8 ${heading}`}>{title}</h2>
         {children}

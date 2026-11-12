@@ -15,13 +15,18 @@ import IfInstagram from "./IfInstagram";
 import StoreButtons from "./StoreButtons";
 import { Section, coralButton } from "../insider/ProfileLanding";
 
-const HELP_ICONS: IconName[] = ["bookmark", "bell", "globe"];
-const outlineButton =
-  "inline-flex min-h-12 items-center justify-center rounded-full border border-maroon px-7 font-bar text-base font-bold text-maroon transition hover:bg-pinktint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral";
+// one picture for each of the six steps (objects only: no people, no faces)
+const HELP_ICONS: IconName[] = ["arrow", "check", "bookmark", "bell", "range", "globe"];
 
 export default function HomeLanding() {
   const h = text.home;
-  const audience = [h.partnersCard, h.insidersCard].filter((x) => (x.href === "/insider" ? FEATURES.insiderPage : FEATURES.businessPages));
+  // The three cards. Users always open the "How Spotted helps" part below. A card whose page is switched OFF
+  // in features.ts shows "Coming soon" and is not a link.
+  const audience = [
+    { ...h.usersCard, on: true },
+    { ...h.partnersCard, on: FEATURES.businessPages },
+    { ...h.insidersCard, on: FEATURES.insiderPage },
+  ];
   return (
     <div className="font-bar">
       {/* 1. HERO (maroon) */}
@@ -54,19 +59,53 @@ export default function HomeLanding() {
       </header>
 
       <main>
-        {/* 2. HOW SPOTTED HELPS */}
-        <Section id="how-it-works" title={h.helpsTitle}>
+        {/* 2. WHO IS SPOTTED FOR (three cards; the Users card glides down to "How Spotted helps") */}
+        <Section title={h.audienceTitle} tint>
+          <p className="mb-8 max-w-2xl text-lg leading-relaxed">{h.forBusinessLead}</p>
           <div className="grid gap-5 md:grid-cols-3">
-            {h.helps.map((x, i) => (
-              <div key={x.title} className="rounded-2xl border border-rosesoft bg-cream p-6">
-                <span className="flex size-12 items-center justify-center rounded-2xl bg-pinktint text-maroon">
-                  <Icon name={HELP_ICONS[i]} />
-                </span>
-                <h3 className="mt-5 font-brand text-xl font-bold leading-tight">{x.title}</h3>
-                <p className="mt-2 text-base leading-relaxed text-mutedtext">{x.text}</p>
-              </div>
-            ))}
+            {audience.map((x) => {
+              const card = "flex h-full flex-col rounded-2xl border border-rosesoft bg-cream p-7";
+              const body = (
+                <>
+                  <h3 className="font-brand text-2xl font-bold text-maroon">{x.title}</h3>
+                  <p className="mt-2 flex-1 text-base leading-relaxed">{x.text}</p>
+                  <span className="mt-5 inline-flex min-h-11 items-center gap-2 font-bold text-maroon">
+                    {x.on ? text.common.learnMore : text.common.comingSoon}
+                    {x.on && <Icon name="arrow" size={18} />}
+                  </span>
+                </>
+              );
+              return x.on ? (
+                <a key={x.title} href={x.href} className={`${card} transition hover:border-maroon motion-safe:active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-coral`}>
+                  {body}
+                </a>
+              ) : (
+                <div key={x.title} className={`${card} opacity-90`}>
+                  {body}
+                </div>
+              );
+            })}
           </div>
+        </Section>
+
+        {/* 3. HOW SPOTTED HELPS: six cards, one on the left, the next on the right, and so on */}
+        <Section id="how-it-works" title={h.helpsTitle}>
+          <ol className="relative grid gap-5 md:gap-6 md:before:absolute md:before:inset-y-3 md:before:left-1/2 md:before:w-px md:before:bg-rosesoft md:before:content-['']">
+            {h.helps.map((x, i) => (
+              <li key={x.title} className={`relative md:w-[calc(50%-1.25rem)] ${i % 2 === 0 ? "md:justify-self-start" : "md:justify-self-end"}`}>
+                <div className="rounded-2xl border border-rosesoft bg-cream p-6">
+                  <div className="flex items-center gap-4">
+                    <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-pinktint text-maroon">
+                      <Icon name={HELP_ICONS[i]} />
+                    </span>
+                    <span className="font-brand text-sm font-bold text-mutedtext">Step {i + 1}</span>
+                  </div>
+                  <h3 className="mt-4 font-brand text-xl font-bold leading-tight">{x.title}</h3>
+                  <p className="mt-2 text-base leading-relaxed text-mutedtext">{x.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
           <p className="mt-6 text-base font-semibold">{h.helpsNote}</p>
         </Section>
 
@@ -78,39 +117,7 @@ export default function HomeLanding() {
           </div>
         )}
 
-        {/* 3. WHO IS SPOTTED FOR */}
-        {audience.length > 0 && (
-          <Section title={h.audienceTitle} tint>
-            <p className="mb-8 max-w-2xl text-lg leading-relaxed">{h.forBusinessLead}</p>
-            <div className="grid gap-5 md:grid-cols-2">
-              {audience.map((x) => (
-                <Link key={x.href} href={x.href} className="group rounded-2xl border border-rosesoft bg-cream p-7 transition hover:border-maroon">
-                  <h3 className="font-brand text-2xl font-bold text-maroon">{x.title}</h3>
-                  <p className="mt-2 text-base leading-relaxed">{x.text}</p>
-                  <span className="mt-5 inline-flex min-h-11 items-center gap-2 font-bold text-maroon">
-                    {text.common.learnMore}
-                    <Icon name="arrow" size={18} />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {/* 4. JOIN */}
-        <Section id="join" title={h.joinTitle}>
-          <p className="mb-6 max-w-2xl text-lg leading-relaxed">{h.joinLead}</p>
-          <div className="flex flex-wrap gap-3">
-            <Link href={partnerLink("restaurants")} className={coralButton}>
-              {h.joinPartner}
-            </Link>
-            <Link href={partnerLink("insider")} className={outlineButton}>
-              {h.joinInsider}
-            </Link>
-          </div>
-        </Section>
-
-        {/* 5. TALK TO US */}
+        {/* 4. TALK TO US */}
         <IfInstagram>
           <section className="bg-maroon px-5 py-14 text-cream">
             <div className="mx-auto max-w-5xl">

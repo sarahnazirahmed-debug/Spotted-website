@@ -323,12 +323,13 @@ export const en = {
     title: "Saw it in a reel?\nSpotted remembers it.",
     lead: "Save it once, get a nudge when you're nearby. Coming soon.",
     helpsTitle: "How Spotted helps",
+    // Six short steps. DRAFT WORDING: to be approved by Sarah.
     helps: [
-      { title: "Save places from reels", text: "Share a reel to Spotted and confirm the place. It goes into your list and onto your map." },
-      {
-        title: "Reminders when you are near",
-        text: "When you get close to a place you saved, Spotted sends you a notification, even when the app is closed. You choose how close: 200 m, 300 m, 500 m or 1 km.",
-      },
+      { title: "Share a reel to Spotted", text: "Found a place in a reel? Share the reel to Spotted. It takes a few seconds." },
+      { title: "You confirm the place", text: "Spotted shows you the place. You check it and tap to confirm. Nothing is saved without your OK." },
+      { title: "All your places in one list", text: "Every place you save goes into one simple list and onto your map." },
+      { title: "A nudge when you are near", text: "When you get close to a saved place, Spotted sends you a gentle message, even when the app is closed." },
+      { title: "You choose how near", text: "Pick 1, 5, 10 or 15 km. Pick a small number for a normal day and a bigger one when you travel." },
       { title: "Works in any country", text: "Save a place anywhere in the world. Your reminders come with you when you travel." },
     ],
     helpsNote: "For reminders with the app closed, allow location \"Always\" when Spotted asks.",
@@ -341,11 +342,10 @@ export const en = {
       { title: "Insiders", text: "See where your reels send people.", href: "/insider" },
     ],
     // The new landing page (step 8)
-    joinTitle: "Join Spotted",
-    joinLead: "Restaurants and shops join as Partners. Creators join as Insiders. We check every application by hand and reply in 2-3 days.",
     joinPartner: "Join as a Partner",
     joinInsider: "Join as an Insider",
     audienceTitle: "Who is Spotted for?",
+    usersCard: { title: "Users", text: "You find places in reels. Spotted remembers them for you and nudges you when you are close.", href: "#how-it-works" },
     partnersCard: { title: "Partners", text: "Restaurants and shops. Be remembered after the reel goes viral and when people walk past.", href: "/partners" },
     insidersCard: { title: "Insiders", text: "Creators. See where your reels send people.", href: "/insider" },
     talkTitle: "Questions? Talk to us.",

@@ -1,7 +1,7 @@
 // A few simple icons (objects only: no people, no faces). They take their colour from the text colour.
 const common = { width: 28, height: 28, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
 
-export type IconName = "bookmark" | "pin" | "globe" | "bell" | "qr" | "star" | "chart" | "arrow" | "instagram";
+export type IconName = "bookmark" | "pin" | "globe" | "bell" | "qr" | "star" | "chart" | "arrow" | "instagram" | "check" | "range";
 
 export function Icon({ name, size = 28 }: { name: IconName; size?: number }) {
   const p = { ...common, width: size, height: size };
@@ -56,6 +56,19 @@ export function Icon({ name, size = 28 }: { name: IconName; size?: number }) {
           <rect x="3" y="3" width="18" height="18" rx="5" />
           <circle cx="12" cy="12" r="4" />
           <circle cx="17.5" cy="6.5" r="0.6" />
+        </svg>
+      );
+    case "check":
+      return (
+        <svg {...p}>
+          <path d="M5 12.500l4.500 4.500L19 7" />
+        </svg>
+      );
+    case "range":
+      // a line with an arrow at each end: "how far"
+      return (
+        <svg {...p}>
+          <path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4" />
         </svg>
       );
     case "arrow":
