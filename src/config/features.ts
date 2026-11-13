@@ -90,9 +90,12 @@ export const FEATURES: Record<FeatureName, boolean> = {
   // The small "Design draft" label on pages that are still a draft design (the Insider page).
   // ON while we build the design. Switch OFF before the site goes public so the live site never shows it.
   designDraft: true,
-  // The Apply page (/apply: Insider and Partner versions) and its thank-you page.
-  // If OFF, the "Become an Insider / Partner" buttons go to the Contact page instead.
-  applyPage: true,
+  // This site's OWN Apply page (/apply: Insider and Partner versions) and its thank-you page.
+  // OFF since the dashboard's Join forms are the one way to apply (they save into the team's review screens; this page's database
+  // functions were never set up, so its Send button cannot save). While OFF, /apply shows the 404 page.
+  // The "Become an Insider / Partner" buttons go to the dashboard's forms once NEXT_PUBLIC_JOIN_URL is set (see config/routes.ts);
+  // until then they go to the Contact page.
+  applyPage: false,
   // The home page in the new maroon, cream, Merriweather and Inter look (step 8). OFF brings back the older dark look.
   newLanding: true,
   // The floating "Rate us" star (right side of every public page), its card, and the "Rate us" link in the footer.

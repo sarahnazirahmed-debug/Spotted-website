@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { ageFromDob, isAdult, insiderProblem, partnerProblem, pdfProblem, pdfPath, MAX_PDF_BYTES, isFoodType } from "../src/lib/applyRules.ts";
 import { partnerLink, applyLink } from "../src/config/routes.ts";
+import { FEATURES } from "../src/config/features.ts";
 
 const read = (f) => readFileSync(f, "utf8");
 const today = new Date("2026-11-08T12:00:00Z");
@@ -93,8 +94,9 @@ test("the Insider and Partner buttons open the right version of the one Apply pa
   assert.equal(applyLink("insider"), "/apply?type=insider");
   assert.equal(applyLink("partner"), "/apply?type=partner");
   assert.equal(applyLink("insider", "founding"), "/apply?type=insider&how=founding");
-  assert.equal(partnerLink("insider"), "/apply?type=insider");
-  assert.equal(partnerLink("restaurants"), "/apply?type=partner");
+  // while this site's own Apply page is ON the buttons go to it; while it is OFF they go to the Contact / landing pages (or the dashboard forms, see step8-public.test.mjs)
+  assert.equal(partnerLink("insider"), FEATURES.applyPage ? "/apply?type=insider" : FEATURES.insiderPage ? "/insider#get-in-touch" : "/contact");
+  assert.equal(partnerLink("restaurants"), FEATURES.applyPage ? "/apply?type=partner" : FEATURES.businessPages ? "/partners#get-in-touch" : "/contact");
   assert.match(read("src/components/insider/InsiderLanding.tsx"), /applyHref=\{partnerLink\("insider"\)\}/);
   assert.match(read("src/components/insider/PartnerLanding.tsx"), /applyHref=\{joinHref\}/);
   assert.match(read("src/components/insider/PartnerLanding.tsx"), /const joinHref = partnerLink\("restaurants"\)/);

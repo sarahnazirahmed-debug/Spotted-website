@@ -15,7 +15,11 @@ export const joinLink = (kind: "insider" | "partner"): string | null => (JOIN_UR
 export const applyLink = (kind: "insider" | "partner", how?: "founding"): string =>
   joinLink(kind) ?? `/apply?type=${kind}${how ? `&how=${how}` : ""}`;
 
+// The dashboard's Join forms are the ONE place to apply (they save straight into the team's review screens).
+// When NEXT_PUBLIC_JOIN_URL is set, every "Become an Insider / Partner" button goes there, even while this site's own Apply page is OFF.
 export const partnerLink = (page: "restaurants" | "shops" | "insider"): string => {
+  const dashboard = joinLink(page === "insider" ? "insider" : "partner");
+  if (dashboard) return dashboard;
   if (page === "insider") {
     if (FEATURES.applyPage) return applyLink("insider");
     return FEATURES.insiderPage ? "/insider#get-in-touch" : "/contact";
@@ -23,3 +27,6 @@ export const partnerLink = (page: "restaurants" | "shops" | "insider"): string =
   if (FEATURES.applyPage) return applyLink("partner");
   return FEATURES.businessPages ? "/partners#get-in-touch" : "/contact";
 };
+
+// The "Founding Insider" button. The dashboard's Insider form has a "founding Insider" choice in its first bar, so it goes to the same form.
+export const foundingLink = (): string => joinLink("insider") ?? (FEATURES.applyPage ? applyLink("insider", "founding") : "/contact");
