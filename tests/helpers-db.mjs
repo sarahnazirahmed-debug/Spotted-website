@@ -40,6 +40,7 @@ export async function makeDb({ skip = [] } = {}) {
   await db.exec(readFileSync("supabase/apply_insider_form.sql", "utf8"));
   if (!skip.includes("apply_reference_codes.sql")) await db.exec(readFileSync("supabase/apply_reference_codes.sql", "utf8"));
   await db.exec(readFileSync("supabase/pindesk_pin_rules.sql", "utf8"));
+  await db.exec(readFileSync("supabase/dashboard_helper_access.sql", "utf8"));
   return db;
 }
 

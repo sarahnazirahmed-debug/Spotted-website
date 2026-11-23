@@ -3,6 +3,8 @@
 // The frame around every /admin page: sends visitors to /login, the "not on the team" message, the first-visit
 // confidentiality tick box, and the top menu (Pin Desk, Team if allowed, Sign out).
 import { LoadingBlocks } from "@/components/Skeleton";
+import { SignOutButton } from "../dashboard/DashboardSignOut";
+import DashboardWelcome from "../dashboard/DashboardWelcome";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -38,9 +40,9 @@ function Confidential() {
         </button>
         {message && <p role="alert" className="mt-3 text-sm font-bold">{message}</p>}
       </div>
-      <button type="button" onClick={signOut} className="mt-4 min-h-11 font-bold underline">
+      <SignOutButton endSession={signOut} className="mt-4 min-h-11 font-bold underline">
         Sign out
-      </button>
+      </SignOutButton>
     </div>
   );
 }
@@ -63,9 +65,9 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
       <div className="mx-auto max-w-md px-5 py-20">
         <h1 className="text-3xl font-extrabold text-heading">Not on the team</h1>
         <p className="mt-3 text-lg">This email is not on the Spotted team, so there is nothing for you here.</p>
-        <button type="button" onClick={signOut} className="mt-6 min-h-12 rounded-full bg-accent px-7 font-extrabold text-onaccent">
+        <SignOutButton endSession={signOut} className="mt-6 min-h-12 rounded-full bg-accent px-7 font-extrabold text-onaccent">
           Sign out
-        </button>
+        </SignOutButton>
       </div>
     );
   if (!me.agreed) return <Confidential />;
@@ -83,7 +85,7 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
     </Link>
   );
   return (
-    <>
+    <DashboardWelcome name={me.name}>
       <header className="sticky top-0 z-30 border-b border-line bg-page/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 py-2">
           <span className="mr-2 text-xl font-extrabold text-heading">Spotted team</span>
@@ -96,12 +98,12 @@ export default function AdminFrame({ children }: { children: React.ReactNode }) 
           <span className="ml-auto text-sm font-bold">
             {me.name} ({titleFor(me.name, ROLE_LABEL[me.role])})
           </span>
-          <button type="button" onClick={signOut} className="min-h-11 rounded-full border-2 border-line px-5 font-extrabold text-heading">
+          <SignOutButton endSession={signOut} className="min-h-11 rounded-full border-2 border-line px-5 font-extrabold text-heading">
             Sign out
-          </button>
+          </SignOutButton>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
-    </>
+    </DashboardWelcome>
   );
 }

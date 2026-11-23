@@ -91,9 +91,9 @@ export default function AdminProvider({ children }: { children: React.ReactNode 
   }, [supabase, loadMe]);
 
   const signOut = useCallback(async () => {
-    await supabase?.auth.signOut();
-    setMe(null);
-    setStatus("loggedOut");
+    if (!supabase) throw new Error("Sign-out unavailable");
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   }, [supabase]);
 
   const value = useMemo<Ctx>(

@@ -23,6 +23,7 @@ Do not run `reset.sql` unless you want to wipe everything.
 16. `apply_reference_codes.sql`
 17. `star_feedback.sql`
 18. `pindesk_pin_rules.sql` (only Sarah can pin a reel; helpers edit only their own reels)
+19. `dashboard_helper_access.sql` (limits helper access to member records)
 
 If a file was already run, running it again shows a red "already exists" message. That is harmless.
 
