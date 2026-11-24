@@ -3,6 +3,8 @@
 // The page around both dashboards: a maroon header with the title and the Log out button, the messages for
 // "not logged in", "not approved" and "free period ended", the five number cards, and the footer.
 import { LoadingBlocks } from "@/components/Skeleton";
+import { SignOutButton } from "../dashboard/DashboardSignOut";
+import DashboardWelcome from "./DashboardWelcome";
 import Link from "next/link";
 import { FEATURES } from "@/config/features";
 import { text } from "@/content";
@@ -40,15 +42,15 @@ export function paidUntilText(n: Numbers | null): string | null {
 }
 
 export default function DashboardFrame({
-  title, state, signOut, numbers, children,
-}: { title: string; state: MemberState; signOut: () => void; numbers: Numbers | null; children?: React.ReactNode }) {
+  title, state, signOut, numbers, children, name,
+}: { name?: string; title: string; state: MemberState; signOut: () => Promise<void>; numbers: Numbers | null; children?: React.ReactNode }) {
   const paid = paidUntilText(numbers);
   const message =
     state === "closed" ? t.closed
     : state === "notMember" ? t.notMember
     : state === "ended" ? t.ended
     : null;
-  return (
+  const content = (
     <div className="font-bar">
       <header className="bg-maroon px-5 pb-10 pt-28 text-cream md:pt-32">
         <div className="mx-auto flex max-w-5xl flex-wrap items-end justify-between gap-4">
@@ -57,13 +59,11 @@ export default function DashboardFrame({
             {paid && <p className="mt-2 text-sm font-semibold text-rose-line">{paid}</p>}
           </div>
           {(state === "ready" || state === "ended" || state === "notMember") && (
-            <button
-              type="button"
-              onClick={signOut}
+            <SignOutButton endSession={signOut}
               className="min-h-11 rounded-full border border-rose-line px-6 font-bar text-sm font-semibold text-cream transition hover:border-coral hover:text-coral focus-visible:outline-2 focus-visible:outline-coral"
             >
               {t.logOut}
-            </button>
+            </SignOutButton>
           )}
         </div>
       </header>
@@ -99,4 +99,5 @@ export default function DashboardFrame({
       <SiteChrome alwaysVisible />
     </div>
   );
+  return state === "ready" ? <DashboardWelcome name={name}>{content}</DashboardWelcome> : content;
 }

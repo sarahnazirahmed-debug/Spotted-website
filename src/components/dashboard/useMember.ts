@@ -15,14 +15,17 @@ export type Numbers = {
 };
 export type MemberState = "loading" | "closed" | "loggedOut" | "notMember" | "ended" | "ready";
 
+type MemberResult = { state: MemberState; numbers: Numbers | null; goTo?: string; name?: string };
+
 export function useMember(kind: MemberKind) {
   const router = useRouter();
   const [state, setState] = useState<MemberState>("loading");
+  const [name, setName] = useState<string>();
   const [numbers, setNumbers] = useState<Numbers | null>(null);
   const [supabase] = useState<SupabaseClient | null>(() => getSupabase());
 
   // asks the database; returns what to show
-  const fetchState = useCallback(async (): Promise<{ state: MemberState; numbers: Numbers | null; goTo?: string }> => {
+  const fetchState = useCallback(async (): Promise<MemberResult> => {
     if (!supabase) return { state: "closed", numbers: null };
     const { data: s } = await supabase.auth.getSession();
     if (!s.session) return { state: "loggedOut", numbers: null };
@@ -32,14 +35,17 @@ export function useMember(kind: MemberKind) {
     if (row.kind !== kind) return { state: "loading", numbers: null, goTo: dashboardPath(row.kind) };
     if (!row.access_ok) return { state: "ended", numbers: null };
     const { data: n } = await supabase.rpc("my_numbers");
-    return n ? { state: "ready", numbers: n as Numbers } : { state: "ended", numbers: null };
+    const metadata = s.session.user.user_metadata;
+    const name = [metadata.first_name, metadata.full_name, metadata.name].find((v) => typeof v === "string" && v.trim());
+    return n ? { state: "ready", numbers: n as Numbers, name } : { state: "ended", numbers: null };
   }, [supabase, kind]);
 
   const apply = useCallback(
-    (r: { state: MemberState; numbers: Numbers | null; goTo?: string }) => {
+    (r: MemberResult) => {
       if (r.goTo) return router.replace(r.goTo);
       setState(r.state);
       setNumbers(r.numbers);
+      setName(r.name);
     },
     [router],
   );
@@ -56,9 +62,10 @@ export function useMember(kind: MemberKind) {
   }, [fetchState, apply]);
 
   const signOut = useCallback(async () => {
-    await supabase?.auth.signOut();
-    router.push("/login");
-  }, [supabase, router]);
+    if (!supabase) throw new Error("Sign-out unavailable");
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  }, [supabase]);
 
-  return { state, numbers, supabase, reload, signOut };
+  return { state, name, numbers, supabase, reload, signOut };
 }

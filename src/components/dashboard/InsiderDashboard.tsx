@@ -13,7 +13,7 @@ type Reel = { id: string; url: string; place_name: string | null; posted_on: str
 const t = text.dashboard;
 
 export default function InsiderDashboard() {
-  const { state, numbers, supabase, reload, signOut } = useMember("insider");
+  const { state, name, numbers, supabase, reload, signOut } = useMember("insider");
   const [reels, setReels] = useState<Reel[]>([]);
   const [form, setForm] = useState({ url: "", placeName: "", postedOn: "" });
   const [message, setMessage] = useState("");
@@ -65,7 +65,7 @@ export default function InsiderDashboard() {
 
   const n = numbers;
   return (
-    <DashboardFrame title={t.insiderTitle} state={state} signOut={signOut} numbers={n}>
+    <DashboardFrame name={name} title={t.insiderTitle} state={state} signOut={signOut} numbers={n}>
       <ul className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <StatCard label={t.greenStars} value={n?.green_stars ?? 0} star="visit" />
         <StatCard label={t.yellowStars} value={n?.yellow_stars ?? 0} star="sale" />

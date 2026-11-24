@@ -14,7 +14,7 @@ const t = text.dashboard;
 const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 export default function PartnerDashboard() {
-  const { state, numbers, supabase, reload, signOut } = useMember("partner");
+  const { state, name, numbers, supabase, reload, signOut } = useMember("partner");
   const [items, setItems] = useState<Item[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [itemForm, setItemForm] = useState({ name: "", price: "" });
@@ -93,7 +93,7 @@ export default function PartnerDashboard() {
   const n = numbers;
   const today = todayIso();
   return (
-    <DashboardFrame title={t.partnerTitle} state={state} signOut={signOut} numbers={n}>
+    <DashboardFrame name={name} title={t.partnerTitle} state={state} signOut={signOut} numbers={n}>
       <ul className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         <StatCard label={t.greenStars} value={n?.green_stars ?? 0} star="visit" />
         <StatCard label={t.yellowStars} value={n?.yellow_stars ?? 0} star="sale" note={t.salesRecorded} />

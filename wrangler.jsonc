@@ -2,6 +2,7 @@
 // It says: this site is plain files in the "out" folder (made by: npm run build:cloudflare), no server needed.
 {
   "name": "spotted-website",
+  "previews": {},
   "compatibility_date": "2025-10-01",
   "assets": {
     "directory": "./out",
