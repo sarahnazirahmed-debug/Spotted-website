@@ -36,6 +36,7 @@ type Props = {
 
 export default function ReelForm({ initial, isNew, collections, businesses, locations, onBusinessCreated, initialDeals, initialOffers, canDelete, onSave, onDelete, onCancel }: Props) {
   const [v, setV] = useState({
+    laptop_url: initial.laptop_url ?? "",
     place_name: initial.place_name ?? "",
     branch: initial.branch ?? "",
     emirate: initial.emirate ?? "",
@@ -151,6 +152,7 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
     const t = (s: string) => (s.trim() === "" ? null : s.trim());
     const problemFromDb = await onSave({
       url: initial.url,
+      laptop_url: t(v.laptop_url),
       link_key: initial.link_key,
       platform: initial.platform,
       place_name: t(v.place_name),
@@ -187,6 +189,9 @@ export default function ReelForm({ initial, isNew, collections, businesses, loca
     <form onSubmit={save} noValidate className="grid gap-4 rounded-3xl bg-box p-5 text-onpanel">
       <div>
         <p className="text-sm font-bold text-mist">{initial.platform}</p>
+        <label className={label} htmlFor="rf-laptop-url">Laptop URL (optional)</label>
+        <input id="rf-laptop-url" type="url" placeholder="Paste the laptop or desktop share link" className={field} value={v.laptop_url} onChange={set("laptop_url")} />
+        <p className="mt-1 text-sm text-mist">The phone URL above and this Laptop URL stay on the same reel and keep the same reel code.</p>
         <a href={initial.url} target="_blank" rel="noopener noreferrer" className="break-all font-extrabold underline">
           {initial.url}
         </a>

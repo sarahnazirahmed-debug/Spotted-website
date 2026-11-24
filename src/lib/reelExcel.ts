@@ -113,6 +113,7 @@ export function rowsToReels(rows: unknown[][]): ImportResult {
     if (catRaw && !category) problems.push(`Row ${line}: category "${catRaw}" is not Eat, Shop or Play (left empty).`);
     const item: ReelInput = {
       url: info.url,
+      laptop_url: null,
       link_key: info.linkKey,
       platform: info.platform,
       place_name: text(at(row, "Place name")),

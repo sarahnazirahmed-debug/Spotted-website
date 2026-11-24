@@ -6,6 +6,7 @@ import type { ReelStatus } from "./pinRules";
 export type Reel = {
   id: string;
   url: string;
+  laptop_url: string | null;
   link_key: string;
   platform: Platform;
   place_name: string | null;
